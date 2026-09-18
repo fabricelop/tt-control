@@ -189,6 +189,13 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
 
     // Private editorial bridge. This is deliberately separate from the browser session:
     // a future ChatGPT connector/automation can read PROCESSING items and return verified drafts.
+    if(u.pathname==='/api/agent/run'){
+      if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
+      if(req.method!=='POST')return new Response('Method Not Allowed',{status:405})
+      const result:any=await ingest(env)
+      result.backlogDismissed=await reclassifyBacklog(env)
+      return Response.json(result)
+    }
     if(u.pathname==='/api/agent/pending'){
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
       if(req.method!=='GET')return new Response('Method Not Allowed',{status:405})
