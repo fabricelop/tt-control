@@ -1,1 +1,1 @@
-Manual TT Control execution 2026-09-19 01:15 Europe/Madrid
+manual-run 2026-09-19T01:48:00+02:00
