@@ -8,7 +8,7 @@ async function ensureEditorialSchema(env:Env){
     "CREATE INDEX IF NOT EXISTS idx_publications_news ON publications(news_id)"
   ]
   for(const sql of statements)await env.DB.prepare(sql).run()
-  for(const sql of ["ALTER TABLE news ADD COLUMN processing_error TEXT","ALTER TABLE news ADD COLUMN processing_started_at TEXT","ALTER TABLE news ADD COLUMN processing_finished_at TEXT","ALTER TABLE drafts ADD COLUMN image_url TEXT","ALTER TABLE drafts ADD COLUMN ai_image_base64 TEXT"]){try{await env.DB.prepare(sql).run()}catch(_){}}
+  for(const sql of ["ALTER TABLE news ADD COLUMN processing_error TEXT","ALTER TABLE news ADD COLUMN processing_started_at TEXT","ALTER TABLE news ADD COLUMN processing_finished_at TEXT","ALTER TABLE drafts ADD COLUMN image_url TEXT","ALTER TABLE drafts ADD COLUMN ai_image_base64 TEXT","ALTER TABLE drafts ADD COLUMN image_a_url TEXT","ALTER TABLE drafts ADD COLUMN image_b_url TEXT","ALTER TABLE drafts ADD COLUMN image_c_url TEXT"]){try{await env.DB.prepare(sql).run()}catch(_){}}
 }
 
 function radarDecision(section:string,title:string):{admit:boolean;reason:string}{
@@ -107,10 +107,10 @@ async function openDesk(id){
     (n.processing_error?'<p class="urgent"><b>Error de elaboración:</b> '+esc(n.processing_error)+'</p>':'')+
     (dr?'<h3>Versión base</h3><p>'+esc(dr.base_text||'')+'</p>'+(dr.image_url?'<div class="remateChoice"><img src="'+esc(dr.image_url)+'" style="max-width:100%;max-height:260px;border-radius:12px;display:block;margin-bottom:8px"><button onclick="copyImage(&quot;'+esc(dr.image_url)+'&quot;)">📋 Copiar imagen</button>'+(String(dr.image_url||'').startsWith('/api/ai-image/')?'<button onclick="createAiImage('+id+',true)">↻ Nueva imagen IA</button>':'')+'</div>':'<div class="remateChoice"><button onclick="createAiImage('+id+')">✨ Crear imagen IA TTiTTulares</button></div>')+
       '<div class="remateChoice"><b>Publicar sin remate</b><div class="actions"><button class="publish" onclick="openX('+id+',0)">Abrir en X</button><button onclick="markPublished('+id+',0)">✓ Marcar publicada</button></div></div>'+
-      '<div class="remateChoice"><b>🌶️ Remate A</b><p>'+esc(dr.remate_a||'')+'</p><div class="actions"><button class="publish" onclick="openX('+id+',1)">Abrir en X</button><button onclick="markPublished('+id+',1)">✓ Marcar publicada</button></div></div>'+
-      '<div class="remateChoice"><b>🌶️ Remate B</b><p>'+esc(dr.remate_b||'')+'</p><div class="actions"><button class="publish" onclick="openX('+id+',2)">Abrir en X</button><button onclick="markPublished('+id+',2)">✓ Marcar publicada</button></div></div>'+
-      '<div class="remateChoice"><b>🌶️ Remate C</b><p>'+esc(dr.remate_c||'')+'</p><div class="actions"><button class="publish" onclick="openX('+id+',3)">Abrir en X</button><button onclick="markPublished('+id+',3)">✓ Marcar publicada</button></div></div>'+
-      '<div class="actions"><button onclick="requestRewrite('+id+',false)">↻ Nuevos remates</button><button onclick="requestRewrite('+id+',true)">✎ Explicar qué falla</button><button class="interesting" onclick="interestingReady('+id+')">≈ Interesante, no publicar</button><button class="danger" onclick="discardReady('+id+')">✕ Borrar noticia</button></div>'+
+      '<div class="remateChoice"><b>🌶️ Remate A</b><p>'+esc(dr.remate_a||'')+'</p>'+(dr.image_a_url?'<img src="'+esc(dr.image_a_url)+'" style="max-width:100%;max-height:320px;border-radius:12px;display:block;margin:8px 0"><button onclick="copyImage(&quot;'+esc(dr.image_a_url)+'&quot;)">📋 Copiar imagen A</button>':'')+'<div class="actions"><button class="publish" onclick="openX('+id+',1)">Abrir en X</button><button onclick="markPublished('+id+',1)">✓ Marcar publicada</button></div></div>'+
+      '<div class="remateChoice"><b>🌶️ Remate B</b><p>'+esc(dr.remate_b||'')+'</p>'+(dr.image_b_url?'<img src="'+esc(dr.image_b_url)+'" style="max-width:100%;max-height:320px;border-radius:12px;display:block;margin:8px 0"><button onclick="copyImage(&quot;'+esc(dr.image_b_url)+'&quot;)">📋 Copiar imagen B</button>':'')+'<div class="actions"><button class="publish" onclick="openX('+id+',2)">Abrir en X</button><button onclick="markPublished('+id+',2)">✓ Marcar publicada</button></div></div>'+
+      '<div class="remateChoice"><b>🌶️ Remate C</b><p>'+esc(dr.remate_c||'')+'</p>'+(dr.image_c_url?'<img src="'+esc(dr.image_c_url)+'" style="max-width:100%;max-height:320px;border-radius:12px;display:block;margin:8px 0"><button onclick="copyImage(&quot;'+esc(dr.image_c_url)+'&quot;)">📋 Copiar imagen C</button>':'')+'<div class="actions"><button class="publish" onclick="openX('+id+',3)">Abrir en X</button><button onclick="markPublished('+id+',3)">✓ Marcar publicada</button></div></div>'+
+      '<div class="actions"><button onclick="requestRewrite('+id+',false)">↻ Nuevos remates e imágenes</button><button onclick="requestRewrite('+id+',true)">✎ Devolver con instrucciones</button><button class="interesting" onclick="interestingReady('+id+')">≈ Interesante, no publicar</button><button class="danger" onclick="discardReady('+id+')">✕ Borrar noticia</button></div>'+
       '<h3>Investigación</h3><p>'+esc(dr.research||'')+'</p>':
     '<p>'+(n.status==='PROCESSING'?'Pendiente de elaboración automática.':'Selecciona o procesa esta noticia para generar la redacción.')+'</p>')
 }
@@ -236,13 +236,13 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       if(req.method!=='POST')return new Response('Method Not Allowed',{status:405})
       const b:any=await req.json()
       const id=Number(b.id)
-      const base=String(b.base_text||'').trim(),a=String(b.remate_a||'').trim(),rb=String(b.remate_b||'').trim(),rc=String(b.remate_c||'').trim()
+      const base=String(b.base_text||'').trim(),a=String(b.remate_a||'').trim(),rb=String(b.remate_b||'').trim(),rc=String(b.remate_c||'').trim();const ia=String(b.image_a_url||'').trim(),ib=String(b.image_b_url||'').trim(),ic=String(b.image_c_url||'').trim()
       if(!id||!base||!a||!rb||!rc)return Response.json({error:'Faltan id, base_text o alguno de los tres remates'},{status:400})
       if([a,rb,rc].some(x=>base.length+' 🌶️ '.length+x.length>280))return Response.json({error:'Base + 🌶️ + remate supera 280 caracteres'},{status:400})
       const last=await env.DB.prepare("SELECT COALESCE(MAX(version),0) AS v FROM drafts WHERE news_id=?").bind(id).first<{v:number}>()
       const version=Number(last?.v||0)+1
       await env.DB.batch([
-        env.DB.prepare("INSERT INTO drafts(news_id,base_text,remate_a,remate_b,remate_c,research,sources_json,image_url,version,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))").bind(id,base,a,rb,rc,String(b.research||''),JSON.stringify(Array.isArray(b.sources)?b.sources:[]),String(b.image_url||''),version),
+        env.DB.prepare("INSERT INTO drafts(news_id,base_text,remate_a,remate_b,remate_c,research,sources_json,image_url,image_a_url,image_b_url,image_c_url,version,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))").bind(id,base,a,rb,rc,String(b.research||''),JSON.stringify(Array.isArray(b.sources)?b.sources:[]),String(b.image_url||''),ia,ib,ic,version),
         env.DB.prepare("UPDATE news SET status='READY',processing_error=NULL,processing_finished_at=datetime('now'),updated_at=datetime('now') WHERE id=? AND status='PROCESSING'").bind(id),
         env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'agent_completed',?,datetime('now'))").bind(id,String(version))
       ])
