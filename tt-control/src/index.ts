@@ -262,7 +262,7 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
         if(statusId){
           try{
             const oe=await fetch('https://publish.twitter.com/oembed?omit_script=1&dnt=1&url='+encodeURIComponent(url),{headers:{'user-agent':'TT-Control/1.0'}})
-            if(oe.ok){const j:any=await oe.json();const h=String(j.html||'');const m=h.match(/<p[^>]*>([\\s\\S]*?)<\\/p>/i);if(m)title=m[1].replace(/<br\\s*\\/?>(?=.)/gi,' ').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim()}
+            if(oe.ok){const j:any=await oe.json();const h=String(j.html||'');const p0=h.indexOf('<p');const p1=p0>=0?h.indexOf('>',p0):-1;const p2=p1>=0?h.indexOf('</p>',p1):-1;const m=p1>=0&&p2>p1?['',h.slice(p1+1,p2)]:null;if(m)title=m[1].replace(/<br\\s*\\/?>(?=.)/gi,' ').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim()}
           }catch(_){}
           if(!title||title===url){try{const fx=await fetch('https://api.fxtwitter.com/status/'+statusId,{headers:{'user-agent':'TT-Control/1.0'}});if(fx.ok){const j:any=await fx.json();title=String(j?.tweet?.text||j?.tweet?.raw_text||url).trim()}}catch(_){}}
         }
