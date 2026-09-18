@@ -72,9 +72,9 @@ async function openDesk(id){
     (n.processing_error?'<p class="urgent"><b>Error de elaboración:</b> '+esc(n.processing_error)+'</p>':'')+
     (dr?'<h3>Versión base</h3><p>'+esc(dr.base_text||'')+'</p>'+
       '<div class="remateChoice"><b>Publicar sin remate</b><div class="actions"><button class="publish" onclick="openX('+id+',0)">Abrir en X</button></div></div>'+
-      '<div class="remateChoice"><b>Remate A</b><p>'+esc(dr.remate_a||'')+'</p><div class="actions"><button class="publish" onclick="openX('+id+',1)">Abrir en X</button></div></div>'+
-      '<div class="remateChoice"><b>Remate B</b><p>'+esc(dr.remate_b||'')+'</p><div class="actions"><button class="publish" onclick="openX('+id+',2)">Abrir en X</button></div></div>'+
-      '<div class="remateChoice"><b>Remate C</b><p>'+esc(dr.remate_c||'')+'</p><div class="actions"><button class="publish" onclick="openX('+id+',3)">Abrir en X</button></div></div>'+
+      '<div class="remateChoice"><b>🌶️ Remate A</b><p>'+esc(dr.remate_a||'')+'</p><div class="actions"><button class="publish" onclick="openX('+id+',1)">Abrir en X</button></div></div>'+
+      '<div class="remateChoice"><b>🌶️ Remate B</b><p>'+esc(dr.remate_b||'')+'</p><div class="actions"><button class="publish" onclick="openX('+id+',2)">Abrir en X</button></div></div>'+
+      '<div class="remateChoice"><b>🌶️ Remate C</b><p>'+esc(dr.remate_c||'')+'</p><div class="actions"><button class="publish" onclick="openX('+id+',3)">Abrir en X</button></div></div>'+
       '<div class="actions"><button class="danger" onclick="discardReady('+id+')">✕ Borrar noticia</button></div>'+
       '<h3>Investigación</h3><p>'+esc(dr.research||'')+'</p>':
     '<p>'+(n.status==='PROCESSING'?'Pendiente de elaboración automática.':'Selecciona o procesa esta noticia para generar la redacción.')+'</p>')
