@@ -160,7 +160,7 @@ async function createAiImage(id,regenerate=false){
 async function copyImage(url){
   try{
     const target=url.startsWith('/')?url:'/api/image-proxy?url='+encodeURIComponent(url),r=await fetch(target);if(!r.ok)throw 0;const b=await r.blob()
-    if(url.startsWith('/api/ai-image/')){
+    if(url.startsWith('/api/ai-image/')||url.startsWith('/api/editorial-image/')){
       const bmp=await createImageBitmap(b),band=64,cv=document.createElement('canvas');cv.width=bmp.width;cv.height=bmp.height+band;const x=cv.getContext('2d');x.drawImage(bmp,0,0);x.fillStyle='#123d73';x.fillRect(0,bmp.height,cv.width,band);x.fillStyle='white';x.font='bold '+Math.max(24,Math.round(cv.width/24))+'px sans-serif';x.textBaseline='middle';x.fillText('TTiTTulares  🌶️',Math.round(cv.width*.04),bmp.height+band/2);const branded=await new Promise(ok=>cv.toBlob(ok,'image/png'));await navigator.clipboard.write([new ClipboardItem({'image/png':branded})])
     }else await navigator.clipboard.write([new ClipboardItem({[b.type]:b})])
     alert('✓ Imagen copiada. Abre X y pégala.')
