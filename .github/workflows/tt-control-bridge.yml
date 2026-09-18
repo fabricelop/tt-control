@@ -1,0 +1,65 @@
+name: TT Control bridge
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '50 * * * *'
+  push:
+    paths:
+      - 'bridge/results/*.json'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-pending:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read PROCESSING queue from TT Control
+        env:
+          BRIDGE_TOKEN: ${{ secrets.TT_CONTROL_BRIDGE_TOKEN }}
+        run: |
+          mkdir -p bridge/results
+          curl --fail --silent --show-error \
+            -H "Authorization: Bearer $BRIDGE_TOKEN" \
+            "https://tt-control.fabricelop.workers.dev/api/agent/pending" \
+            -o bridge/pending.json
+          python -m json.tool bridge/pending.json >/dev/null
+      - name: Commit queue only when it changed
+        run: |
+          git config user.name "tt-control-bridge"
+          git config user.email "actions@users.noreply.github.com"
+          git add bridge/pending.json
+          if git diff --cached --quiet; then
+            echo "Queue unchanged"
+          else
+            git commit -m "Sync TT Control editorial queue"
+            git push
+          fi
+
+  deliver-results:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Deliver new editorial results to TT Control
+        env:
+          BRIDGE_TOKEN: ${{ secrets.TT_CONTROL_BRIDGE_TOKEN }}
+        run: |
+          set -e
+          git diff --name-only --diff-filter=AM HEAD^ HEAD -- 'bridge/results/*.json' > /tmp/result_files
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            echo "Delivering $file"
+            curl --fail --silent --show-error \
+              -X POST \
+              -H "Authorization: Bearer $BRIDGE_TOKEN" \
+              -H "Content-Type: application/json" \
+              --data-binary "@$file" \
+              "https://tt-control.fabricelop.workers.dev/api/agent/complete"
+            echo
+          done < /tmp/result_files
