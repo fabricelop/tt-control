@@ -33,8 +33,23 @@ async function load(){
 function showView(view,btn){currentView=view;document.querySelectorAll('nav button').forEach(function(x){x.classList.remove('active')});btn.classList.add('active');load()}
 function fmtDate(s){if(!s)return '';const v=String(s);const m=v.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/);if(m)return m[1]+'  '+m[2];const d=new Date(v);if(!isNaN(d.getTime())){const p=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Madrid',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(d);return p.replace(' ','  ')}return v}
 function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-async function act(id,status){await fetch('/api/news/status',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id,status})});load()}
-async function urgent(id,value){await fetch('/api/news/urgent',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id,value})});load()}
+let actionBusy=false
+async function act(id,status){
+  if(actionBusy)return;actionBusy=true
+  try{
+    const r=await fetch('/api/news/status',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id,status})})
+    const d=await r.json();if(!r.ok)throw new Error(d.error||'No se pudo guardar la decisión')
+    await load()
+  }catch(e){alert(e.message||e)}finally{actionBusy=false}
+}
+async function urgent(id,value){
+  if(actionBusy)return;actionBusy=true
+  try{
+    const r=await fetch('/api/news/urgent',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id,value})})
+    const d=await r.json();if(!r.ok)throw new Error(d.error||'No se pudo cambiar la urgencia')
+    await load()
+  }catch(e){alert(e.message||e)}finally{actionBusy=false}
+}
 async function runNow(){const b=document.querySelector('.run');b.disabled=true;b.textContent='Ejecutando…';try{const r=await fetch('/api/run',{method:'POST'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Error de ejecución');b.textContent='✓ '+(d.discovered||0)+' revisadas';await load();setTimeout(function(){b.textContent='▶ EJECUTAR'},1800)}catch(e){news.innerHTML='<div class="empty">Error: '+esc(e.message||e)+'</div>';b.textContent='⚠ Error'}finally{b.disabled=false}}
 load()
 </script></body></html>`;
@@ -80,8 +95,8 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
     if(req.method==='GET'&&u.pathname==='/api/news'){const requested=u.searchParams.get('status')||'NEW';const status=['NEW','SELECTED'].includes(requested)?requested:'NEW';const q=await env.DB.prepare("SELECT id,title,url,section,published_at,urgent FROM news WHERE status=? ORDER BY urgent DESC, published_at ASC, id ASC LIMIT 200").bind(status).all();const counts=await env.DB.prepare("SELECT status,COUNT(*) AS n FROM news WHERE status IN ('NEW','SELECTED') GROUP BY status").all();const c:any={NEW:0,SELECTED:0};for(const row of counts.results as any[])c[row.status]=row.n;return Response.json({news:q.results,counts:c})}
     if(req.method==='GET'&&u.pathname==='/api/news/radar-dismissed'){const q=await env.DB.prepare("SELECT id,title,url,section,published_at,radar_reason FROM news WHERE status='RADAR_DISMISSED' ORDER BY published_at DESC,id DESC LIMIT 200").all();return Response.json({news:q.results})}
     if(req.method==='POST'&&u.pathname==='/api/news/recover'){const b:any=await req.json();await env.DB.batch([env.DB.prepare("UPDATE news SET status='NEW',updated_at=datetime('now') WHERE id=?").bind(b.id),env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'radar_recovery','1',datetime('now'))").bind(b.id)]);return Response.json({ok:true})}
-    if(req.method==='POST'&&u.pathname==='/api/news/status'){const b:any=await req.json();if(!['NEW','SELECTED','DISMISSED'].includes(b.status))return Response.json({error:'Estado inválido'},{status:400});await env.DB.batch([env.DB.prepare("UPDATE news SET status=?,updated_at=datetime('now') WHERE id=?").bind(b.status,b.id),env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'selection',?,datetime('now'))").bind(b.id,b.status)]);return Response.json({ok:true})}
-    if(req.method==='POST'&&u.pathname==='/api/news/urgent'){const b:any=await req.json(),v=b.value?1:0;await env.DB.batch([env.DB.prepare("UPDATE news SET urgent=?,updated_at=datetime('now') WHERE id=?").bind(v,b.id),env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'urgency',?,datetime('now'))").bind(b.id,String(v))]);return Response.json({ok:true})}
+    if(req.method==='POST'&&u.pathname==='/api/news/status'){const b:any=await req.json();if(!['NEW','SELECTED','DISMISSED'].includes(b.status))return Response.json({error:'Estado inválido'},{status:400});await env.DB.prepare("UPDATE news SET status=?,updated_at=datetime('now') WHERE id=?").bind(b.status,b.id).run();try{await env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'selection',?,datetime('now'))").bind(b.id,b.status).run()}catch(_){}return Response.json({ok:true})}
+    if(req.method==='POST'&&u.pathname==='/api/news/urgent'){const b:any=await req.json(),v=b.value?1:0;await env.DB.prepare("UPDATE news SET urgent=?,updated_at=datetime('now') WHERE id=?").bind(v,b.id).run();try{await env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'urgency',?,datetime('now'))").bind(b.id,String(v)).run()}catch(_){}return Response.json({ok:true})}
     if(req.method==='POST'&&u.pathname==='/api/run')return Response.json(await ingest(env))
     return new Response('Not Found',{status:404})
   }catch(e){return Response.json({error:e instanceof Error?e.message:String(e)},{status:500})}
