@@ -105,7 +105,7 @@ async function openDesk(id){
   const n=d.news,dr=d.draft;const desk=document.querySelector('.detail')
   desk.classList.add('mobileOpen');desk.innerHTML='<button class="mobileClose" onclick="closeDesk()">✕ Cerrar</button><h2>Mesa de redacción</h2><div class="meta">'+fmtDate(n.published_at)+'</div><h3>'+esc(n.title)+'</h3>'+
     (n.processing_error?'<p class="urgent"><b>Error de elaboración:</b> '+esc(n.processing_error)+'</p>':'')+
-    (dr?'<h3>Versión base</h3><p>'+esc(dr.base_text||'')+'</p>'+(dr.image_url?'<div class="remateChoice"><img src="'+esc(dr.image_url)+'" style="max-width:100%;max-height:260px;border-radius:12px;display:block;margin-bottom:8px"><button onclick="copyImage(&quot;'+esc(dr.image_url)+'&quot;)">📋 Copiar imagen</button></div>':'<div class="remateChoice"><button onclick="createAiImage('+id+')">✨ Crear imagen IA TTiTTulares</button></div>')+
+    (dr?'<h3>Versión base</h3><p>'+esc(dr.base_text||'')+'</p>'+(dr.image_url?'<div class="remateChoice"><img src="'+esc(dr.image_url)+'" style="max-width:100%;max-height:260px;border-radius:12px;display:block;margin-bottom:8px"><button onclick="copyImage(&quot;'+esc(dr.image_url)+'&quot;)">📋 Copiar imagen</button>'+(String(dr.image_url||'').startsWith('/api/ai-image/')?'<button onclick="createAiImage('+id+',true)">↻ Nueva imagen IA</button>':'')+'</div>':'<div class="remateChoice"><button onclick="createAiImage('+id+')">✨ Crear imagen IA TTiTTulares</button></div>')+
       '<div class="remateChoice"><b>Publicar sin remate</b><div class="actions"><button class="publish" onclick="openX('+id+',0)">Abrir en X</button><button onclick="markPublished('+id+',0)">✓ Marcar publicada</button></div></div>'+
       '<div class="remateChoice"><b>🌶️ Remate A</b><p>'+esc(dr.remate_a||'')+'</p><div class="actions"><button class="publish" onclick="openX('+id+',1)">Abrir en X</button><button onclick="markPublished('+id+',1)">✓ Marcar publicada</button></div></div>'+
       '<div class="remateChoice"><b>🌶️ Remate B</b><p>'+esc(dr.remate_b||'')+'</p><div class="actions"><button class="publish" onclick="openX('+id+',2)">Abrir en X</button><button onclick="markPublished('+id+',2)">✓ Marcar publicada</button></div></div>'+
@@ -154,8 +154,8 @@ async function openX(id,option){
   if(text.length>280)return alert('Esta variante supera 280 caracteres ('+text.length+').')
   if(/iPhone|iPad|iPod/i.test(navigator.userAgent)){window.location.href='twitter://post?message='+encodeURIComponent(text)}else{window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank','noopener')}
 }
-async function createAiImage(id){
-  const r=await fetch('/api/news/ai-image',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:id})});const d=await r.json();if(!r.ok)return alert(d.error||'No se pudo crear la imagen');await openDesk(id)
+async function createAiImage(id,regenerate=false){
+  const r=await fetch('/api/news/ai-image',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:id,regenerate:regenerate})});const d=await r.json();if(!r.ok)return alert(d.error||'No se pudo crear la imagen');await openDesk(id)
 }
 async function copyImage(url){
   try{
@@ -298,7 +298,7 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       const n=await env.DB.prepare("SELECT id,title,status FROM news WHERE id=?").bind(id).first<any>()
       const d=await env.DB.prepare("SELECT id,base_text,ai_image_base64 FROM drafts WHERE news_id=? ORDER BY version DESC LIMIT 1").bind(id).first<any>()
       if(!n||!d)return Response.json({error:'Noticia o borrador no encontrado'},{status:404})
-      if(d.ai_image_base64)return Response.json({ok:true,image_url:'/api/ai-image/'+d.id})
+      if(d.ai_image_base64&&!b.regenerate)return Response.json({ok:true,image_url:'/api/ai-image/'+d.id})
       const styles=['classic newspaper political caricature with ink lines and watercolor','bold pop-art comic panel','cinematic visual parody drawn as an editorial cartoon','satirical magazine cover illustration','minimal graphic caricature with one absurd visual metaphor','playful hand-drawn meme-like editorial cartoon'];const style=styles[id%styles.length];const prompt='Create a genuinely funny satirical editorial cartoon for TTiTTulares. NEWS: '+String(d.base_text||n.title)+'. First invent ONE clear visual gag or absurd metaphor that comments specifically on this news; the image must tell that joke visually rather than merely showing a person next to an object. Style for this item: '+style+'. Use exaggeration, expressive caricature and a strong single composition. Keep it witty, mischievous and immediately understandable on X. Avoid generic stock illustration, childish clip-art, bland 3D, photorealism, fake documentary imagery and decorative filler. No written words or logos inside the generated art; TT Control adds its own TTiTTulares branding afterwards. For tragedy, victims or vulnerable people, do not joke at their expense.'
       try{
         const out:any=await env.AI.run('@cf/black-forest-labs/flux-1-schnell',{prompt,steps:4})
