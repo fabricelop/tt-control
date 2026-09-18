@@ -1,1 +1,1 @@
-Manual TT Control sync requested 2026-09-18T22:00:00+02:00
+Manual TT Control execution requested 2026-09-18 23:xx Europe/Madrid
