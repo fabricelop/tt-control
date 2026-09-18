@@ -1,1 +1,1 @@
-Inspect latest X share and queue after urgent delivery 2026-09-19 00:02 Europe/Madrid
+Manual TT Control execution 2026-09-19 after migration from legacy TTiTTulares
