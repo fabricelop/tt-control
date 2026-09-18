@@ -1,11 +1,12 @@
 {
   "id": 205,
   "base_text": "Unos 200 antifascistas protestan en Barcelona contra un acto de Vox con Abascal y Garriga. Los Mossos blindaron los accesos y hubo algún lanzamiento, sin que los incidentes escalaran.",
-  "remate_a": "Dos concentraciones, un cordón policial y Barcelona en dificultad experto.",
-  "remate_b": "La BRIMO puso la línea divisoria. El diálogo quedó para otra actualización.",
-  "remate_c": "Compartieron barrio, pero no plaza.",
-  "research": "Europa Press informó del despliegue y de incidentes sin escalada.",
+  "remate_a": "Abascal reunió acto, protesta y cordón policial en el mismo barrio. El pack completo de viernes político.",
+  "remate_b": "La BRIMO puso la distancia que el debate político ya traía de casa.",
+  "remate_c": "Abascal llegó a Sants y el barrio activó dos actos y una línea de furgones.",
+  "research": "Reelaboración solicitada. Se mantiene un tratamiento factual y neutral: Europa Press y Público coinciden en unos 200 manifestantes, el blindaje policial y la protesta contra el acto de Vox.",
   "sources": [
-    "https://www.europapress.es/catalunya/noticia-mossos-blindan-accesos-plaza-mineria-barcelona-acto-abascal-20260918193648.html"
+    "https://www.europapress.es/catalunya/noticia-mossos-blindan-accesos-plaza-mineria-barcelona-acto-abascal-20260918193648.html",
+    "https://www.publico.es/politica/200-antifascistas-manifiestan-barcelona-acto-abascal-garriga.html"
   ]
 }
