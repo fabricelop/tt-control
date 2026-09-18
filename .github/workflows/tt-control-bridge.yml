@@ -9,13 +9,16 @@ on:
     paths:
       - 'bridge/results/*.json'
       - 'bridge/sync-request.txt'
+      - 'tt-control/src/index.ts'
+      - 'tt-control/wrangler.jsonc'
+      - '.github/workflows/tt-control-bridge.yml'
 
 permissions:
   contents: write
 
 jobs:
   deploy-worker:
-    if: github.event_name == 'push' && contains(join(github.event.commits.*.modified, ' '), 'tt-control/src/index.ts')
+    if: github.event_name == 'push' && (contains(join(github.event.commits.*.modified, ' '), 'tt-control/src/index.ts') || contains(join(github.event.commits.*.modified, ' '), 'tt-control/wrangler.jsonc') || contains(join(github.event.commits.*.modified, ' '), '.github/workflows/tt-control-bridge.yml'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
