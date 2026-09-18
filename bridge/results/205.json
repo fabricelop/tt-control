@@ -1,12 +1,9 @@
 {
   "id": 205,
-  "base_text": "Unos 200 antifascistas protestan en Barcelona contra un acto de Vox con Abascal y Garriga. Los Mossos blindaron los accesos y hubo algún lanzamiento, sin que los incidentes escalaran.",
-  "remate_a": "Abascal reunió acto, protesta y cordón policial en el mismo barrio. El pack completo de viernes político.",
-  "remate_b": "La BRIMO puso la distancia que el debate político ya traía de casa.",
-  "remate_c": "Abascal llegó a Sants y el barrio activó dos actos y una línea de furgones.",
-  "research": "Reelaboración solicitada. Se mantiene un tratamiento factual y neutral: Europa Press y Público coinciden en unos 200 manifestantes, el blindaje policial y la protesta contra el acto de Vox.",
-  "sources": [
-    "https://www.europapress.es/catalunya/noticia-mossos-blindan-accesos-plaza-mineria-barcelona-acto-abascal-20260918193648.html",
-    "https://www.publico.es/politica/200-antifascistas-manifiestan-barcelona-acto-abascal-garriga.html"
-  ]
+  "base_text": "Unos 200 antifascistas protestaron en Barcelona contra un acto de Vox con Abascal y Garriga. Los Mossos blindaron los accesos; hubo algún lanzamiento, pero los incidentes no escalaron.",
+  "remate_a": "La «marea verde» llegó con un mar de furgones entre medias.",
+  "remate_b": "Acto y protesta, cada uno a un lado. El diálogo quedó aparcado entre ambos.",
+  "remate_c": "Abascal cerró gira con protesta y cordón policial. Viernes político completo.",
+  "research": "Reelaboración contrastada el 18-09-2026 con Europa Press y Público: unos 200 manifestantes, despliegue de Mossos y ausencia de escalada de incidentes. Tono factual y neutral.",
+  "sources": ["https://www.europapress.es/catalunya/noticia-mossos-blindan-accesos-plaza-mineria-barcelona-acto-abascal-20260918193648.html","https://www.publico.es/politica/200-antifascistas-manifiestan-barcelona-acto-abascal-garriga.html"]
 }
