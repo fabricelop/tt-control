@@ -138,7 +138,7 @@ async function openX(id,option){
   const rem=[null,dr.remate_a,dr.remate_b,dr.remate_c][option]
   const text=String(dr.base_text||'')+(rem?' 🌶️ '+String(rem):'')
   if(text.length>280)return alert('Esta variante supera 280 caracteres ('+text.length+').')
-  window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank','noopener')
+  window.location.href='twitter://post?message='+encodeURIComponent(text);setTimeout(function(){window.location.href='https://x.com/intent/post?text='+encodeURIComponent(text)},900)
 }
 async function runNow(){const b=document.querySelector('.run');b.disabled=true;b.textContent='Ejecutando…';try{const r=await fetch('/api/run',{method:'POST'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Error de ejecución');b.textContent='✓ '+(d.discovered||0)+' nuevas · '+(d.claimed||0)+' a elaborar · '+(d.backlogDismissed||0)+' radar';await load();setTimeout(function(){b.textContent='▶ EJECUTAR'},1800)}catch(e){news.innerHTML='<div class="empty">Error: '+esc(e.message||e)+'</div>';b.textContent='⚠ Error'}finally{b.disabled=false}}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});load()
