@@ -233,7 +233,7 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       const last=await env.DB.prepare("SELECT COALESCE(MAX(version),0) AS v FROM drafts WHERE news_id=?").bind(id).first<{v:number}>()
       const version=Number(last?.v||0)+1
       await env.DB.batch([
-        env.DB.prepare("INSERT INTO drafts(news_id,base_text,remate_a,remate_b,remate_c,research,sources_json,version,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))").bind(id,base,a,rb,rc,String(b.research||''),JSON.stringify(Array.isArray(b.sources)?b.sources:[]),version),
+        env.DB.prepare("INSERT INTO drafts(news_id,base_text,remate_a,remate_b,remate_c,research,sources_json,image_url,version,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))").bind(id,base,a,rb,rc,String(b.research||''),JSON.stringify(Array.isArray(b.sources)?b.sources:[]),String(b.image_url||''),version),
         env.DB.prepare("UPDATE news SET status='READY',processing_error=NULL,processing_finished_at=datetime('now'),updated_at=datetime('now') WHERE id=? AND status='PROCESSING'").bind(id),
         env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'agent_completed',?,datetime('now'))").bind(id,String(version))
       ])
@@ -254,7 +254,8 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       const rawUrl=Array.isArray(b.url)?b.url.map((x:any)=>String(x||'')).join(' '):String(b.url||'')
       const rawText=String(b.title||b.text||'').trim()
       const firstUrl=(rawUrl+' '+rawText).match(/https?:\/\/[^\s,]+/)?.[0]?.trim()||''
-      const url=firstUrl
+      const xm=firstUrl.match(/^https?:\/\/(?:www\.)?(?:x\.com|twitter\.com)\/([^/?#]+)\/status\/(\d+)/i)
+      const url=xm?'https://x.com/'+xm[1]+'/status/'+xm[2]:firstUrl
       const cleanText=rawText.replace(/https?:\/\/[^\s,]+/g,'').replace(/^\\s*[-–—|]+\\s*|\\s*[-–—|]+\\s*$/g,'').trim()
       let title=cleanText||url
       if(url&&/^https?:\/\/(?:www\.)?(?:x\.com|twitter\.com)\//i.test(url)&&(!cleanText||cleanText===url)){
