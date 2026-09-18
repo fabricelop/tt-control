@@ -231,6 +231,24 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       const q=await env.DB.prepare("SELECT n.id,n.title,n.url,n.section,n.published_at,n.urgent,(SELECT value FROM editorial_feedback f WHERE f.news_id=n.id AND f.kind='rewrite_request' ORDER BY f.id DESC LIMIT 1) AS rewrite_request,(SELECT COUNT(*) FROM drafts d WHERE d.news_id=n.id) AS previous_drafts FROM news n WHERE n.status='PROCESSING' ORDER BY n.urgent DESC,n.published_at ASC,n.id ASC LIMIT 50").all()
       return Response.json({news:q.results})
     }
+    if(u.pathname==='/api/agent/image'){
+      if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
+      if(req.method!=='POST')return new Response('Method Not Allowed',{status:405})
+      const b:any=await req.json().catch(()=>({})),id=Number(b.id),slot=String(b.slot||'').toUpperCase()
+      if(!id||!['A','B','C'].includes(slot))return Response.json({error:'id/slot inválido'},{status:400})
+      const data=String(b.image_base64||'').replace(/^data:image\/[a-zA-Z0-9.+-]+;base64,/,'')
+      const mime=String(b.mime_type||'image/png').toLowerCase()
+      if(!data||data.length>8_000_000||!['image/png','image/jpeg','image/webp'].includes(mime))return Response.json({error:'Imagen inválida o demasiado grande'},{status:400})
+      const d=await env.DB.prepare("SELECT id FROM drafts WHERE news_id=? ORDER BY version DESC LIMIT 1").bind(id).first<{id:number}>()
+      if(!d)return Response.json({error:'Borrador no encontrado'},{status:404})
+      const col=slot==='A'?'image_a_url':slot==='B'?'image_b_url':'image_c_url'
+      const url='/api/editorial-image/'+d.id+'/'+slot
+      await env.DB.batch([
+        env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'editorial_image_'+?, ?,datetime('now'))").bind(id,slot,JSON.stringify({mime,data})),
+        env.DB.prepare("UPDATE drafts SET "+col+"=?,updated_at=datetime('now') WHERE id=?").bind(url,d.id)
+      ])
+      return Response.json({ok:true,id,slot,image_url:url})
+    }
     if(u.pathname==='/api/agent/complete'){
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
       if(req.method!=='POST')return new Response('Method Not Allowed',{status:405})
@@ -287,6 +305,15 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
     if(!authorized(req,env))return req.method==='GET'?new Response(null,{status:302,headers:{location:'/login'}}):Response.json({error:'No autorizado'},{status:401})
     if(req.method==='GET'&&u.pathname==='/')return new Response(HTML,{headers:{'content-type':'text/html;charset=UTF-8'}})
     if(req.method==='GET'&&u.pathname==='/api/news'){const requested=u.searchParams.get('status')||'NEW';const status=['NEW','SELECTED','PROCESSING','READY','PUBLISHED','RADAR_DISMISSED'].includes(requested)?requested:'NEW';const q=await env.DB.prepare("SELECT n.id,n.title,n.url,n.section,n.published_at,n.urgent,p.variant,p.final_text,p.published_at AS publication_at FROM news n LEFT JOIN publications p ON p.news_id=n.id WHERE n.status=? ORDER BY n.urgent DESC, CASE WHEN n.status='PUBLISHED' THEN COALESCE(p.published_at,n.published_at) END DESC, CASE WHEN n.status<>'PUBLISHED' THEN n.published_at END ASC, n.id ASC LIMIT 200").bind(status).all();const counts=await env.DB.prepare("SELECT status,COUNT(*) AS n FROM news WHERE status IN ('NEW','SELECTED','PROCESSING','READY','PUBLISHED','RADAR_DISMISSED') GROUP BY status").all();const c:any={NEW:0,SELECTED:0,PROCESSING:0,READY:0,PUBLISHED:0,RADAR_DISMISSED:0};for(const row of counts.results as any[])c[row.status]=row.n;return Response.json({news:q.results,counts:c})}
+    const editorialImageMatch=u.pathname.match(/^\/api\/editorial-image\/(\d+)\/([ABC])$/)
+    if(req.method==='GET'&&editorialImageMatch){
+      const did=Number(editorialImageMatch[1]),slot=editorialImageMatch[2]
+      const d=await env.DB.prepare("SELECT news_id FROM drafts WHERE id=?").bind(did).first<{news_id:number}>()
+      if(!d)return new Response('Not Found',{status:404})
+      const row=await env.DB.prepare("SELECT value FROM editorial_feedback WHERE news_id=? AND kind=? ORDER BY id DESC LIMIT 1").bind(d.news_id,'editorial_image_'+slot).first<{value:string}>()
+      if(!row?.value)return new Response('Not Found',{status:404})
+      try{const j=JSON.parse(row.value),bin=atob(j.data),bytes=Uint8Array.from(bin,(x:string)=>x.charCodeAt(0));return new Response(bytes,{headers:{'content-type':j.mime||'image/png','cache-control':'private,max-age=86400'}})}catch(_){return new Response('Not Found',{status:404})}
+    }
     const aiImageMatch=u.pathname.match(/^\/api\/ai-image\/(\d+)$/)
     if(req.method==='GET'&&aiImageMatch){
       const did=Number(aiImageMatch[1]);const d=await env.DB.prepare("SELECT ai_image_base64 FROM drafts WHERE id=?").bind(did).first<{ai_image_base64:string}>()
