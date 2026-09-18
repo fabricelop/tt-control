@@ -207,7 +207,7 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
     if(u.pathname==='/api/agent/pending'){
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
       if(req.method!=='GET')return new Response('Method Not Allowed',{status:405})
-      const q=await env.DB.prepare("SELECT id,title,url,section,published_at,urgent FROM news WHERE status='PROCESSING' ORDER BY urgent DESC, published_at ASC, id ASC LIMIT 50").all()
+      const q=await env.DB.prepare("SELECT n.id,n.title,n.url,n.section,n.published_at,n.urgent,(SELECT value FROM editorial_feedback f WHERE f.news_id=n.id AND f.kind='rewrite_request' ORDER BY f.id DESC LIMIT 1) AS rewrite_request,(SELECT COUNT(*) FROM drafts d WHERE d.news_id=n.id) AS previous_drafts FROM news n WHERE n.status='PROCESSING' ORDER BY n.urgent DESC,n.published_at ASC,n.id ASC LIMIT 50").all()
       return Response.json({news:q.results})
     }
     if(u.pathname==='/api/agent/complete'){
@@ -236,6 +236,17 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       return Response.json({ok:true,id})
     }
     if(req.method==='POST'&&u.pathname==='/login'){const form=await req.formData(),p=String(form.get('password')||'');if(!env.TT_CONTROL_PASSWORD||p!==env.TT_CONTROL_PASSWORD)return login('Contraseña incorrecta');return new Response(null,{status:303,headers:{location:'/','set-cookie':'tt_control='+encodeURIComponent(p)+'; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=31536000'}})}
+    if(req.method==='POST'&&u.pathname==='/api/share'){
+      const b:any=await req.json().catch(()=>({})),shareKey=String(b.key||u.searchParams.get('key')||'')
+      if(!env.TT_CONTROL_PASSWORD||shareKey!==env.TT_CONTROL_PASSWORD)return Response.json({ok:false,error:'No autorizado'},{status:401})
+      let url=String(b.url||'').trim(),title=String(b.title||b.text||'').trim()
+      if(!url&&title){const m=title.match(/https?:\/\/\S+/);if(m)url=m[0]}
+      if(!url&&!title)return Response.json({ok:false,error:'Falta enlace o texto compartido'},{status:400})
+      const key='manual:'+((url||title).toLowerCase()),label=title||url
+      const row=await env.DB.prepare("INSERT INTO news(source,source_key,title,url,section,published_at,detected_at,status,radar_reason,updated_at,processing_started_at) VALUES('manual',?,?,?,'Manual',datetime('now'),datetime('now'),'PROCESSING','Compartida desde iOS',datetime('now'),datetime('now')) ON CONFLICT(source_key) DO UPDATE SET status='PROCESSING',processing_started_at=datetime('now'),updated_at=datetime('now') RETURNING id").bind(key,label,url).first<{id:number}>()
+      await env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'manual_submission','ios_share',datetime('now'))").bind(row!.id).run()
+      return Response.json({ok:true,id:row!.id,status:'PROCESSING'})
+    }
     if(!authorized(req,env))return req.method==='GET'?new Response(null,{status:302,headers:{location:'/login'}}):Response.json({error:'No autorizado'},{status:401})
     if(req.method==='GET'&&u.pathname==='/')return new Response(HTML,{headers:{'content-type':'text/html;charset=UTF-8'}})
     if(req.method==='GET'&&u.pathname==='/api/news'){const requested=u.searchParams.get('status')||'NEW';const status=['NEW','SELECTED','PROCESSING','READY','PUBLISHED','RADAR_DISMISSED'].includes(requested)?requested:'NEW';const q=await env.DB.prepare("SELECT n.id,n.title,n.url,n.section,n.published_at,n.urgent,p.variant,p.final_text,p.published_at AS publication_at FROM news n LEFT JOIN publications p ON p.news_id=n.id WHERE n.status=? ORDER BY n.urgent DESC, CASE WHEN n.status='PUBLISHED' THEN COALESCE(p.published_at,n.published_at) END DESC, CASE WHEN n.status<>'PUBLISHED' THEN n.published_at END ASC, n.id ASC LIMIT 200").bind(status).all();const counts=await env.DB.prepare("SELECT status,COUNT(*) AS n FROM news WHERE status IN ('NEW','SELECTED','PROCESSING','READY','PUBLISHED','RADAR_DISMISSED') GROUP BY status").all();const c:any={NEW:0,SELECTED:0,PROCESSING:0,READY:0,PUBLISHED:0,RADAR_DISMISSED:0};for(const row of counts.results as any[])c[row.status]=row.n;return Response.json({news:q.results,counts:c})}
