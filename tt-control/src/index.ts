@@ -1,4 +1,4 @@
-interface Env { DB: D1Database; TT_CONTROL_PASSWORD: string; OPENAI_API_KEY?: string }
+interface Env { DB: D1Database; TT_CONTROL_PASSWORD: string; CHATGPT_BRIDGE_TOKEN?: string }
 
 async function ensureEditorialSchema(env:Env){
   const statements=[
@@ -19,6 +19,10 @@ function radarDecision(section:string,title:string):{admit:boolean;reason:string
   ]
   if(low.some(r=>r.test(s)))return {admit:false,reason:'Filtro inicial de baja señal; recuperable y corregible'}
   return {admit:true,reason:'Pasa el filtro inicial permisivo'}
+}
+function agentAuthorized(req:Request,env:Env):boolean{
+  if(!env.CHATGPT_BRIDGE_TOKEN)return false
+  return (req.headers.get('authorization')||'')==='Bearer '+env.CHATGPT_BRIDGE_TOKEN
 }
 function authorized(req:Request,env:Env):boolean{
   if(!env.TT_CONTROL_PASSWORD)return false
@@ -111,6 +115,40 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
   try{
     if(req.method==='GET'&&u.pathname==='/login')return login()
     await ensureEditorialSchema(env)
+
+    // Private editorial bridge. This is deliberately separate from the browser session:
+    // a future ChatGPT connector/automation can read PROCESSING items and return verified drafts.
+    if(u.pathname==='/api/agent/pending'){
+      if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
+      if(req.method!=='GET')return new Response('Method Not Allowed',{status:405})
+      const q=await env.DB.prepare("SELECT id,title,url,section,published_at,urgent FROM news WHERE status='PROCESSING' ORDER BY urgent DESC, published_at ASC, id ASC LIMIT 50").all()
+      return Response.json({news:q.results})
+    }
+    if(u.pathname==='/api/agent/complete'){
+      if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
+      if(req.method!=='POST')return new Response('Method Not Allowed',{status:405})
+      const b:any=await req.json()
+      const id=Number(b.id)
+      const base=String(b.base_text||'').trim(),a=String(b.remate_a||'').trim(),rb=String(b.remate_b||'').trim(),rc=String(b.remate_c||'').trim()
+      if(!id||!base||!a||!rb||!rc)return Response.json({error:'Faltan id, base_text o alguno de los tres remates'},{status:400})
+      if([a,rb,rc].some(x=>base.length+x.length>280))return Response.json({error:'Base + remate supera 280 caracteres'},{status:400})
+      const last=await env.DB.prepare("SELECT COALESCE(MAX(version),0) AS v FROM drafts WHERE news_id=?").bind(id).first<{v:number}>()
+      const version=Number(last?.v||0)+1
+      await env.DB.batch([
+        env.DB.prepare("INSERT INTO drafts(news_id,base_text,remate_a,remate_b,remate_c,research,sources_json,version,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))").bind(id,base,a,rb,rc,String(b.research||''),JSON.stringify(Array.isArray(b.sources)?b.sources:[]),version),
+        env.DB.prepare("UPDATE news SET status='READY',processing_error=NULL,processing_finished_at=datetime('now'),updated_at=datetime('now') WHERE id=? AND status='PROCESSING'").bind(id),
+        env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'agent_completed',?,datetime('now'))").bind(id,String(version))
+      ])
+      return Response.json({ok:true,id,version,status:'READY'})
+    }
+    if(u.pathname==='/api/agent/error'){
+      if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
+      if(req.method!=='POST')return new Response('Method Not Allowed',{status:405})
+      const b:any=await req.json(),id=Number(b.id),message=String(b.error||'Error de elaboración').slice(0,1000)
+      if(!id)return Response.json({error:'id inválido'},{status:400})
+      await env.DB.prepare("UPDATE news SET processing_error=?,updated_at=datetime('now') WHERE id=? AND status='PROCESSING'").bind(message,id).run()
+      return Response.json({ok:true,id})
+    }
     if(req.method==='POST'&&u.pathname==='/login'){const form=await req.formData(),p=String(form.get('password')||'');if(!env.TT_CONTROL_PASSWORD||p!==env.TT_CONTROL_PASSWORD)return login('Contraseña incorrecta');return new Response(null,{status:303,headers:{location:'/','set-cookie':'tt_control='+encodeURIComponent(p)+'; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=31536000'}})}
     if(!authorized(req,env))return req.method==='GET'?new Response(null,{status:302,headers:{location:'/login'}}):Response.json({error:'No autorizado'},{status:401})
     if(req.method==='GET'&&u.pathname==='/')return new Response(HTML,{headers:{'content-type':'text/html;charset=UTF-8'}})
