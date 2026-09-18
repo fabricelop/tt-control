@@ -254,8 +254,8 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       const url=firstUrl
       const cleanText=rawText.replace(/https?:\/\/[^\s,]+/g,'').replace(/^\\s*[-–—|]+\\s*|\\s*[-–—|]+\\s*$/g,'').trim()
       let title=cleanText||url
-      if(url&&/^https?:\\/\\/(?:www\\.)?(?:x\\.com|twitter\\.com)\\//i.test(url)&&(!cleanText||cleanText===url)){
-        const statusId=url.match(/\\/status\\/(\\d+)/)?.[1]
+      if(url&&/^https?:\/\/(?:www\.)?(?:x\.com|twitter\.com)\//i.test(url)&&(!cleanText||cleanText===url)){
+        const statusId=url.match(/\/status\/(\d+)/)?.[1]
         if(statusId){
           try{
             const oe=await fetch('https://publish.twitter.com/oembed?omit_script=1&dnt=1&url='+encodeURIComponent(url),{headers:{'user-agent':'TT-Control/1.0'}})
