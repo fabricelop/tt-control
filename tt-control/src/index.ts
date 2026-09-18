@@ -250,9 +250,9 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       if(!env.TT_CONTROL_PASSWORD||shareKey!==env.TT_CONTROL_PASSWORD)return Response.json({ok:false,error:'No autorizado'},{status:401})
       const rawUrl=Array.isArray(b.url)?b.url.map((x:any)=>String(x||'')).join(' '):String(b.url||'')
       const rawText=String(b.title||b.text||'').trim()
-      const firstUrl=(rawUrl+' '+rawText).match(/https?:\/\/[^\\s,]+/)?.[0]?.trim()||''
+      const firstUrl=(rawUrl+' '+rawText).match(/https?:\/\/[^\s,]+/)?.[0]?.trim()||''
       const url=firstUrl
-      const cleanText=rawText.replace(/https?:\/\/[^\\s,]+/g,'').replace(/^\\s*[-–—|]+\\s*|\\s*[-–—|]+\\s*$/g,'').trim()
+      const cleanText=rawText.replace(/https?:\/\/[^\s,]+/g,'').replace(/^\\s*[-–—|]+\\s*|\\s*[-–—|]+\\s*$/g,'').trim()
       let title=cleanText||url
       if(url&&/^https?:\\/\\/(?:www\\.)?(?:x\\.com|twitter\\.com)\\//i.test(url)&&(!cleanText||cleanText===url)){
         const statusId=url.match(/\\/status\\/(\\d+)/)?.[1]
