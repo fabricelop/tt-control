@@ -245,10 +245,14 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
     if(req.method==='POST'&&u.pathname==='/api/share'){
       const b:any=await req.json().catch(()=>({})),shareKey=String(b.key||u.searchParams.get('key')||'')
       if(!env.TT_CONTROL_PASSWORD||shareKey!==env.TT_CONTROL_PASSWORD)return Response.json({ok:false,error:'No autorizado'},{status:401})
-      let url=String(b.url||'').trim(),title=String(b.title||b.text||'').trim()
-      if(!url&&title){const m=title.match(/https?:\/\/\S+/);if(m)url=m[0]}
+      const rawUrl=Array.isArray(b.url)?b.url.map((x:any)=>String(x||'')).join(' '):String(b.url||'')
+      const rawText=String(b.title||b.text||'').trim()
+      const firstUrl=(rawUrl+' '+rawText).match(/https?:\/\/[^\\s,]+/)?.[0]?.trim()||''
+      const url=firstUrl
+      const cleanText=rawText.replace(/https?:\/\/[^\\s,]+/g,'').replace(/^\\s*[-–—|]+\\s*|\\s*[-–—|]+\\s*$/g,'').trim()
+      const title=cleanText||url
       if(!url&&!title)return Response.json({ok:false,error:'Falta enlace o texto compartido'},{status:400})
-      const key='manual:'+((url||title).toLowerCase()),label=title||url
+      const key='manual:'+((url||title).toLowerCase()),label=title
       const row=await env.DB.prepare("INSERT INTO news(source,source_key,title,url,section,published_at,detected_at,status,radar_reason,updated_at,processing_started_at) VALUES('manual',?,?,?,'Manual',datetime('now'),datetime('now'),'PROCESSING','Compartida desde iOS',datetime('now'),datetime('now')) ON CONFLICT(source_key) DO UPDATE SET status='PROCESSING',processing_started_at=datetime('now'),updated_at=datetime('now') RETURNING id").bind(key,label,url).first<{id:number}>()
       await env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'manual_submission','ios_share',datetime('now'))").bind(row!.id).run()
       return Response.json({ok:true,id:row!.id,status:'PROCESSING'})
