@@ -1,13 +1,10 @@
 {
   "id": 332,
-  "base_text": "Policía y Guardia Civil trasladan a migrantes de las playas Benítez y El Trampolín al centro temporal del puerto de Ceuta. El operativo ha tenido momentos de tensión y el recinto dispone de unas 1.700 plazas.",
+  "base_text": "Ceuta inicia el traslado de migrantes de las playas de Benítez y El Trampolín al centro temporal del puerto, con unas 1.700 plazas. El operativo contó con un amplio despliegue policial y registró momentos de tensión.",
   "remate_a": "El traslado cambia el lugar, no la dimensión del problema.",
   "remate_b": "Una operación de emergencia para una situación que sigue abierta.",
   "remate_c": "El puerto ofrece techo a una parte; la crisis continúa.",
-  "research": "Contrastado con EFE, Reuters, RTVE y Europa Press. Por tratarse de personas vulnerables, los tres cierres son sobrios y no humorísticos.",
-  "sources": [
-    "https://efe.com/espana/2026-09-18/tralado-puerto-migrantes-playas-ceuta/",
-    "https://www.rtve.es/noticias/20260918/crisis-ceuta-policia-traslada-migrantes-campamento-puerto/17229932.shtml"
-  ],
+  "research": "Contrastado el 19-09-2026 con Reuters, EFE y Cadena SER. Las fuentes coinciden en el traslado desde las playas al recurso temporal del puerto, su capacidad aproximada de 1.700 plazas y los momentos de tensión. Los tres cierres son deliberadamente sobrios por tratarse de una crisis humanitaria.",
+  "sources": ["https://www.reuters.com/world/spanish-police-launch-operation-clear-ceuta-migrants-off-beach-2026-09-18/", "https://efe.com/espana/2026-09-18/tralado-puerto-migrantes-playas-ceuta/", "https://cadenaser.com/nacional/2026/09/18/unos-3400-migrantes-deberan-esperar-para-poder-tener-un-techo-tras-el-traslado-de-1700-al-campamento-del-puerto-de-ceuta-cadena-ser/"],
   "image_url": ""
 }
