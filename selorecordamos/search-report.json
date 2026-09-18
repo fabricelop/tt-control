@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-09-18T15:05:21.393Z",
+  "fetched_at": "2026-09-18T15:05:05.810Z",
+  "mode": "incremental",
+  "query": "\"recordadme\" OR \"que alguien me recuerde\" OR \"alguien que me recuerde\" OR \"alguien me recuerde\" OR \"que me recuerden\" OR \"recordarle\" OR \"recordármelo\" OR \"recordarmelo\" OR \"recordárselo\" OR \"recordarselo\" OR \"recuérdele\" OR \"recuerdele\" OR \"recuérdenle\" OR \"recuerdenle\" OR \"@SeLoRecordamos\"",
+  "status": "ok",
+  "note": "3 candidatos nuevos de 15 tuits extraídos.",
+  "extracted": 15,
+  "already_seen": 9,
+  "new_found": [
+    {
+      "id": "2100961665252483262",
+      "user": "@Jess_Aldaine",
+      "text": "“Es de muy buen corazón, muy buena niña, muy noble…”\n\n​Hay personas que simplemente transmiten luz y paz en medio del caos. A veces el mayor acto de lealtad es recordarle al otro quién es cuando el mundo alrededor se vuelve hostil; su nobleza no la hizo vulnerable, la hizo",
+      "datetime": "2026-09-18T14:54:29.000Z",
+      "url": "https://x.com/Jess_Aldaine/status/2100961665252483262",
+      "first_seen_at": "2026-09-18T15:05:05.810Z",
+      "status": "pending",
+      "filter_status": "candidate"
+    },
+    {
+      "id": "2100958019936809254",
+      "user": "@politicodelared",
+      "text": "¡No es broma! \n\n Alguien dígale a #Krauze (\n@EnriqueKrauze\n) que obediencia no es igual a soberanía y recuérdenle que:\n El tratado de extradición no es una orden de entrega\n Cada solicitud debe satisfacer condiciones jurídicas mexicanas",
+      "datetime": "2026-09-18T14:40:00.000Z",
+      "url": "https://x.com/politicodelared/status/2100958019936809254",
+      "first_seen_at": "2026-09-18T15:05:05.810Z",
+      "status": "pending",
+      "filter_status": "candidate"
+    },
+    {
+      "id": "2100958018716516395",
+      "user": "@SinLinea_Mx",
+      "text": "¡No es broma! \n\n Alguien dígale a #Krauze (\n@EnriqueKrauze\n) que obediencia no es igual a soberanía y recuérdenle que: \n El tratado de extradición no es una orden de entrega\n Cada solicitud debe satisfacer condiciones jurídicas mexicanas",
+      "datetime": "2026-09-18T14:40:00.000Z",
+      "url": "https://x.com/SinLinea_Mx/status/2100958018716516395",
+      "first_seen_at": "2026-09-18T15:05:05.810Z",
+      "status": "pending",
+      "filter_status": "candidate"
+    },
+    {
+      "id": "2100962766521561345",
+      "user": "@PanaCimarron",
+      "text": "....comprarle alimento a los periquitos de Carola. Andaba en eso toda la semana, pero los que veía no le gustaban. Estos están bonitos, ahora es mamá de un Ratón y 2 Periquitos Australianos. Que desconsiderado el de la tienda de animales no recordarle el Alpiste",
+      "datetime": "2026-09-18T14:58:52.000Z",
+      "url": "https://x.com/PanaCimarron/status/2100962766521561345",
+      "reason": "uso narrativo/opinativo de “recordarle/recordárselo”, sin petición clara",
+      "filter_status": "rejected"
+    },
+    {
+      "id": "2100962591040286868",
+      "user": "@BEMEHOTH_CREW",
+      "text": "Y si no es el gran éxito ? Nadie dejará de recordárselo a Xbox como otro despilfarro de dinero que siempre hacen",
+      "datetime": "2026-09-18T14:58:10.000Z",
+      "url": "https://x.com/BEMEHOTH_CREW/status/2100962591040286868",
+      "reason": "uso narrativo/opinativo de “recordarle/recordárselo”, sin petición clara",
+      "filter_status": "rejected"
+    },
+    {
+      "id": "2100960048864243773",
+      "user": "@lobonegro1727",
+      "text": "Está pendejo \n@EnriqueKrauze\n sería una pérdida de tiempo tratar de explicarle al cabeza de huevo priista las cosas solamente queda en recordarle que es una #OposicionMasPendejaYCorruptaQueHaExistido ",
+      "datetime": "2026-09-18T14:48:04.000Z",
+      "url": "https://x.com/lobonegro1727/status/2100960048864243773",
+      "reason": "uso narrativo/opinativo de “recordarle/recordárselo”, sin petición clara",
+      "filter_status": "rejected"
+    }
+  ]
+}

@@ -1,0 +1,2061 @@
+{
+  "project": "TTendencias",
+  "items": [
+    {
+      "term_normalized": "#vueltartve12s",
+      "display_name": "#VueltaRTVE12s",
+      "explained_at": "2026-09-12T18:25:45+02:00",
+      "rank": 1,
+      "explanation": "Landa ganó la etapa 20 y Mas dejó sentenciada la general antes de la jornada final.",
+      "context_fingerprint": "vuelta-s20-landa-wins-mas-virtual-champion"
+    },
+    {
+      "term_normalized": "norris",
+      "display_name": "Norris",
+      "explained_at": "2026-09-12T18:25:45+02:00",
+      "rank": 2,
+      "explanation": "Norris logró la primera pole de F1 en Madring por 0,011 segundos sobre Antonelli.",
+      "context_fingerprint": "spanish-gp-2026-madring-pole-0011"
+    },
+    {
+      "term_normalized": "zabiri",
+      "display_name": "Zabiri",
+      "explained_at": "2026-09-12T18:25:45+02:00",
+      "rank": 3,
+      "explanation": "Zabiri marcó un doblete en el Racing 2-1 Alavés y alcanzó cinco goles en cinco jornadas.",
+      "context_fingerprint": "racing-alaves-2-1-zabiri-double-five"
+    },
+    {
+      "term_normalized": "kuss",
+      "display_name": "Kuss",
+      "explained_at": "2026-09-12T18:25:45+02:00",
+      "rank": 4,
+      "explanation": "Kuss atacó en El Purche durante la etapa reina y obligó a reaccionar a Mas y Roglic.",
+      "context_fingerprint": "vuelta-s20-kuss-el-purche-attack"
+    },
+    {
+      "term_normalized": "catena",
+      "display_name": "Catena",
+      "explained_at": "2026-09-12T18:25:45+02:00",
+      "rank": 5,
+      "explanation": "Un error de Catena facilitó el segundo gol de Roberto Fernández en el Osasuna 0-2 Espanyol.",
+      "context_fingerprint": "osasuna-espanyol-0-2-catena-error"
+    },
+    {
+      "term_normalized": "compatriotas",
+      "display_name": "Compatriotas",
+      "explained_at": "2026-09-12T18:25:45+02:00",
+      "rank": 6,
+      "explanation": "Bolaños usó «miles de compatriotas» al criticar la suspensión provisional del voto por la ley de nietos.",
+      "context_fingerprint": "bolanos-compatriotas-vote-law-grandchildren"
+    },
+    {
+      "term_normalized": "jueces",
+      "display_name": "Jueces",
+      "explained_at": "2026-09-12T18:25:45+02:00",
+      "rank": 7,
+      "explanation": "Jueces y fiscales progresistas calificaron de desproporcionada la suspensión cautelar del voto.",
+      "context_fingerprint": "judges-prosecutors-criticize-vote-suspension"
+    },
+    {
+      "term_normalized": "carapaz",
+      "display_name": "Carapaz",
+      "explained_at": "2026-09-12T18:25:45+02:00",
+      "rank": 8,
+      "explanation": "Carapaz atacó repetidamente en El Purche por el podio; Decathlon respondió para proteger a Gall.",
+      "context_fingerprint": "vuelta-s20-carapaz-podium-attacks"
+    },
+    {
+      "term_normalized": "alavés",
+      "display_name": "Alavés",
+      "explained_at": "2026-09-12T18:25:45+02:00",
+      "rank": 9,
+      "explanation": "El Alavés perdió 2-1 contra el Racing y sufrió su primera derrota de la temporada.",
+      "context_fingerprint": "racing-alaves-2-1-first-defeat"
+    },
+    {
+      "term_normalized": "osasuna",
+      "display_name": "Osasuna",
+      "explained_at": "2026-09-12T18:25:45+02:00",
+      "rank": 10,
+      "explanation": "Osasuna perdió 0-2 ante el Espanyol, con dos goles de Roberto Fernández antes del minuto 17.",
+      "context_fingerprint": "osasuna-espanyol-0-2-roberto-double"
+    },
+    {
+      "term_normalized": "mikel landa",
+      "display_name": "Mikel Landa",
+      "explained_at": "2026-09-12T19:27:15+02:00",
+      "rank": 1,
+      "explanation": "Ganó en el Collado del Alguacil la etapa reina, su primera victoria de etapa en siete años.",
+      "context_fingerprint": "vuelta-s20-mikel-landa-stage-win-seven-years"
+    },
+    {
+      "term_normalized": "landa",
+      "display_name": "Landa",
+      "explained_at": "2026-09-12T19:27:15+02:00",
+      "rank": 2,
+      "explanation": "Alcanzó la fuga, soltó a Johannessen y llegó solo a la meta de la etapa 20.",
+      "context_fingerprint": "vuelta-s20-landa-solo-final-climb"
+    },
+    {
+      "term_normalized": "#landismo",
+      "display_name": "#Landismo",
+      "explained_at": "2026-09-12T19:27:15+02:00",
+      "rank": 4,
+      "explanation": "La afición celebró bajo #Landismo la victoria de Landa siete años después.",
+      "context_fingerprint": "landismo-fandom-celebrates-stage20-win"
+    },
+    {
+      "term_normalized": "#rcde",
+      "display_name": "#rcde",
+      "explained_at": "2026-09-12T19:27:15+02:00",
+      "rank": 5,
+      "explanation": "El Espanyol ganó 0-2 a Osasuna con doblete temprano de Roberto Fernández.",
+      "context_fingerprint": "rcde-osasuna-0-2-roberto-double"
+    },
+    {
+      "term_normalized": "#lavuelta26",
+      "display_name": "#LaVuelta26",
+      "explained_at": "2026-09-12T19:27:15+02:00",
+      "rank": 6,
+      "explanation": "Landa ganó la penúltima etapa y Mas dejó sentenciada la general.",
+      "context_fingerprint": "lavuelta26-stage20-landa-mas-general"
+    },
+    {
+      "term_normalized": "enric mas",
+      "display_name": "Enric Mas",
+      "explained_at": "2026-09-12T19:27:15+02:00",
+      "rank": 8,
+      "explanation": "Superó la última etapa de montaña y quedó como virtual ganador con 2:15 sobre Roglic.",
+      "context_fingerprint": "enric-mas-virtual-vuelta-winner-215"
+    },
+    {
+      "term_normalized": "#mafinhastaelfinal",
+      "display_name": "#MafinHastaElFinal",
+      "explained_at": "2026-09-12T19:27:15+02:00",
+      "rank": 9,
+      "explanation": "Fans de Marta y Fina reaccionaron al avance donde Fina besa a Bianca y peligra Mafin.",
+      "context_fingerprint": "mafin-fans-react-fina-bianca-kiss"
+    },
+    {
+      "term_normalized": "landismo",
+      "display_name": "Landismo",
+      "explained_at": "2026-09-12T20:26:10+02:00",
+      "rank": 4,
+      "explanation": "El concepto volvió a ser tendencia por la celebración del triunfo de Mikel Landa en la etapa reina.",
+      "context_fingerprint": "landismo-nohashtag-landa-stage20-celebration"
+    },
+    {
+      "term_normalized": "carreras",
+      "display_name": "Carreras",
+      "explained_at": "2026-09-12T22:29:58+02:00",
+      "rank": 1,
+      "explanation": "Álvaro Carreras provocó el penalti del 1-0 y marcó el 2-0 del Real Madrid ante el Rayo.",
+      "context_fingerprint": "realmadrid-rayo-carreras-penalty-goal-2-0"
+    },
+    {
+      "term_normalized": "#fibawwc",
+      "display_name": "#FIBAWWC",
+      "explained_at": "2026-09-12T22:29:58+02:00",
+      "rank": 2,
+      "explanation": "España perdió 76-66 ante Estados Unidos en la semifinal del Mundial femenino tras llegar 58-58 al último cuarto.",
+      "context_fingerprint": "fibawwc-semi-spain-usa-66-76"
+    },
+    {
+      "term_normalized": "lejeune",
+      "display_name": "Lejeune",
+      "explained_at": "2026-09-12T22:29:58+02:00",
+      "rank": 3,
+      "explanation": "Lejeune cometió el penalti sobre Carreras y después perdió el balón que originó el 2-0.",
+      "context_fingerprint": "realmadrid-rayo-lejeune-penalty-error"
+    },
+    {
+      "term_normalized": "#realmadridrayo",
+      "display_name": "#RealMadridRayo",
+      "explained_at": "2026-09-12T22:29:58+02:00",
+      "rank": 6,
+      "explanation": "El Real Madrid se adelantó 3-0 y Camello recortó al 3-1 en un partido aún en juego.",
+      "context_fingerprint": "realmadrid-rayo-live-3-1-camello"
+    },
+    {
+      "term_normalized": "diablo v",
+      "display_name": "Diablo V",
+      "explained_at": "2026-09-12T22:29:58+02:00",
+      "rank": 8,
+      "explanation": "Blizzard anunció Diablo V en la BlizzCon 2026 para primavera de 2029.",
+      "context_fingerprint": "blizzcon-2026-diablo-v-spring-2029"
+    },
+    {
+      "term_normalized": "san mamés",
+      "display_name": "San Mamés",
+      "explained_at": "2026-09-12T22:29:58+02:00",
+      "rank": 9,
+      "explanation": "Athletic y Elche empataron 1-1 en San Mamés con goles de Buonanotte y Berenguer.",
+      "context_fingerprint": "athletic-elche-1-1-san-mames"
+    },
+    {
+      "term_normalized": "#realmadridrayo",
+      "display_name": "#RealMadridRayo",
+      "explained_at": "2026-09-12T23:24:44+02:00",
+      "rank": 6,
+      "explanation": "El Real Madrid ganó 4-1 al Rayo con doblete de Mbappé y goles de Carreras y Bellingham; Camello marcó para el Rayo.",
+      "context_fingerprint": "realmadrid-rayo-final-4-1-mbappe-double"
+    },
+    {
+      "term_normalized": "#malaslenguasn",
+      "display_name": "#MalasLenguasN",
+      "explained_at": "2026-09-13T06:29:37+02:00",
+      "rank": 1,
+      "explanation": "Malas Lenguas Noche abordó la denuncia de Jordi Borràs sobre una caída causada por un agente de la BRIMO y una posterior agresión de ultras durante la Diada.",
+      "context_fingerprint": "malaslenguasn-jordi-borras-brimo-ultras-diada"
+    },
+    {
+      "term_normalized": "rayo",
+      "display_name": "Rayo",
+      "explained_at": "2026-09-13T06:29:37+02:00",
+      "rank": 2,
+      "explanation": "El Rayo perdió 4-1 ante el Real Madrid; Camello marcó el 3-1 y Mbappé cerró la goleada en el añadido.",
+      "context_fingerprint": "rayo-realmadrid-final-4-1-camello"
+    },
+    {
+      "term_normalized": "#lasextaxplica",
+      "display_name": "#laSextaXplica",
+      "explained_at": "2026-09-13T06:29:37+02:00",
+      "rank": 3,
+      "explanation": "La edición trató los avisos previos a la crisis de Ceuta y la suspensión judicial del voto ligado a la ley de nietos.",
+      "context_fingerprint": "lasextaxplica-ceuta-alerts-grandchildren-vote"
+    },
+    {
+      "term_normalized": "guler",
+      "display_name": "Guler",
+      "explained_at": "2026-09-13T06:29:37+02:00",
+      "rank": 4,
+      "explanation": "Arda Güler entró en el minuto 72 ante el Rayo, creó cinco ocasiones y asistió a Mbappé en el 4-1.",
+      "context_fingerprint": "guler-rayo-five-key-passes-assist"
+    },
+    {
+      "term_normalized": "camavinga",
+      "display_name": "Camavinga",
+      "explained_at": "2026-09-13T06:29:37+02:00",
+      "rank": 5,
+      "explanation": "Camavinga sustituyó a Valverde al descanso frente al Rayo y participó en una segunda mitad de menor control madridista.",
+      "context_fingerprint": "camavinga-rayo-halftime-valverde-sub"
+    },
+    {
+      "term_normalized": "#ufchbomax",
+      "display_name": "#ufchbomax",
+      "explained_at": "2026-09-13T06:29:37+02:00",
+      "rank": 6,
+      "explanation": "La audiencia siguió en HBO Max la Noche UFC de Glendale, donde Brandon Moreno venció a Joseph Morales por decisión dividida.",
+      "context_fingerprint": "ufchbomax-noche-ufc-moreno-split-win"
+    },
+    {
+      "term_normalized": "jordi",
+      "display_name": "Jordi",
+      "explained_at": "2026-09-13T06:29:37+02:00",
+      "rank": 7,
+      "explanation": "Jordi Borràs denunció que un agente de la BRIMO lo tiró al suelo y que ultras lo golpearon mientras cubría los disturbios de la Diada.",
+      "context_fingerprint": "jordi-borras-brimo-ultras-assault-claim"
+    },
+    {
+      "term_normalized": "diomande",
+      "display_name": "Diomande",
+      "explained_at": "2026-09-13T06:29:37+02:00",
+      "rank": 9,
+      "explanation": "Yan Diomande fue titular por primera vez con el Real Madrid en el 4-1 al Rayo y dejó una actuación de impacto ofensivo limitado.",
+      "context_fingerprint": "diomande-first-real-madrid-start-rayo"
+    },
+    {
+      "term_normalized": "rybakina",
+      "display_name": "Rybakina",
+      "explained_at": "2026-09-13T06:29:37+02:00",
+      "rank": 10,
+      "explanation": "Elena Rybakina ganó el US Open ante Sabalenka por 6-4, 5-7 y 6-2, logró su tercer Grand Slam y el número uno mundial.",
+      "context_fingerprint": "rybakina-us-open-2026-title-world-no1"
+    },
+    {
+      "term_normalized": "madring",
+      "display_name": "Madring",
+      "explained_at": "2026-09-13T09:15:58+02:00",
+      "rank": 5,
+      "explanation": "El nuevo circuito de Madrid estrena su primera carrera de Fórmula 1; Norris parte desde la pole y Sainz desde el 20º puesto tras una sanción.",
+      "context_fingerprint": "madring-first-f1-race-norris-pole-sainz-20"
+    },
+    {
+      "term_normalized": "irene montero",
+      "display_name": "Irene Montero",
+      "explained_at": "2026-09-13T09:15:58+02:00",
+      "rank": 8,
+      "explanation": "Anunció su intención de liderar una candidatura de izquierdas en las generales y propuso primarias abiertas a toda la ciudadanía.",
+      "context_fingerprint": "irene-montero-general-election-open-primaries"
+    },
+    {
+      "term_normalized": "#felizdomingo",
+      "display_name": "#FelizDomingo",
+      "explained_at": "2026-09-13T09:27:00+02:00",
+      "rank": 3,
+      "explanation": "Etiqueta de conversación espontánea con saludos, cafés y buenos deseos al comenzar el domingo.",
+      "context_fingerprint": "felizdomingo-routine-sunday-greetings"
+    },
+    {
+      "term_normalized": "lady gaga",
+      "display_name": "Lady Gaga",
+      "explained_at": "2026-09-13T09:27:00+02:00",
+      "rank": 10,
+      "explanation": "Varios medios informaron de que Lady Gaga y Michael Polansky han tenido su primer hijo; la pareja no comunicó nombre, sexo ni fecha.",
+      "context_fingerprint": "lady-gaga-polansky-first-child-reports"
+    },
+    {
+      "term_normalized": "día de partido",
+      "display_name": "DÍA DE PARTIDO",
+      "explained_at": "2026-09-13T11:25:27+02:00",
+      "rank": 7,
+      "explanation": "Clubes y aficionados compartieron las previas de los cuatro partidos dominicales de LaLiga: Celta-Málaga, Levante-Barcelona, Getafe-Deportivo y Real Sociedad-Atlético.",
+      "context_fingerprint": "laliga-sunday-matchday-four-fixtures"
+    },
+    {
+      "term_normalized": "día de partido",
+      "display_name": "DÍA DE PARTIDO",
+      "explained_at": "2026-09-13T12:30:25+02:00",
+      "rank": 7,
+      "explanation": "La frase fue tendencia por los avisos de numerosos clubes, sobre todo de Segunda y categorías inferiores, ante sus encuentros dominicales.",
+      "context_fingerprint": "matchday-lower-leagues-clubs-sunday-fixtures-correction"
+    },
+    {
+      "term_normalized": "#ccubicos433",
+      "display_name": "#CCubicos433",
+      "explained_at": "2026-09-13T13:30:59+02:00",
+      "rank": 8,
+      "explanation": "Centímetros Cúbicos promocionó la entrega 433 del domingo, con una prueba del Audi Q4 e-tron y otros contenidos de motor.",
+      "context_fingerprint": "ccubicos-episode-433-audi-q4-etron"
+    },
+    {
+      "term_normalized": "máximo quiles",
+      "display_name": "Máximo Quiles",
+      "explained_at": "2026-09-13T13:30:59+02:00",
+      "rank": 9,
+      "explanation": "Ganó la carrera de Moto3 en Misano por 0,021 segundos tras adelantar a David Almansa en la última curva; octava victoria de 2026.",
+      "context_fingerprint": "moto3-misano-quiles-wins-0021-last-corner"
+    },
+    {
+      "term_normalized": "#spanishgp",
+      "display_name": "#SpanishGP",
+      "explained_at": "2026-09-13T13:30:59+02:00",
+      "rank": 10,
+      "explanation": "La conversación creció en la previa del primer GP de España de F1 en Madring, con salida a las 15:00, Norris en pole y Sainz 20º tras una sanción.",
+      "context_fingerprint": "spanishgp-madring-prerace-norris-pole-sainz20"
+    },
+    {
+      "term_normalized": "#spanishgp",
+      "display_name": "#SpanishGP",
+      "explained_at": "2026-09-13T15:31:00+02:00",
+      "rank": 10,
+      "explanation": "La primera carrera de Fórmula 1 en Madring comenzó con Norris al frente ante Verstappen; Hamilton abandonó en las primeras vueltas por problemas de frenos. Situación provisional.",
+      "context_fingerprint": "spanishgp-madring-live-norris-leads-hamilton-brakes-retirement"
+    },
+    {
+      "term_normalized": "sainz",
+      "display_name": "Sainz",
+      "explained_at": "2026-09-13T17:29:00+02:00",
+      "rank": 1,
+      "explanation": "Chocó con Alonso, recibió cinco segundos de sanción y acabó abandonando el GP de España en Madring.",
+      "context_fingerprint": "spanishgp-sainz-alonso-collision-penalty-dnf"
+    },
+    {
+      "term_normalized": "mclaren",
+      "display_name": "McLaren",
+      "explained_at": "2026-09-13T17:29:00+02:00",
+      "rank": 2,
+      "explanation": "Una parada lenta hizo perder a Norris una probable victoria en el GP de España; terminó tercero tras Antonelli y Verstappen.",
+      "context_fingerprint": "spanishgp-mclaren-slow-pit-norris-third"
+    },
+    {
+      "term_normalized": "#madring",
+      "display_name": "#Madring",
+      "explained_at": "2026-09-13T17:29:00+02:00",
+      "rank": 3,
+      "explanation": "Antonelli se convirtió en el primer ganador de Fórmula 1 en el circuito de Madring, por delante de Verstappen y Norris.",
+      "context_fingerprint": "madring-hashtag-first-f1-race-antonelli-win"
+    },
+    {
+      "term_normalized": "málaga",
+      "display_name": "Málaga",
+      "explained_at": "2026-09-13T17:29:00+02:00",
+      "rank": 4,
+      "explanation": "Empató 1-1 ante el Celta en Balaídos gracias al gol del debutante Adrián Niño en el minuto 83.",
+      "context_fingerprint": "celta-malaga-final-1-1-adrian-nino-debut-equaliser"
+    },
+    {
+      "term_normalized": "#spanishgp",
+      "display_name": "#SpanishGP",
+      "explained_at": "2026-09-13T17:29:00+02:00",
+      "rank": 5,
+      "explanation": "Antonelli ganó el primer GP de España disputado en Madring; Verstappen fue segundo y Norris tercero.",
+      "context_fingerprint": "spanishgp-final-antonelli-verstappen-norris"
+    },
+    {
+      "term_normalized": "marc márquez",
+      "display_name": "Marc Márquez",
+      "explained_at": "2026-09-13T17:29:00+02:00",
+      "rank": 6,
+      "explanation": "Ganó el GP de San Marino y tomó el liderato de MotoGP, empatado a 274 puntos con Jorge Martín pero por delante en victorias.",
+      "context_fingerprint": "misano-marc-marquez-win-motogp-lead-274"
+    },
+    {
+      "term_normalized": "norris",
+      "display_name": "Norris",
+      "explained_at": "2026-09-13T17:29:00+02:00",
+      "rank": 7,
+      "explanation": "Lideró el GP de España, pero una parada lenta de McLaren lo relegó al tercer puesto, detrás de Antonelli y Verstappen.",
+      "context_fingerprint": "spanishgp-norris-final-third-slow-pit"
+    },
+    {
+      "term_normalized": "ron gourlay",
+      "display_name": "Ron Gourlay",
+      "explained_at": "2026-09-13T17:29:00+02:00",
+      "rank": 8,
+      "explanation": "El Valencia destituyó a su CEO de Fútbol junto al técnico Carlos Corberán tras sumar un punto en cinco jornadas.",
+      "context_fingerprint": "valencia-sacks-ron-gourlay-and-corberan"
+    },
+    {
+      "term_normalized": "einar",
+      "display_name": "Einar",
+      "explained_at": "2026-09-13T17:29:00+02:00",
+      "rank": 9,
+      "explanation": "Einar Galilea fue titular con el Málaga, vio amarilla y fue sustituido al descanso en el empate 1-1 ante el Celta.",
+      "context_fingerprint": "celta-malaga-einar-yellow-halftime-sub"
+    },
+    {
+      "term_normalized": "carlos corberán",
+      "display_name": "Carlos Corberán",
+      "explained_at": "2026-09-13T17:29:00+02:00",
+      "rank": 10,
+      "explanation": "El Valencia lo destituyó tras sumar un punto en cinco jornadas; Óscar Sánchez asumirá el equipo de forma interina.",
+      "context_fingerprint": "valencia-sacks-corberan-one-point-five"
+    },
+    {
+      "term_normalized": "adeyemi",
+      "display_name": "Adeyemi",
+      "explained_at": "2026-09-13T20:28:00+02:00",
+      "rank": 1,
+      "explanation": "Marcó en el minuto 93 el 2-4 del Barcelona ante el Levante con una jugada individual.",
+      "context_fingerprint": "levante-barcelona-final-2-4-adeyemi-93"
+    },
+    {
+      "term_normalized": "levante",
+      "display_name": "Levante",
+      "explained_at": "2026-09-13T20:28:00+02:00",
+      "rank": 2,
+      "explanation": "Perdió 2-4 ante el Barcelona tras recortar un 0-3 hasta el 2-3 antes del gol final de Adeyemi.",
+      "context_fingerprint": "levante-barcelona-final-2-4-late-comeback"
+    },
+    {
+      "term_normalized": "braulio",
+      "display_name": "Braulio",
+      "explained_at": "2026-09-13T20:28:00+02:00",
+      "rank": 3,
+      "explanation": "Braulio Vázquez deja Osasuna tras una década para ser director deportivo del Valencia, que paga 290.000 euros.",
+      "context_fingerprint": "braulio-vazquez-osasuna-valencia-director-290k"
+    },
+    {
+      "term_normalized": "#vueltartve13s",
+      "display_name": "#VueltaRTVE13s",
+      "explained_at": "2026-09-13T20:28:00+02:00",
+      "rank": 4,
+      "explanation": "Enric Mas ganó la Vuelta 2026 con 2:15 sobre Roglic y Tobias Johannessen venció en la etapa final de Granada.",
+      "context_fingerprint": "vuelta-2026-final-mas-champion-johannessen-stage21"
+    },
+    {
+      "term_normalized": "foden",
+      "display_name": "Foden",
+      "explained_at": "2026-09-13T20:28:00+02:00",
+      "rank": 5,
+      "explanation": "Phil Foden fue expulsado en el derbi de Manchester; el City ganó 0-1 al United con gol de Haaland.",
+      "context_fingerprint": "manchester-derby-foden-red-city-win-0-1"
+    },
+    {
+      "term_normalized": "xavi espart",
+      "display_name": "Xavi Espart",
+      "explained_at": "2026-09-13T20:28:00+02:00",
+      "rank": 6,
+      "explanation": "Marcó su primer gol con el primer equipo del Barcelona en el 2-4 al Levante y luego cometió el error del 1-3.",
+      "context_fingerprint": "levante-barcelona-xavi-espart-first-goal-error"
+    },
+    {
+      "term_normalized": "tachi",
+      "display_name": "Tachi",
+      "explained_at": "2026-09-13T20:28:00+02:00",
+      "rank": 7,
+      "explanation": "Entró por el lesionado Rubo en el minuto 72 y fue amonestado en el 3-4 del Zaragoza ante el Juventud Torremolinos.",
+      "context_fingerprint": "torremolinos-zaragoza-tachi-sub-yellow-final-3-4"
+    },
+    {
+      "term_normalized": "gerard martín",
+      "display_name": "Gerard Martín",
+      "explained_at": "2026-09-13T20:28:00+02:00",
+      "rank": 8,
+      "explanation": "Fue titular, vio amarilla y fue sustituido al descanso por Christensen en el 2-4 del Barcelona al Levante.",
+      "context_fingerprint": "levante-barcelona-gerard-martin-yellow-halftime-sub"
+    },
+    {
+      "term_normalized": "christensen",
+      "display_name": "Christensen",
+      "explained_at": "2026-09-13T20:28:00+02:00",
+      "rank": 9,
+      "explanation": "Entró al descanso por Gerard Martín y despejó cerca de la línea una ocasión del Levante en el 2-4.",
+      "context_fingerprint": "levante-barcelona-christensen-halftime-goalline-clearance"
+    },
+    {
+      "term_normalized": "suecia",
+      "display_name": "Suecia",
+      "explained_at": "2026-09-13T22:26:00+02:00",
+      "rank": 5,
+      "explanation": "Dos sondeos a pie de urna situaban provisionalmente por delante al bloque de centroizquierda de Magdalena Andersson, con el recuento oficial aún abierto.",
+      "context_fingerprint": "elecciones-suecia-exit-polls-centroizquierda-provisional"
+    },
+    {
+      "term_normalized": "enric mas",
+      "display_name": "Enric Mas",
+      "explained_at": "2026-09-13T22:26:00+02:00",
+      "rank": 6,
+      "explanation": "Enric Mas ganó la Vuelta 2026, su primera gran vuelta, con 2:15 sobre Roglic y como primer español vencedor desde 2014.",
+      "context_fingerprint": "vuelta-2026-final-enric-mas-campeon"
+    },
+    {
+      "term_normalized": "#getafedépor",
+      "display_name": "#GetafeDépor",
+      "explained_at": "2026-09-13T22:26:00+02:00",
+      "rank": 7,
+      "explanation": "Getafe y Deportivo empataron 1-1: Terrats adelantó a los locales y Aubameyang igualó en el minuto 78; el Dépor siguió invicto.",
+      "context_fingerprint": "getafe-deportivo-final-1-1-aubameyang"
+    },
+    {
+      "term_normalized": "enzo",
+      "display_name": "Enzo",
+      "explained_at": "2026-09-13T22:26:00+02:00",
+      "rank": 8,
+      "explanation": "Enzo Fernández centró la polémica del derbi de Manchester: estaba adelantado en el gol de Haaland, pero el VAR juzgó que no interfería y validó el 0-1.",
+      "context_fingerprint": "enzo-fernandez-var-gol-haaland-no-interferencia"
+    },
+    {
+      "term_normalized": "verstappen",
+      "display_name": "Verstappen",
+      "explained_at": "2026-09-13T22:26:00+02:00",
+      "rank": 10,
+      "explanation": "Max Verstappen terminó segundo en el primer GP de España disputado en Madring, a 4,351 segundos de Antonelli y por delante de Norris.",
+      "context_fingerprint": "spanish-gp-final-verstappen-segundo-antonelli"
+    },
+    {
+      "term_normalized": "suecia",
+      "display_name": "Suecia",
+      "explained_at": "2026-09-13T23:27:00+02:00",
+      "rank": 5,
+      "explanation": "El recuento y las proyecciones estrecharon las elecciones suecas a 175 escaños para el bloque de Magdalena Andersson y 174 para la derecha, todavía sin resultado definitivo.",
+      "context_fingerprint": "elecciones-suecia-recuento-proyeccion-175-174-provisional"
+    },
+    {
+      "term_normalized": "#conexiónhonduras1",
+      "display_name": "#ConexiónHonduras1",
+      "explained_at": "2026-09-14T06:28:00+02:00",
+      "rank": 1,
+      "explanation": "Telecinco emitió el primer Conexión Honduras de Supervivientes All Stars 3, con Sandra Barneda, el estado médico de Alma Bollo y las primeras nominaciones.",
+      "context_fingerprint": "supervivientes-all-stars-3-conexion-honduras-1"
+    },
+    {
+      "term_normalized": "grimaldo",
+      "display_name": "Grimaldo",
+      "explained_at": "2026-09-14T06:28:00+02:00",
+      "rank": 2,
+      "explanation": "Alejandro Grimaldo abrió de penalti el 0-3 del Atlético en Anoeta y asistió a Jonathan David; fue su primer gol rojiblanco.",
+      "context_fingerprint": "real-sociedad-atleti-0-3-grimaldo-penalty-assist"
+    },
+    {
+      "term_normalized": "arnau",
+      "display_name": "Arnau",
+      "explained_at": "2026-09-14T06:28:00+02:00",
+      "rank": 3,
+      "explanation": "Arnau Ortiz sustituyó a Lookman en el minuto 76 y agitó el ataque antes de los tres goles finales del Atlético ante la Real.",
+      "context_fingerprint": "real-sociedad-atleti-arnau-sub-impact"
+    },
+    {
+      "term_normalized": "giuliano",
+      "display_name": "Giuliano",
+      "explained_at": "2026-09-14T06:28:00+02:00",
+      "rank": 4,
+      "explanation": "Giuliano Simeone cerró el 0-3 del Atlético ante la Real Sociedad con una carrera individual en el tiempo añadido.",
+      "context_fingerprint": "real-sociedad-atleti-0-3-giuliano-stoppage"
+    },
+    {
+      "term_normalized": "lookman",
+      "display_name": "Lookman",
+      "explained_at": "2026-09-14T06:28:00+02:00",
+      "rank": 5,
+      "explanation": "Ademola Lookman fue titular en Anoeta y fue sustituido por Arnau Ortiz en el minuto 76, todavía con empate a cero.",
+      "context_fingerprint": "real-sociedad-atleti-lookman-start-sub-76"
+    },
+    {
+      "term_normalized": "koke",
+      "display_name": "Koke",
+      "explained_at": "2026-09-14T06:28:00+02:00",
+      "rank": 6,
+      "explanation": "Koke alcanzó 524 partidos de LaLiga, superó a Manolo Sanchís y se convirtió en el décimo jugador con más encuentros en Primera.",
+      "context_fingerprint": "koke-524-laliga-top10-appearances"
+    },
+    {
+      "term_normalized": "jonathan david",
+      "display_name": "Jonathan David",
+      "explained_at": "2026-09-14T06:28:00+02:00",
+      "rank": 7,
+      "explanation": "Jonathan David entró en el minuto 60 y marcó el 0-2 ante la Real, su primer gol con el Atlético.",
+      "context_fingerprint": "real-sociedad-atleti-jonathan-david-first-goal"
+    },
+    {
+      "term_normalized": "baena",
+      "display_name": "Baena",
+      "explained_at": "2026-09-14T06:28:00+02:00",
+      "rank": 8,
+      "explanation": "Álex Baena fue titular, remató fuera al inicio de la segunda parte y fue sustituido en el minuto 59; el Atlético ganó 0-3.",
+      "context_fingerprint": "real-sociedad-atleti-baena-start-sub-59"
+    },
+    {
+      "term_normalized": "#salvadosencuentro",
+      "display_name": "#SalvadosEncuentro",
+      "explained_at": "2026-09-14T06:28:00+02:00",
+      "rank": 9,
+      "explanation": "Salvados reunió a Fernando Garrido con Josemi Latasa, exmiembro de ETA que participó en el asesinato de sus padres y su hermano en 1986, en un diálogo sobre daño y perdón.",
+      "context_fingerprint": "salvados-garrido-latasa-encuentro-perdon"
+    },
+    {
+      "term_normalized": "#realsociedadatleti",
+      "display_name": "#RealSociedadAtleti",
+      "explained_at": "2026-09-14T06:28:00+02:00",
+      "rank": 10,
+      "explanation": "El Atlético ganó 0-3 a la Real Sociedad en Anoeta con goles de Grimaldo, Jonathan David y Giuliano en el tramo final.",
+      "context_fingerprint": "real-sociedad-atleti-final-0-3"
+    },
+    {
+      "term_normalized": "#felizlunes",
+      "display_name": "#FelizLunes",
+      "explained_at": "2026-09-14T09:31:00+02:00",
+      "rank": 1,
+      "explanation": "Etiqueta de conversación espontánea con saludos, cafés y mensajes de ánimo al comenzar el lunes.",
+      "context_fingerprint": "felizlunes-routine-monday-greetings"
+    },
+    {
+      "term_normalized": "suecia",
+      "display_name": "Suecia",
+      "explained_at": "2026-09-14T09:31:00+02:00",
+      "rank": 5,
+      "explanation": "El recuento amplió provisionalmente la ventaja del bloque de Magdalena Andersson a 176-173 escaños; faltan votos del exterior hasta el miércoles.",
+      "context_fingerprint": "elecciones-suecia-provisional-176-173-exterior-pending"
+    },
+    {
+      "term_normalized": "morelos",
+      "display_name": "Morelos",
+      "explained_at": "2026-09-14T09:31:00+02:00",
+      "rank": 7,
+      "explanation": "La Fiscalía de Morelos investiga como feminicidio el asesinato con arma blanca de Claudia Tacoronte, estudiante española de 21 años de intercambio en la UAEM.",
+      "context_fingerprint": "morelos-claudia-tacoronte-feminicidio-investigation"
+    },
+    {
+      "term_normalized": "mónaco",
+      "display_name": "Mónaco",
+      "explained_at": "2026-09-14T09:31:00+02:00",
+      "rank": 10,
+      "explanation": "Aficionados compararon el estreno de Madring con Mónaco por la escasez de adelantamientos en el GP de España.",
+      "context_fingerprint": "madring-monaco-comparison-few-overtakes"
+    },
+    {
+      "term_normalized": "#lahora14s",
+      "display_name": "#LaHora14S",
+      "explained_at": "2026-09-14T10:26:00+02:00",
+      "rank": 8,
+      "explanation": "La etiqueta acompañó la emisión matinal en directo de La Hora de La 1, programa de entrevistas, debate y análisis de actualidad política y social de RTVE.",
+      "context_fingerprint": "rtve-la-hora-1-live-morning-current-affairs"
+    },
+    {
+      "term_normalized": "#sillaencarrefour",
+      "display_name": "#SillaEnCarrefour",
+      "explained_at": "2026-09-14T12:26:00+02:00",
+      "rank": 8,
+      "explanation": "Carrefour impulsó un sorteo en X que pide usar la etiqueta y mencionar a amigos distintos; admite varias participaciones hasta el 16 de septiembre.",
+      "context_fingerprint": "carrefour-x-contest-tag-friends-until-sep16"
+    },
+    {
+      "term_normalized": "fórmula 1",
+      "display_name": "Fórmula 1",
+      "explained_at": "2026-09-14T12:26:00+02:00",
+      "rank": 10,
+      "explanation": "La conversación continuó tras el estreno del GP de España en Madring, ganado por Antonelli ante Verstappen y Norris, con 353.000 asistentes durante el fin de semana.",
+      "context_fingerprint": "formula1-madring-debut-antonelli-win-353k"
+    },
+    {
+      "term_normalized": "tezanos",
+      "display_name": "Tezanos",
+      "explained_at": "2026-09-14T14:41:00+02:00",
+      "rank": 3,
+      "explanation": "El barómetro de septiembre del CIS situó al PSOE en el 31%, al PP en el 25,5% y a Vox en el 16,6%; el PSOE bajó dos puntos, pero mantuvo 5,5 de ventaja.",
+      "context_fingerprint": "cis-september-psoe31-pp255-vox166"
+    },
+    {
+      "term_normalized": "#mañaneros14s",
+      "display_name": "#Mañaneros14S",
+      "explained_at": "2026-09-14T14:41:00+02:00",
+      "rank": 10,
+      "explanation": "La etiqueta acompañó el directo de Mañaneros 360 en RTVE, que abordó la reconstrucción judicial del caso de Francisca Cadenas prevista en Hornachos.",
+      "context_fingerprint": "rtve-mananeros14s-francisca-cadenas-reconstruction"
+    },
+    {
+      "term_normalized": "#tem14s",
+      "display_name": "#TEM14S",
+      "explained_at": "2026-09-14T16:56:00+02:00",
+      "rank": 1,
+      "explanation": "La etiqueta acompañó el directo de Todo es mentira, que trató la bronca política por el GP de Madrid entre Isabel Díaz Ayuso y Óscar Puente.",
+      "context_fingerprint": "todo-es-mentira-14s-madring-ayuso-puente"
+    },
+    {
+      "term_normalized": "#graciasmartayalba",
+      "display_name": "#GraciasMartayAlba",
+      "explained_at": "2026-09-14T16:56:00+02:00",
+      "rank": 7,
+      "explanation": "Fans de Sueños de libertad agradecieron a Marta Belmonte y Alba Brunet su interpretación de Marta y Fina, la pareja conocida como Mafin, tras el regreso de Fina a la trama.",
+      "context_fingerprint": "mafin-fans-thank-belmonte-brunet-fina-return"
+    },
+    {
+      "term_normalized": "harry styles",
+      "display_name": "Harry Styles",
+      "explained_at": "2026-09-14T18:28:00+02:00",
+      "rank": 2,
+      "explanation": "La venta general de entradas para los dos conciertos de Harry Styles en Madrid en julio de 2027 comenzó a las 16:00.",
+      "context_fingerprint": "harry-styles-madrid-2027-general-sale"
+    },
+    {
+      "term_normalized": "risto",
+      "display_name": "Risto",
+      "explained_at": "2026-09-14T18:28:00+02:00",
+      "rank": 4,
+      "explanation": "Risto Mejide condenó en Todo es mentira una pancarta contra Pedro Sánchez exhibida durante el GP de Madrid.",
+      "context_fingerprint": "risto-tem-madring-banner-sanchez"
+    },
+    {
+      "term_normalized": "oasis",
+      "display_name": "Oasis",
+      "explained_at": "2026-09-14T18:28:00+02:00",
+      "rank": 6,
+      "explanation": "Oasis anunció la gira Live ’27, con 38 conciertos y dos fechas en Barcelona, el 10 y 11 de julio de 2027.",
+      "context_fingerprint": "oasis-live27-barcelona-july10-11"
+    },
+    {
+      "term_normalized": "mustafá",
+      "display_name": "Mustafá",
+      "explained_at": "2026-09-14T18:28:00+02:00",
+      "rank": 7,
+      "explanation": "Abdellah Mustafá expresó en Todo es mentira su escepticismo ante la promesa del Gobierno sobre el campamento de Sidi Embarek.",
+      "context_fingerprint": "abdellah-mustafa-sidi-embarek-government-promise"
+    },
+    {
+      "term_normalized": "naranjo",
+      "display_name": "Naranjo",
+      "explained_at": "2026-09-14T18:28:00+02:00",
+      "rank": 8,
+      "explanation": "Antonio Naranjo criticó en Todo es mentira la posición de Europa durante el debate sobre la crisis del petróleo y los envíos.",
+      "context_fingerprint": "antonio-naranjo-tem-europe-oil-debate"
+    },
+    {
+      "term_normalized": "ticketmaster",
+      "display_name": "Ticketmaster",
+      "explained_at": "2026-09-14T18:28:00+02:00",
+      "rank": 9,
+      "explanation": "Ticketmaster concentró la conversación por gestionar la venta general de entradas de Harry Styles para Madrid.",
+      "context_fingerprint": "ticketmaster-harry-styles-madrid-sale"
+    },
+    {
+      "term_normalized": "el cis",
+      "display_name": "El CIS",
+      "explained_at": "2026-09-14T18:28:00+02:00",
+      "rank": 10,
+      "explanation": "El barómetro de septiembre situó al PSOE en el 31%, al PP en el 25,5% y a Vox en el 16,6%, con 5,5 puntos de ventaja socialista.",
+      "context_fingerprint": "cis-september-psoe31-pp255-vox166"
+    },
+    {
+      "term_normalized": "ed sheeran",
+      "display_name": "Ed Sheeran",
+      "explained_at": "2026-09-14T19:25:00+02:00",
+      "rank": 3,
+      "explanation": "Macklemore fue apartado del tramo estadounidense del Loop Tour después de sus mensajes en apoyo a Palestina y del rechazo de varios recintos.",
+      "context_fingerprint": "ed-sheeran-tour-macklemore-removed-palestine"
+    },
+    {
+      "term_normalized": "macklemore",
+      "display_name": "Macklemore",
+      "explained_at": "2026-09-14T19:25:00+02:00",
+      "rank": 6,
+      "explanation": "La promotora lo retiró de las fechas restantes de la gira estadounidense de Ed Sheeran tras su discurso en apoyo a Palestina; él mantuvo su postura.",
+      "context_fingerprint": "macklemore-removed-ed-sheeran-tour-palestine"
+    },
+    {
+      "term_normalized": "antonio naranjo",
+      "display_name": "Antonio Naranjo",
+      "explained_at": "2026-09-14T19:25:00+02:00",
+      "rank": 10,
+      "explanation": "El periodista criticó en Todo es mentira la posición de Europa ante el conflicto en Oriente Medio.",
+      "context_fingerprint": "antonio-naranjo-tem-europe-middle-east"
+    },
+    {
+      "term_normalized": "chiara",
+      "display_name": "Chiara",
+      "explained_at": "2026-09-14T20:29:00+02:00",
+      "rank": 10,
+      "explanation": "Chiara Oliver actuó como telonera de Aitana en el concierto del 14 de septiembre en el Movistar Arena de Madrid, su primera vez como apertura de la artista.",
+      "context_fingerprint": "chiara-oliver-aitana-madrid-opening-act"
+    },
+    {
+      "term_normalized": "#chiaraolivercuartoazul",
+      "display_name": "#ChiaraOliverCuartoAzul",
+      "explained_at": "2026-09-14T21:27:00+02:00",
+      "rank": 5,
+      "explanation": "Fans acompañaron con esta etiqueta la actuación de Chiara Oliver como telonera de Aitana en el Movistar Arena de Madrid.",
+      "context_fingerprint": "chiara-oliver-aitana-madrid-opening-hashtag"
+    },
+    {
+      "term_normalized": "#yas14sep",
+      "display_name": "#YAS14Sep",
+      "explained_at": "2026-09-14T21:27:00+02:00",
+      "rank": 6,
+      "explanation": "La etiqueta acompañó la edición del 14 de septiembre de Y ahora Sonsoles, con entrevistas a Verónica Hidalgo y Jesús Castro y música en directo de Gemeliers.",
+      "context_fingerprint": "yas-14sep-veronica-hidalgo-jesus-castro-gemeliers"
+    },
+    {
+      "term_normalized": "ios 27",
+      "display_name": "iOS 27",
+      "explained_at": "2026-09-14T21:27:00+02:00",
+      "rank": 9,
+      "explanation": "Apple lanzó iOS 27 para los iPhone compatibles, con mejoras de rendimiento, herramientas fotográficas y nuevo diseño; Siri AI llegará más adelante en español.",
+      "context_fingerprint": "ios27-release-performance-photo-design-siri-spanish-later"
+    },
+    {
+      "term_normalized": "gerard moreno",
+      "display_name": "Gerard Moreno",
+      "explained_at": "2026-09-14T22:29:00+02:00",
+      "rank": 5,
+      "explanation": "Gerard Moreno adelantó al Villarreal de volea; el Betis remontó antes del descanso con goles de Cucho Hernández y Natan. Último dato confirmado al enviar: 1-2 en el minuto 62.",
+      "context_fingerprint": "villarreal-betis-live-1-2-gerard-cucho-natan-62"
+    },
+    {
+      "term_normalized": "#cawtmadrid",
+      "display_name": "#CAWTMadrid",
+      "explained_at": "2026-09-14T22:29:00+02:00",
+      "rank": 7,
+      "explanation": "La etiqueta acompañó la tercera noche madrileña del Cuarto Azul World Tour de Aitana en el Movistar Arena, con Chiara Oliver como telonera.",
+      "context_fingerprint": "aitana-cawt-madrid-third-night-chiara-opener"
+    },
+    {
+      "term_normalized": "#villarrealrealbetis",
+      "display_name": "#VillarrealRealBetis",
+      "explained_at": "2026-09-14T22:29:00+02:00",
+      "rank": 8,
+      "explanation": "El Betis remontó antes del descanso el gol inicial de Gerard Moreno; último dato confirmado al enviar: Villarreal 1-2 Betis en el minuto 62.",
+      "context_fingerprint": "villarreal-betis-live-1-2-minute62"
+    },
+    {
+      "term_normalized": "#harlemvivaseh",
+      "display_name": "#HarlemVivasEH",
+      "explained_at": "2026-09-14T23:29:00+02:00",
+      "rank": 1,
+      "explanation": "La etiqueta acompañó la doble visita a El Hormiguero: Juan Vivas abordó la crisis migratoria de Ceuta y Leo Harlem presentó la película Un plan perfecto.",
+      "context_fingerprint": "hormiguero-vivas-ceuta-leo-harlem-un-plan-perfecto"
+    },
+    {
+      "term_normalized": "#elintermedio",
+      "display_name": "#elintermedio",
+      "explained_at": "2026-09-14T23:29:00+02:00",
+      "rank": 2,
+      "explanation": "El Intermedio entrevistó a Pedro Sánchez sobre la crisis de Ceuta y los retos del Gobierno en la recta final de la legislatura.",
+      "context_fingerprint": "el-intermedio-pedro-sanchez-ceuta-legislature"
+    },
+    {
+      "term_normalized": "abde",
+      "display_name": "Abde",
+      "explained_at": "2026-09-14T23:29:00+02:00",
+      "rank": 3,
+      "explanation": "Abde fue clave en el 1-2 del Betis al Villarreal: su remate, parado por Gulácsi, dejó el rechace que Cucho convirtió en el empate.",
+      "context_fingerprint": "villarreal-betis-final-1-2-abde-shot-cucho-rebound"
+    },
+    {
+      "term_normalized": "cucho",
+      "display_name": "Cucho",
+      "explained_at": "2026-09-14T23:29:00+02:00",
+      "rank": 6,
+      "explanation": "Cucho Hernández marcó el 1-1 del Betis al aprovechar el rechace de Gulácsi a un tiro de Abde; Natan completó el 1-2 final.",
+      "context_fingerprint": "villarreal-betis-final-cucho-equalizer-natan-winner"
+    },
+    {
+      "term_normalized": "villarreal",
+      "display_name": "Villarreal",
+      "explained_at": "2026-09-14T23:29:00+02:00",
+      "rank": 7,
+      "explanation": "El Villarreal perdió 1-2 ante el Betis pese al gol inicial de Gerard Moreno y cerró cinco jornadas con dos puntos y sin victorias.",
+      "context_fingerprint": "villarreal-betis-final-1-2-two-points-five-no-wins"
+    },
+    {
+      "term_normalized": "juan vivas",
+      "display_name": "Juan Vivas",
+      "explained_at": "2026-09-14T23:29:00+02:00",
+      "rank": 9,
+      "explanation": "El presidente de Ceuta acudió por primera vez a El Hormiguero para explicar la presión migratoria sobre la ciudad tras las entradas de julio.",
+      "context_fingerprint": "juan-vivas-hormiguero-ceuta-migration-july"
+    },
+    {
+      "term_normalized": "#firstdates14s",
+      "display_name": "#FirstDates14S",
+      "explained_at": "2026-09-14T23:29:00+02:00",
+      "rank": 10,
+      "explanation": "La etiqueta acompañó la edición de First Dates, con reacciones al flechazo de Lidia Santos y a la cita de Alonso y Dolores.",
+      "context_fingerprint": "firstdates14s-lidia-alonso-dolores-episode"
+    },
+    {
+      "term_normalized": "#laisladelastentaciones3",
+      "display_name": "#LaIslaDeLasTentaciones3",
+      "explained_at": "2026-09-15T06:32:00+02:00",
+      "rank": 1,
+      "explanation": "La tercera gala mostró los collares para elegir primeras citas, despedidas tensas, las primeras fiestas en las villas y la reacción de Kico.",
+      "context_fingerprint": "isla-tentaciones-3-first-dates-collars-villas-kico"
+    },
+    {
+      "term_normalized": "braulio",
+      "display_name": "Braulio",
+      "explained_at": "2026-09-15T06:32:00+02:00",
+      "rank": 3,
+      "explanation": "Braulio Vázquez dejó Osasuna tras nueve años y se incorporó como director deportivo del Valencia, acompañando al equipo en Vitoria.",
+      "context_fingerprint": "braulio-vazquez-osasuna-exit-valencia-sporting-director-vitoria"
+    },
+    {
+      "term_normalized": "#emmys",
+      "display_name": "#Emmys",
+      "explained_at": "2026-09-15T06:32:00+02:00",
+      "rank": 4,
+      "explanation": "Los Emmy 2026 premiaron a The Pitt como mejor drama y a Widow's Bay como mejor comedia; Jean Smart ganó por quinta vez con Hacks.",
+      "context_fingerprint": "emmys-2026-the-pitt-widows-bay-jean-smart"
+    },
+    {
+      "term_normalized": "kico",
+      "display_name": "Kico",
+      "explained_at": "2026-09-15T06:32:00+02:00",
+      "rank": 10,
+      "explanation": "Kico perdió los nervios durante la ceremonia de primeras citas de La isla de las tentaciones y salió hacia la playa entre gritos.",
+      "context_fingerprint": "kico-isla-tentaciones-first-date-ceremony-beach-outburst"
+    },
+    {
+      "term_normalized": "#felizmartes",
+      "display_name": "#FelizMartes",
+      "explained_at": "2026-09-15T07:26:00+02:00",
+      "rank": 3,
+      "explanation": "La etiqueta reúne los saludos, imágenes, memes y mensajes de ánimo que los usuarios comparten al comenzar el martes; no responde a una noticia concreta.",
+      "context_fingerprint": "felizmartes-recurring-morning-greetings-memes"
+    },
+    {
+      "term_normalized": "widow's bay",
+      "display_name": "Widow's Bay",
+      "explained_at": "2026-09-15T08:28:00+02:00",
+      "rank": 8,
+      "explanation": "La comedia de terror de Apple TV+ ganó el Emmy a mejor comedia y también obtuvo premios de interpretación, guion y dirección.",
+      "context_fingerprint": "widows-bay-emmys-best-comedy-rhys-oflynn-root-writing-directing"
+    },
+    {
+      "term_normalized": "#lahora15s",
+      "display_name": "#LaHora15S",
+      "explained_at": "2026-09-15T09:29:00+02:00",
+      "rank": 8,
+      "explanation": "La etiqueta acompañó la emisión en directo de La hora de La 1, el magacín matinal de RTVE dedicado a la actualidad política y social.",
+      "context_fingerprint": "lahora15s-rtve-live-morning-politics-society"
+    },
+    {
+      "term_normalized": "lamine",
+      "display_name": "Lamine",
+      "explained_at": "2026-09-15T09:29:00+02:00",
+      "rank": 9,
+      "explanation": "Lamine Yamal afirmó que él y Mbappé son los mejores del mundo y defendió que sus títulos con España y el Barça le hacen merecedor del Balón de Oro.",
+      "context_fingerprint": "lamine-yamal-ballon-dor-mbappe-spain-world-cup-barca-laliga"
+    },
+    {
+      "term_normalized": "el ipc",
+      "display_name": "El IPC",
+      "explained_at": "2026-09-15T12:30:00+02:00",
+      "rank": 7,
+      "explanation": "El IPC definitivo de agosto subió al 4,3% interanual, siete décimas más que en julio, impulsado por los carburantes; la inflación subyacente bajó al 2,9%.",
+      "context_fingerprint": "ipc-august-2026-final-43-fuel-core-29"
+    },
+    {
+      "term_normalized": "pablo fernández",
+      "display_name": "Pablo Fernández",
+      "explained_at": "2026-09-15T13:26:00+02:00",
+      "rank": 4,
+      "explanation": "El secretario de Organización y portavoz de Podemos anunció que concurrirá a las primarias de octubre para encabezar la candidatura al Ayuntamiento de Madrid en 2027.",
+      "context_fingerprint": "podemos-pablo-fernandez-madrid-mayoral-primaries-october-2027"
+    },
+    {
+      "term_normalized": "#enbocadetodos",
+      "display_name": "#EnBocaDeTodos",
+      "explained_at": "2026-09-15T14:30:00+02:00",
+      "rank": 4,
+      "explanation": "La etiqueta acompañó el directo de Cuatro, que entrevistó a Pablo Fernández sobre su candidatura a la Alcaldía de Madrid y continuó su cobertura de la crisis de Ceuta.",
+      "context_fingerprint": "enbocadetodos-pablo-fernandez-madrid-candidacy-ceuta"
+    },
+    {
+      "term_normalized": "méxico",
+      "display_name": "México",
+      "explained_at": "2026-09-15T14:30:00+02:00",
+      "rank": 10,
+      "explanation": "La conversación coincidió con los preparativos del Grito de Independencia, que conmemora el inicio de la lucha independentista en 1810 y será encabezado por Claudia Sheinbaum en el Zócalo.",
+      "context_fingerprint": "mexico-grito-independencia-216-sheinbaum-zocalo"
+    },
+    {
+      "term_normalized": "#mañaneros15s",
+      "display_name": "#Mañaneros15S",
+      "explained_at": "2026-09-15T15:29:15+02:00",
+      "rank": 1,
+      "explanation": "Etiqueta del directo de Mañaneros 360 en La 1, dedicado a la actualidad política y social.",
+      "context_fingerprint": "mananeros-15s-live-daily-show"
+    },
+    {
+      "term_normalized": "antonio orozco",
+      "display_name": "Antonio Orozco",
+      "explained_at": "2026-09-15T15:29:15+02:00",
+      "rank": 3,
+      "explanation": "El Ayuntamiento de Cádiz lo eligió pregonero del Carnaval de 2027.",
+      "context_fingerprint": "orozco-cadiz-carnival-2027-pregonero"
+    },
+    {
+      "term_normalized": "castilla y león",
+      "display_name": "Castilla y León",
+      "explained_at": "2026-09-15T15:29:15+02:00",
+      "rank": 5,
+      "explanation": "El IPC regional de agosto alcanzó el 4,7%, por encima del 4,3% nacional.",
+      "context_fingerprint": "castilla-leon-august-cpi-4-7"
+    },
+    {
+      "term_normalized": "teruel",
+      "display_name": "Teruel",
+      "explained_at": "2026-09-15T15:29:15+02:00",
+      "rank": 6,
+      "explanation": "El Castellar aportó los primeros fósiles de Diplodocus confirmados fuera de Norteamérica.",
+      "context_fingerprint": "teruel-el-castellar-first-diplodocus-outside-na"
+    },
+    {
+      "term_normalized": "vivas",
+      "display_name": "Vivas",
+      "explained_at": "2026-09-15T15:29:15+02:00",
+      "rank": 7,
+      "explanation": "Juan Jesús Vivas culpó a Marruecos de la entrada masiva en Ceuta y afirmó que hubo alertas previas.",
+      "context_fingerprint": "vivas-ceuta-morocco-cni-warning-interview"
+    },
+    {
+      "term_normalized": "ramón y cajal",
+      "display_name": "Ramón y Cajal",
+      "explained_at": "2026-09-15T15:29:15+02:00",
+      "rank": 9,
+      "explanation": "La oposición exigió investigar la supuesta rebaja de prioridad de 57 pacientes para maquillar listas quirúrgicas.",
+      "context_fingerprint": "ramon-cajal-57-patients-priority-list-investigation"
+    },
+    {
+      "term_normalized": "#googlepixel11proorange",
+      "display_name": "#GooglePixel11ProOrange",
+      "explained_at": "2026-09-15T15:29:15+02:00",
+      "rank": 10,
+      "explanation": "Orange impulsó la etiqueta con un sorteo de un Google Pixel 11 Pro.",
+      "context_fingerprint": "orange-pixel-11-pro-giveaway"
+    },
+    {
+      "term_normalized": "#tem15s",
+      "display_name": "#TEM15S",
+      "explained_at": "2026-09-15T18:31:00+02:00",
+      "rank": 1,
+      "explanation": "Etiqueta del directo de Todo es mentira, centrado en la crisis de Ceuta y el choque por los avisos previos.",
+      "context_fingerprint": "tem15s-ceuta-crisis-cni-warnings"
+    },
+    {
+      "term_normalized": "jj gabriel",
+      "display_name": "JJ Gabriel",
+      "explained_at": "2026-09-15T18:31:00+02:00",
+      "rank": 2,
+      "explanation": "El delantero de 15 años pidió cancelar su inscripción y dejar el Manchester United, que intenta retenerlo.",
+      "context_fingerprint": "jj-gabriel-asks-leave-manchester-united"
+    },
+    {
+      "term_normalized": "llarena",
+      "display_name": "Llarena",
+      "explained_at": "2026-09-15T18:31:00+02:00",
+      "rank": 3,
+      "explanation": "El juez rechazó amnistiar a Puigdemont y Comín por malversación y mantuvo sus órdenes nacionales de detención.",
+      "context_fingerprint": "llarena-denies-amnesty-puigdemont-comin-arrest-orders"
+    },
+    {
+      "term_normalized": "uefa",
+      "display_name": "UEFA",
+      "explained_at": "2026-09-15T18:31:00+02:00",
+      "rank": 4,
+      "explanation": "La UEFA eligió el Allianz Arena para la final de Champions de 2028 y el Camp Nou para la de 2029.",
+      "context_fingerprint": "uefa-champions-finals-2028-munich-2029-camp-nou"
+    },
+    {
+      "term_normalized": "ideas",
+      "display_name": "Ideas",
+      "explained_at": "2026-09-15T18:31:00+02:00",
+      "rank": 5,
+      "explanation": "El Festival de las Ideas mantuvo su celebración tras la retirada de Allianz como patrocinador por la protesta de más de treinta participantes.",
+      "context_fingerprint": "festival-ideas-allianz-withdrawal-cultural-boycott"
+    },
+    {
+      "term_normalized": "puigdemont",
+      "display_name": "Puigdemont",
+      "explained_at": "2026-09-15T18:31:00+02:00",
+      "rank": 6,
+      "explanation": "Llarena volvió a denegarle la amnistía por malversación y mantuvo su orden nacional de detención.",
+      "context_fingerprint": "puigdemont-amnesty-denied-arrest-order-maintained"
+    },
+    {
+      "term_normalized": "bárcenas",
+      "display_name": "Bárcenas",
+      "explained_at": "2026-09-15T18:31:00+02:00",
+      "rank": 7,
+      "explanation": "Willy Bárcenas protagonizó Pasapalabra al completar el pleno del juego musical con «Bamboleo».",
+      "context_fingerprint": "willy-barcenas-pasapalabra-music-full-bamboleo"
+    },
+    {
+      "term_normalized": "allianz",
+      "display_name": "Allianz",
+      "explained_at": "2026-09-15T18:31:00+02:00",
+      "rank": 8,
+      "explanation": "La aseguradora retiró su patrocinio del Festival de las Ideas tras las protestas por sus vínculos financieros con Israel.",
+      "context_fingerprint": "allianz-withdraws-festival-ideas-israel-links"
+    },
+    {
+      "term_normalized": "expedition 33",
+      "display_name": "Expedition 33",
+      "explained_at": "2026-09-15T18:31:00+02:00",
+      "rank": 10,
+      "explanation": "La gira sinfónica oficial del videojuego anunció una fecha en el Palau Sant Jordi para marzo de 2027 y abrió la venta de entradas.",
+      "context_fingerprint": "expedition33-painted-symphony-barcelona-ticket-sale"
+    },
+    {
+      "term_normalized": "mayol",
+      "display_name": "Mayol",
+      "explained_at": "2026-09-15T19:31:00+02:00",
+      "rank": 3,
+      "explanation": "Aarón Mayol entró en la convocatoria del Valencia ante el Alavés junto a otros canteranos, con Óscar Sánchez como técnico interino.",
+      "context_fingerprint": "aaron-mayol-valencia-squad-alaves-interim-oscar-sanchez"
+    },
+    {
+      "term_normalized": "schengen",
+      "display_name": "Schengen",
+      "explained_at": "2026-09-15T19:31:00+02:00",
+      "rank": 7,
+      "explanation": "España e Italia prorrogaron otros 15 días los controles fronterizos mutuos adoptados tras la crisis migratoria de Ceuta.",
+      "context_fingerprint": "spain-italy-extend-mutual-border-controls-ceuta-15-days"
+    },
+    {
+      "term_normalized": "guido",
+      "display_name": "Guido",
+      "explained_at": "2026-09-15T19:31:00+02:00",
+      "rank": 8,
+      "explanation": "Guido Rodríguez reapareció en la convocatoria del Valencia tras superar una lesión muscular y viajó a Vitoria para el partido ante el Alavés.",
+      "context_fingerprint": "guido-rodriguez-valencia-return-squad-alaves-injury"
+    },
+    {
+      "term_normalized": "parlamento europeo",
+      "display_name": "Parlamento Europeo",
+      "explained_at": "2026-09-15T19:31:00+02:00",
+      "rank": 10,
+      "explanation": "La Eurocámara debatió la crisis de Ceuta y la instrumentalización de migrantes; el PPE insinuó suspender el acuerdo UE-Marruecos si Rabat incumple.",
+      "context_fingerprint": "europarliament-ceuta-debate-ppe-eu-morocco-agreement"
+    },
+    {
+      "term_normalized": "bauza",
+      "display_name": "Bauza",
+      "explained_at": "2026-09-15T20:31:00+02:00",
+      "rank": 3,
+      "explanation": "Rafel Bauzà fue titular en el once rotado del Espanyol ante el Rayo y pudo continuar tras recibir un golpe al inicio.",
+      "context_fingerprint": "rafel-bauza-starts-rayo-espanyol-rotated-xi"
+    },
+    {
+      "term_normalized": "moscardo",
+      "display_name": "Moscardo",
+      "explained_at": "2026-09-15T20:31:00+02:00",
+      "rank": 4,
+      "explanation": "Gabriel Moscardo entró en el once del Espanyol ante el Rayo, compartiendo el centro del campo con Urko y Bauzà.",
+      "context_fingerprint": "gabriel-moscardo-starts-rayo-espanyol-midfield"
+    },
+    {
+      "term_normalized": "álvaro garcía",
+      "display_name": "Álvaro García",
+      "explained_at": "2026-09-15T20:31:00+02:00",
+      "rank": 7,
+      "explanation": "Álvaro García marcó el 1-0 del Rayo ante el Espanyol y asistió a Adrià Pedrosa en el segundo gol antes del descanso.",
+      "context_fingerprint": "alvaro-garcia-goal-assist-rayo-espanyol-first-half"
+    },
+    {
+      "term_normalized": "hartman",
+      "display_name": "Hartman",
+      "explained_at": "2026-09-15T20:31:00+02:00",
+      "rank": 8,
+      "explanation": "Quilindschy Hartman fue titular en el costado izquierdo del Espanyol ante el Rayo dentro de un once con varias rotaciones.",
+      "context_fingerprint": "hartman-starts-left-rayo-espanyol-rotated-xi"
+    },
+    {
+      "term_normalized": "#rcde",
+      "display_name": "#rcde",
+      "explained_at": "2026-09-15T20:31:00+02:00",
+      "rank": 1,
+      "explanation": "La etiqueta acompañó el directo del Espanyol ante el Rayo en Butarque; el Rayo llegó 2-0 al descanso con goles de Álvaro García y Pedrosa.",
+      "context_fingerprint": "rcde-rayo-espanyol-live-halftime-2-0"
+    },
+    {
+      "term_normalized": "#rcde",
+      "display_name": "#rcde",
+      "explained_at": "2026-09-15T21:31:00+02:00",
+      "rank": 1,
+      "explanation": "El Rayo ganó 2-1 al Espanyol en Butarque: Álvaro García y Pedrosa marcaron para los madrileños y Roberto Fernández recortó tras el descanso.",
+      "context_fingerprint": "rcde-rayo-espanyol-final-2-1-roberto-goal"
+    },
+    {
+      "term_normalized": "patricio guzmán",
+      "display_name": "Patricio Guzmán",
+      "explained_at": "2026-09-15T21:31:00+02:00",
+      "rank": 7,
+      "explanation": "El documentalista chileno Patricio Guzmán murió a los 85 años en París; fue autor de La batalla de Chile y referente del cine político y la memoria histórica.",
+      "context_fingerprint": "patricio-guzman-death-paris-85-documentary-memory"
+    },
+    {
+      "term_normalized": "gil manzano",
+      "display_name": "Gil Manzano",
+      "explained_at": "2026-09-15T22:29:30+02:00",
+      "rank": 1,
+      "explanation": "Arbitró el Elche-Real Madrid, que llegó al descanso 0-2 con goles de Arda Güler y Mbappé; situación provisional.",
+      "context_fingerprint": "elche-real-madrid-halftime-0-2-gil-manzano"
+    },
+    {
+      "term_normalized": "javi guerra",
+      "display_name": "Javi Guerra",
+      "explained_at": "2026-09-15T22:29:30+02:00",
+      "rank": 3,
+      "explanation": "Asistió a Luis Rioja en el 0-1 del Valencia ante el Alavés, primera victoria liguera che.",
+      "context_fingerprint": "alaves-valencia-final-0-1-javi-guerra-assist"
+    },
+    {
+      "term_normalized": "vinicius y mbappe",
+      "display_name": "Vinicius y Mbappe",
+      "explained_at": "2026-09-15T22:29:30+02:00",
+      "rank": 4,
+      "explanation": "Fueron titulares juntos en ataque ante el Elche; Mbappé marcó el 0-2 antes del descanso. Situación provisional.",
+      "context_fingerprint": "elche-real-madrid-halftime-vinicius-mbappe-start"
+    },
+    {
+      "term_normalized": "elche",
+      "display_name": "Elche",
+      "explained_at": "2026-09-15T22:29:30+02:00",
+      "rank": 7,
+      "explanation": "Recibió al Real Madrid y llegó al descanso 0-2 tras los goles de Arda Güler y Mbappé. Partido aún en juego.",
+      "context_fingerprint": "elche-real-madrid-halftime-0-2"
+    },
+    {
+      "term_normalized": "tchouameni",
+      "display_name": "Tchouameni",
+      "explained_at": "2026-09-15T22:29:30+02:00",
+      "rank": 8,
+      "explanation": "Fue titular junto a Valverde en el centro del campo del Real Madrid, que llegó 0-2 al descanso en Elche.",
+      "context_fingerprint": "elche-real-madrid-tchouameni-start-halftime-0-2"
+    },
+    {
+      "term_normalized": "hugo duro",
+      "display_name": "Hugo Duro",
+      "explained_at": "2026-09-15T22:29:30+02:00",
+      "rank": 9,
+      "explanation": "Fue titular ante el Alavés y salió en el minuto 62 por Luis Rioja, autor del 0-1 que dio al Valencia su primera victoria.",
+      "context_fingerprint": "alaves-valencia-hugo-duro-sub-rioja-winner"
+    },
+    {
+      "term_normalized": "vinicius",
+      "display_name": "Vinicius",
+      "explained_at": "2026-09-15T23:30:10+02:00",
+      "rank": 1,
+      "explanation": "Falló varias ocasiones claras ante Dituro y fue sustituido en el minuto 68; el Elche terminó empatando 2-2 al Real Madrid.",
+      "context_fingerprint": "elche-real-madrid-final-2-2-vinicius-misses-sub68"
+    },
+    {
+      "term_normalized": "elche",
+      "display_name": "Elche",
+      "explained_at": "2026-09-15T23:30:10+02:00",
+      "rank": 2,
+      "explanation": "Levantó un 0-2 ante el Real Madrid y rescató un empate 2-2 en el Martínez Valero.",
+      "context_fingerprint": "elche-real-madrid-final-comeback-2-2"
+    },
+    {
+      "term_normalized": "diomande",
+      "display_name": "Diomande",
+      "explained_at": "2026-09-15T23:30:10+02:00",
+      "rank": 3,
+      "explanation": "Dio a Mbappé la asistencia del 0-2 ante el Elche, su primer pase de gol con el Real Madrid; el partido acabó 2-2.",
+      "context_fingerprint": "diomande-first-real-madrid-assist-mbappe-elche-2-2"
+    },
+    {
+      "term_normalized": "mayol",
+      "display_name": "Mayol",
+      "explained_at": "2026-09-15T23:30:10+02:00",
+      "rank": 4,
+      "explanation": "Aarón Mayol debutó con el primer equipo del Valencia en el triunfo 0-1 ante el Alavés y Óscar Sánchez elogió la oportunidad que se había ganado.",
+      "context_fingerprint": "aaron-mayol-valencia-first-team-debut-alaves-win"
+    },
+    {
+      "term_normalized": "huijsen",
+      "display_name": "Huijsen",
+      "explained_at": "2026-09-15T23:30:10+02:00",
+      "rank": 6,
+      "explanation": "Fue titular en el 2-2 ante el Elche: Dituro atrapó un cabezazo suyo y Osorio le ganó el duelo aéreo del primer gol local.",
+      "context_fingerprint": "huijsen-elche-2-2-header-saved-osorio-duel"
+    },
+    {
+      "term_normalized": "konate",
+      "display_name": "Konate",
+      "explained_at": "2026-09-15T23:30:10+02:00",
+      "rank": 7,
+      "explanation": "Fue titular en el 2-2 del Real Madrid ante el Elche, realizó varios cortes defensivos y vio amarilla en el minuto 72.",
+      "context_fingerprint": "konate-elche-real-madrid-2-2-start-yellow"
+    },
+    {
+      "term_normalized": "güler",
+      "display_name": "Güler",
+      "explained_at": "2026-09-15T23:30:10+02:00",
+      "rank": 9,
+      "explanation": "Su lanzamiento de falta al palo terminó en autogol de Dituro para el 0-1 del Real Madrid; fue sustituido en el 68 y el partido acabó 2-2.",
+      "context_fingerprint": "guler-free-kick-dituro-own-goal-elche-2-2"
+    },
+    {
+      "term_normalized": "dituro",
+      "display_name": "Dituro",
+      "explained_at": "2026-09-15T23:30:10+02:00",
+      "rank": 10,
+      "explanation": "Se marcó en propia tras la falta de Güler, pero también detuvo varias ocasiones del Real Madrid; el Elche rescató el 2-2.",
+      "context_fingerprint": "dituro-own-goal-saves-elche-real-madrid-2-2"
+    },
+    {
+      "term_normalized": "#tierradenadie1",
+      "display_name": "#TierraDeNadie1",
+      "explained_at": "2026-09-16T06:25:45+02:00",
+      "rank": 1,
+      "explanation": "La primera gala de «Supervivientes All Stars: Tierra de Nadie» incorporó un concursante tras la baja médica de Alma Bollo y celebró la primera ceremonia de salvación.",
+      "context_fingerprint": "tierradenadie1-premiere-new-contestant-first-salvation"
+    },
+    {
+      "term_normalized": "vinicius",
+      "display_name": "Vinicius",
+      "explained_at": "2026-09-16T06:25:45+02:00",
+      "rank": 2,
+      "explanation": "Corrección material: el Elche-Real Madrid terminó 2-3, no 2-2. Vinicius falló varias ocasiones y salió en el 68; Carlos Espí marcó el gol decisivo en el añadido.",
+      "context_fingerprint": "vinicius-elche-final-correction-2-3-misses-sub68"
+    },
+    {
+      "term_normalized": "elche",
+      "display_name": "Elche",
+      "explained_at": "2026-09-16T06:25:45+02:00",
+      "rank": 3,
+      "explanation": "Corrección material: Osorio y Fer Niño igualaron el 0-2, pero Carlos Espí marcó en el añadido el 2-3 definitivo para el Real Madrid.",
+      "context_fingerprint": "elche-real-madrid-final-correction-2-3-espi-winner"
+    },
+    {
+      "term_normalized": "espí",
+      "display_name": "Espí",
+      "explained_at": "2026-09-16T06:25:45+02:00",
+      "rank": 7,
+      "explanation": "Carlos Espí marcó en el tiempo añadido el 2-3 definitivo del Real Madrid ante el Elche, su segundo gol ganador tardío de la temporada.",
+      "context_fingerprint": "espi-stoppage-time-winner-elche-real-madrid-2-3"
+    },
+    {
+      "term_normalized": "diomande",
+      "display_name": "Diomande",
+      "explained_at": "2026-09-16T06:25:45+02:00",
+      "rank": 8,
+      "explanation": "Corrección material: Diomande asistió a Mbappé en el 0-2 y el Real Madrid acabó ganando 2-3 al Elche con un gol de Espí en el añadido.",
+      "context_fingerprint": "diomande-assist-final-correction-elche-real-madrid-2-3"
+    },
+    {
+      "term_normalized": "#felizmiércoles",
+      "display_name": "#FelizMiércoles",
+      "explained_at": "2026-09-16T08:27:00+02:00",
+      "rank": 4,
+      "explanation": "Etiqueta matinal de saludos, mensajes positivos, imágenes y memes con la que los usuarios celebran la llegada del miércoles.",
+      "context_fingerprint": "felizmiercoles-2026-09-16-morning-greetings"
+    },
+    {
+      "term_normalized": "#buenosdías",
+      "display_name": "#BuenosDías",
+      "explained_at": "2026-09-16T08:27:00+02:00",
+      "rank": 8,
+      "explanation": "Conversación espontánea de primera hora basada en saludos, fotos de amaneceres, café y buenos deseos para iniciar la jornada.",
+      "context_fingerprint": "buenosdias-2026-09-16-morning-greetings"
+    },
+    {
+      "term_normalized": "ceuta",
+      "display_name": "Ceuta",
+      "explained_at": "2026-09-16T08:27:00+02:00",
+      "rank": 10,
+      "explanation": "La campaña «Todos somos caballas» apareció en partidos de LaLiga y Abde defendió su gesto de apoyo tras recibir críticas, mientras la crisis de acogida sigue abierta.",
+      "context_fingerprint": "ceuta-laliga-todos-somos-caballas-abde-support"
+    },
+    {
+      "term_normalized": "#lahora16s",
+      "display_name": "#LaHora16S",
+      "explained_at": "2026-09-16T10:30:00+02:00",
+      "rank": 6,
+      "explanation": "Etiqueta del directo de «La Hora de La 1», centrado en el compromiso comunicado por Marruecos para readmitir a las personas que entraron irregularmente en Ceuta.",
+      "context_fingerprint": "lahora16s-morocco-letter-readmission-ceuta"
+    },
+    {
+      "term_normalized": "von der leyen",
+      "display_name": "Von der Leyen",
+      "explained_at": "2026-09-16T12:25:16+02:00",
+      "rank": 2,
+      "explanation": "En su discurso sobre el Estado de la Unión propuso flexibilizar los retornos migratorios en emergencias y afirmó que Ceuta es Europa.",
+      "context_fingerprint": "soteu-2026-emergency-migrant-returns-ceuta-europe"
+    },
+    {
+      "term_normalized": "real madrid",
+      "display_name": "Real Madrid",
+      "explained_at": "2026-09-16T12:25:16+02:00",
+      "rank": 4,
+      "explanation": "Ganó 2-3 al Elche con un gol de Carlos Espí en el añadido, después de desperdiciar una ventaja de 0-2.",
+      "context_fingerprint": "real-madrid-elche-final-2-3-espi-stoppage-winner"
+    },
+    {
+      "term_normalized": "javier ambrossi",
+      "display_name": "Javier Ambrossi",
+      "explained_at": "2026-09-16T12:25:16+02:00",
+      "rank": 5,
+      "explanation": "La bola negra, dirigida con Javier Calvo, fue elegida para representar a España en la carrera por el Oscar internacional.",
+      "context_fingerprint": "la-bola-negra-spain-oscar-selection-ambrossi"
+    },
+    {
+      "term_normalized": "la bola negra",
+      "display_name": "La Bola Negra",
+      "explained_at": "2026-09-16T12:25:16+02:00",
+      "rank": 6,
+      "explanation": "La película de Javier Calvo y Javier Ambrossi fue elegida para representar a España en los Oscar.",
+      "context_fingerprint": "la-bola-negra-spain-oscar-selection"
+    },
+    {
+      "term_normalized": "javier calvo",
+      "display_name": "Javier Calvo",
+      "explained_at": "2026-09-16T12:25:16+02:00",
+      "rank": 7,
+      "explanation": "La bola negra, dirigida con Javier Ambrossi, fue elegida para representar a España en la carrera por el Oscar internacional.",
+      "context_fingerprint": "la-bola-negra-spain-oscar-selection-calvo"
+    },
+    {
+      "term_normalized": "los javis",
+      "display_name": "Los Javis",
+      "explained_at": "2026-09-16T12:25:16+02:00",
+      "rank": 9,
+      "explanation": "Representarán a España en la carrera por el Oscar internacional con La bola negra, inspirada en una obra inacabada de Lorca.",
+      "context_fingerprint": "los-javis-la-bola-negra-spain-oscar-selection"
+    },
+    {
+      "term_normalized": "oscars",
+      "display_name": "Oscars",
+      "explained_at": "2026-09-16T12:25:16+02:00",
+      "rank": 10,
+      "explanation": "La Academia de Cine eligió La bola negra para representar a España en los Oscar.",
+      "context_fingerprint": "oscars-spain-selection-la-bola-negra"
+    },
+    {
+      "term_normalized": "vivas",
+      "display_name": "Vivas",
+      "explained_at": "2026-09-16T13:27:00+02:00",
+      "rank": 2,
+      "explanation": "Sánchez remitió al presidente de Ceuta, Juan Vivas, la pregunta sobre los menores que siguen en las calles: «Eso pregúntaselo a Vivas».",
+      "context_fingerprint": "sanchez-ceuta-minors-ask-vivas"
+    },
+    {
+      "term_normalized": "sprint",
+      "display_name": "Sprint",
+      "explained_at": "2026-09-16T13:27:00+02:00",
+      "rank": 4,
+      "explanation": "El Gobierno afronta el sprint final de la legislatura con medidas de vivienda y sanidad para recuperar la iniciativa política.",
+      "context_fingerprint": "government-final-legislature-sprint-housing-health"
+    },
+    {
+      "term_normalized": "oscar",
+      "display_name": "Oscar",
+      "explained_at": "2026-09-16T13:27:00+02:00",
+      "rank": 6,
+      "explanation": "La Academia de Cine eligió La bola negra para representar a España en la carrera por el Oscar internacional.",
+      "context_fingerprint": "oscar-singular-spain-selection-la-bola-negra"
+    },
+    {
+      "term_normalized": "#mañaneros16s",
+      "display_name": "#Mañaneros16S",
+      "explained_at": "2026-09-16T13:27:00+02:00",
+      "rank": 9,
+      "explanation": "Etiqueta del directo de Mañaneros 360, con la crisis de Ceuta, Gaza y otros asuntos de actualidad política y social.",
+      "context_fingerprint": "mananeros16s-live-ceuta-gaza-current-affairs"
+    },
+    {
+      "term_normalized": "#lavidaenrosaconlidl",
+      "display_name": "#LaVidaEnRosaConLidl",
+      "explained_at": "2026-09-16T14:25:29+02:00",
+      "rank": 1,
+      "explanation": "Lidl lanzó en X un sorteo de un dúo de pequeños electrodomésticos rosas para la cocina y pidió seguir la cuenta, comentar y usar la etiqueta.",
+      "context_fingerprint": "lidl-pink-kitchen-appliances-x-giveaway"
+    },
+    {
+      "term_normalized": "david sánchez",
+      "display_name": "David Sánchez",
+      "explained_at": "2026-09-16T15:25:58+02:00",
+      "rank": 10,
+      "explanation": "El tribunal aclaró que sus nueve años de inhabilitación incluyen la pérdida de su plaza y la imposibilidad de ocupar cargos electivos o discrecionales en cualquier Administración pública.",
+      "context_fingerprint": "david-sanchez-disqualification-nine-years-all-public-administrations"
+    },
+    {
+      "term_normalized": "#tem16s",
+      "display_name": "#TEM16S",
+      "explained_at": "2026-09-16T16:29:54+02:00",
+      "rank": 4,
+      "explanation": "Todo es mentira debatió la presencia de activistas de la kale borroka en protestas propalestinas y si España debe competir con Israel.",
+      "context_fingerprint": "tem16s-kale-borroka-protests-israel-sports"
+    },
+    {
+      "term_normalized": "biedma",
+      "display_name": "Biedma",
+      "explained_at": "2026-09-16T16:29:54+02:00",
+      "rank": 5,
+      "explanation": "La jueza Beatriz Biedma denunció que la trama de Leire Díez y Santos Cerdán contactó presuntamente con el narcotráfico para apartarla del caso David Sánchez.",
+      "context_fingerprint": "biedma-leire-diez-cerdan-narcotrafficking-alleged-pressure"
+    },
+    {
+      "term_normalized": "david sánchez",
+      "display_name": "David Sánchez",
+      "explained_at": "2026-09-16T16:29:54+02:00",
+      "rank": 9,
+      "explanation": "Reedición solicitada desde Telegram: el tribunal aclaró que sus nueve años de inhabilitación alcanzan cargos electivos o discrecionales de cualquier Administración.",
+      "context_fingerprint": "david-sanchez-disqualification-rewrite-family-president-cost"
+    },
+    {
+      "term_normalized": "fair play",
+      "display_name": "Fair Play",
+      "explained_at": "2026-09-16T17:24:32+02:00",
+      "rank": 10,
+      "explanation": "El Elche reprochó a Mbappé su insulto a Gonzalo Villar con una publicación que decía «fair play», en pleno debate sobre el Balón de Oro.",
+      "context_fingerprint": "elche-mbappe-gonzalo-villar-insult-fair-play-ballon-dor"
+    },
+    {
+      "term_normalized": "latin grammy",
+      "display_name": "Latin Grammy",
+      "explained_at": "2026-09-16T18:25:16+02:00",
+      "rank": 5,
+      "explanation": "La Academia Latina de la Grabación anunció las nominaciones de 2026: Edgar Barrera lidera con diez candidaturas; Rosalía, Karol G, Jorge Drexler y CA7RIEL & Paco Amoroso suman siete.",
+      "context_fingerprint": "latin-grammy-2026-nominations-barrera-ten-rosalia-karolg-drexler-ca7riel-seven"
+    },
+    {
+      "term_normalized": "violeta",
+      "display_name": "Violeta",
+      "explained_at": "2026-09-16T18:25:16+02:00",
+      "rank": 8,
+      "explanation": "Violeta y Bronquio fueron nominados al Latin Grammy por «III. Ojalá! - Bronquio Remix» en Mejor Interpretación de Música Electrónica.",
+      "context_fingerprint": "violeta-bronquio-iii-ojala-remix-latin-grammy-electronic-nomination"
+    },
+    {
+      "term_normalized": "angeliño",
+      "display_name": "Angeliño",
+      "explained_at": "2026-09-16T19:25:33+02:00",
+      "rank": 4,
+      "explanation": "Angeliño debutó como titular con el Deportivo ante el Sevilla en Riazor, su primer partido tras fichar este verano.",
+      "context_fingerprint": "angelino-deportivo-debut-starter-sevilla-riazor-live"
+    },
+    {
+      "term_normalized": "javi calleja",
+      "display_name": "Javi Calleja",
+      "explained_at": "2026-09-16T19:25:33+02:00",
+      "rank": 5,
+      "explanation": "El Eldense anunció a Javi Calleja como nuevo entrenador hasta 2028, el primero de la etapa de Leo Messi como propietario del club.",
+      "context_fingerprint": "javi-calleja-eldense-coach-2028-first-messi-owner-era"
+    },
+    {
+      "term_normalized": "la audiencia nacional",
+      "display_name": "La Audiencia Nacional",
+      "explained_at": "2026-09-16T20:25:00+02:00",
+      "rank": 2,
+      "explanation": "La Audiencia Nacional paralizó cautelarmente el campamento para unos mil migrantes en el puerto de Ceuta mientras estudia el recurso del SUP.",
+      "context_fingerprint": "audiencia-nacional-pauses-ceuta-port-migrant-camp-sup-appeal"
+    },
+    {
+      "term_normalized": "puerto de ceuta",
+      "display_name": "Puerto de Ceuta",
+      "explained_at": "2026-09-16T20:25:00+02:00",
+      "rank": 5,
+      "explanation": "La Audiencia Nacional frenó el campamento previsto para unos mil migrantes en el puerto de Ceuta por las dudas de seguridad planteadas por el SUP.",
+      "context_fingerprint": "ceuta-port-camp-paused-security-concerns-sup"
+    },
+    {
+      "term_normalized": "#déporsevilla",
+      "display_name": "#DéporSevilla",
+      "explained_at": "2026-09-16T20:25:00+02:00",
+      "rank": 9,
+      "explanation": "Deportivo y Sevilla disputaban en Riazor la sexta jornada de LaLiga; el encuentro seguía en juego.",
+      "context_fingerprint": "depor-sevilla-laliga-md6-live-riazor"
+    },
+    {
+      "term_normalized": "#atletiosasuna",
+      "display_name": "#AtletiOsasuna",
+      "explained_at": "2026-09-16T20:25:00+02:00",
+      "rank": 10,
+      "explanation": "Jonathan David marcó el primer gol del Atlético ante Osasuna en el Metropolitano; el partido seguía en juego.",
+      "context_fingerprint": "atletico-osasuna-live-jonathan-david-opening-goal"
+    },
+    {
+      "term_normalized": "osasuna",
+      "display_name": "Osasuna",
+      "explained_at": "2026-09-16T21:27:00+02:00",
+      "rank": 1,
+      "explanation": "El Atlético goleó 4-0 a Osasuna en el Metropolitano, tercera derrota consecutiva del equipo navarro.",
+      "context_fingerprint": "atletico-osasuna-final-4-0-third-straight-loss"
+    },
+    {
+      "term_normalized": "le normand",
+      "display_name": "Le Normand",
+      "explained_at": "2026-09-16T21:27:00+02:00",
+      "rank": 2,
+      "explanation": "Le Normand marcó el tercer gol del Atlético en el 4-0 ante Osasuna con un remate desde un ángulo difícil.",
+      "context_fingerprint": "atletico-osasuna-4-0-le-normand-third-goal"
+    },
+    {
+      "term_normalized": "angeliño",
+      "display_name": "Angeliño",
+      "explained_at": "2026-09-16T21:27:00+02:00",
+      "rank": 3,
+      "explanation": "Actualización material: Angeliño fue expulsado tras revisión del VAR en la derrota 0-1 del Deportivo ante el Sevilla.",
+      "context_fingerprint": "angelino-red-card-deportivo-sevilla-final-0-1"
+    },
+    {
+      "term_normalized": "jonathan david",
+      "display_name": "Jonathan David",
+      "explained_at": "2026-09-16T21:27:00+02:00",
+      "rank": 4,
+      "explanation": "Jonathan David abrió el 4-0 del Atlético ante Osasuna con su primer gol en el Metropolitano.",
+      "context_fingerprint": "jonathan-david-opening-goal-atletico-osasuna-4-0"
+    },
+    {
+      "term_normalized": "miguel sierra",
+      "display_name": "Miguel Sierra",
+      "explained_at": "2026-09-16T21:27:00+02:00",
+      "rank": 5,
+      "explanation": "Miguel Sierra marcó el 0-1 con el que el Sevilla ganó al Deportivo en Riazor.",
+      "context_fingerprint": "miguel-sierra-winner-deportivo-sevilla-0-1"
+    },
+    {
+      "term_normalized": "claudio",
+      "display_name": "Claudio",
+      "explained_at": "2026-09-16T21:27:00+02:00",
+      "rank": 6,
+      "explanation": "El Celta de Claudio Giráldez perdió 1-0 ante el Omonia en su estreno europeo y continúa sin ganar esta temporada.",
+      "context_fingerprint": "claudio-giraldez-celta-omonia-1-0-europa-loss"
+    },
+    {
+      "term_normalized": "kang in lee",
+      "display_name": "Kang In Lee",
+      "explained_at": "2026-09-16T21:27:00+02:00",
+      "rank": 9,
+      "explanation": "Kang In Lee marcó el segundo gol del Atlético en el 4-0 ante Osasuna.",
+      "context_fingerprint": "kang-in-lee-second-goal-atletico-osasuna-4-0"
+    },
+    {
+      "term_normalized": "stassin",
+      "display_name": "Stassin",
+      "explained_at": "2026-09-16T21:27:00+02:00",
+      "rank": 10,
+      "explanation": "Stassin originó la jugada del gol de Miguel Sierra que dio al Sevilla el triunfo 0-1 ante el Deportivo.",
+      "context_fingerprint": "stassin-build-up-miguel-sierra-winner-deportivo-sevilla"
+    },
+    {
+      "term_normalized": "cancelo",
+      "display_name": "Cancelo",
+      "explained_at": "2026-09-16T22:29:00+02:00",
+      "rank": 1,
+      "explanation": "João Cancelo abrió en el minuto 8 el marcador del Barça-Racing, que continuaba en juego.",
+      "context_fingerprint": "barca-racing-live-cancelo-opening-goal-minute-8"
+    },
+    {
+      "term_normalized": "#barçaracing",
+      "display_name": "#BarçaRacing",
+      "explained_at": "2026-09-16T22:29:00+02:00",
+      "rank": 9,
+      "explanation": "El Barcelona vencía provisionalmente 2-1 al Racing con goles de Cancelo y Raphinha; Maguette había recortado distancias.",
+      "context_fingerprint": "barca-racing-live-2-1-cancelo-raphinha-maguette"
+    },
+    {
+      "term_normalized": "racing",
+      "display_name": "Racing",
+      "explained_at": "2026-09-16T23:29:00+02:00",
+      "rank": 2,
+      "explanation": "El Racing había marcado dos goles en el Camp Nou, pero el Barcelona dominaba 5-2 en un partido aún en juego.",
+      "context_fingerprint": "barcelona-racing-live-5-2-racing-two-goals"
+    },
+    {
+      "term_normalized": "adeyemi",
+      "display_name": "Adeyemi",
+      "explained_at": "2026-09-16T23:29:00+02:00",
+      "rank": 3,
+      "explanation": "Adeyemi acumulaba seis remates y varias ocasiones claras ante el Racing sin conseguir marcar.",
+      "context_fingerprint": "barca-racing-adeyemi-six-shots-missed-chances"
+    },
+    {
+      "term_normalized": "es-alert",
+      "display_name": "ES-Alert",
+      "explained_at": "2026-09-16T23:29:00+02:00",
+      "rank": 4,
+      "explanation": "Protección Civil envió un ES-Alert por lluvias intensas en Valencia, con aviso naranja de AEMET y previsión de hasta 40 mm en una hora.",
+      "context_fingerprint": "valencia-es-alert-orange-rain-40mm-hour"
+    },
+    {
+      "term_normalized": "joan garcía",
+      "display_name": "Joan García",
+      "explained_at": "2026-09-16T23:29:00+02:00",
+      "rank": 5,
+      "explanation": "Joan García fue sustituido al descanso del Barça-Racing por molestias; el cambio fue preventivo y quedaba pendiente de pruebas.",
+      "context_fingerprint": "joan-garcia-halftime-substitution-precaution-racing"
+    },
+    {
+      "term_normalized": "livakovic",
+      "display_name": "Livakovic",
+      "explained_at": "2026-09-16T23:29:00+02:00",
+      "rank": 8,
+      "explanation": "Tras las molestias de Joan García, Flick eligió a Szczęsny para la segunda parte y mantuvo a Livakovic en el banquillo.",
+      "context_fingerprint": "livakovic-benched-szczesny-replaces-joan-garcia"
+    },
+    {
+      "term_normalized": "#laisladelastentaciones4",
+      "display_name": "#LaIslaDeLasTentaciones4",
+      "explained_at": "2026-09-17T06:31:00+02:00",
+      "rank": 3,
+      "explanation": "El episodio 4 de La isla de las tentaciones 11 generó conversación por las primeras tensiones y las reacciones alrededor de Kico y Sandra Barneda.",
+      "context_fingerprint": "isla-tentaciones-11-episode-4-kico-sandra-reactions"
+    },
+    {
+      "term_normalized": "ed sheeran",
+      "display_name": "Ed Sheeran",
+      "explained_at": "2026-09-17T06:31:00+02:00",
+      "rank": 10,
+      "explanation": "Cuatro teloneros abandonaron la gira de Ed Sheeran en solidaridad con Macklemore, apartado tras defender a Palestina; Sheeran atribuyó la decisión a los promotores.",
+      "context_fingerprint": "ed-sheeran-tour-openers-quit-macklemore-palestine"
+    },
+    {
+      "term_normalized": "#felizjueves",
+      "display_name": "#FelizJueves",
+      "explained_at": "2026-09-17T08:25:28+02:00",
+      "rank": 1,
+      "explanation": "Etiqueta de conversación espontánea con saludos, cafés, imágenes y buenos deseos al comenzar el jueves.",
+      "context_fingerprint": "felizjueves-routine-thursday-morning-greetings"
+    },
+    {
+      "term_normalized": "#lahora17s",
+      "display_name": "#LaHora17S",
+      "explained_at": "2026-09-17T10:24:28+02:00",
+      "rank": 7,
+      "explanation": "La Hora de La 1 abordó la paralización cautelar de los campamentos del puerto de Ceuta; Óscar Puente afirmó que estaban terminados y que hoy estaba previsto trasladar a unos 1.800 migrantes.",
+      "context_fingerprint": "lahora17s-ceuta-port-camps-judicial-pause-puente-1800"
+    },
+    {
+      "term_normalized": "aemet",
+      "display_name": "AEMET",
+      "explained_at": "2026-09-17T13:28:08+02:00",
+      "rank": 9,
+      "explanation": "AEMET rebajó de rojo a amarillo el aviso por lluvias en Campo de Cartagena y Mazarrón; Murcia seguía en amarillo hasta las 20:00 y la Vega del Segura en naranja hasta las 13:59.",
+      "context_fingerprint": "aemet-murcia-red-downgrade-yellow-cartagena-mazarron"
+    },
+    {
+      "term_normalized": "#mañaneros17s",
+      "display_name": "#Mañaneros17S",
+      "explained_at": "2026-09-17T14:27:00+02:00",
+      "rank": 1,
+      "explanation": "Mañaneros 360 abordó la crisis de Ceuta, la evacuación de dos militares al Gómez Ulla, los nuevos audios de Cospedal y el temporal en Murcia.",
+      "context_fingerprint": "mananeros17s-ceuta-gomez-ulla-cospedal-murcia-rain"
+    },
+    {
+      "term_normalized": "gómez ulla",
+      "display_name": "Gómez Ulla",
+      "explained_at": "2026-09-17T14:27:00+02:00",
+      "rank": 2,
+      "explanation": "Dos militares heridos en agresiones en Ceuta fueron evacuados al Hospital Gómez Ulla de Madrid; uno presentaba lesiones graves.",
+      "context_fingerprint": "gomez-ulla-two-military-evacuated-ceuta-one-serious"
+    },
+    {
+      "term_normalized": "cospedal",
+      "display_name": "Cospedal",
+      "explained_at": "2026-09-17T14:27:00+02:00",
+      "rank": 5,
+      "explanation": "La Policía aportó al juez audios de Villarejo con María Dolores de Cospedal que podrían incriminarla en Kitchen; el magistrado consultó a la Fiscalía.",
+      "context_fingerprint": "cospedal-villarejo-audios-kitchen-police-judge-prosecutor"
+    },
+    {
+      "term_normalized": "#carrefourconminecraft",
+      "display_name": "#CarrefourConMinecraft",
+      "explained_at": "2026-09-17T14:27:00+02:00",
+      "rank": 9,
+      "explanation": "Carrefour Gaming promovió un sorteo de una edición física de Minecraft Dungeons II para Nintendo Switch 2 mediante la etiqueta.",
+      "context_fingerprint": "carrefour-gaming-minecraft-dungeons-ii-switch2-giveaway"
+    },
+    {
+      "term_normalized": "campo de cartagena y mazarrón",
+      "display_name": "Campo de Cartagena y Mazarrón",
+      "explained_at": "2026-09-17T14:27:00+02:00",
+      "rank": 10,
+      "explanation": "AEMET desactivó el aviso rojo tras lluvias torrenciales y mantuvo el amarillo hasta las 20:00; hubo inundaciones, cortes y rescates sin daños personales graves.",
+      "context_fingerprint": "cartagena-mazarron-red-alert-ended-yellow-flooding-rescues"
+    },
+    {
+      "term_normalized": "vivas",
+      "display_name": "Vivas",
+      "explained_at": "2026-09-17T17:27:00+02:00",
+      "rank": 1,
+      "explanation": "Actualización material: un correo mostró que Ceuta recibió en agosto una oferta del Gobierno, con financiación completa, para trasladar a 500 menores a la Península, pese a que Vivas negaba una propuesta concreta.",
+      "context_fingerprint": "vivas-ceuta-email-funded-transfer-500-minors-august"
+    },
+    {
+      "term_normalized": "#tem17s",
+      "display_name": "#TEM17S",
+      "explained_at": "2026-09-17T17:27:00+02:00",
+      "rank": 2,
+      "explanation": "Todo es mentira abordó las lesiones de dos militares evacuados desde Ceuta al Gómez Ulla y la polémica por el funcionamiento de los avisos ES-Alert.",
+      "context_fingerprint": "tem17s-ceuta-injured-military-gomez-ulla-es-alert"
+    },
+    {
+      "term_normalized": "vinicius",
+      "display_name": "Vinicius",
+      "explained_at": "2026-09-17T17:27:00+02:00",
+      "rank": 4,
+      "explanation": "Actualización material: Vinicius ocultó, junto a Mbappé y Konaté, el lema «Todos somos caballas» en una camiseta de apoyo a Ceuta; Tebas calificó el gesto de inapropiado.",
+      "context_fingerprint": "vinicius-ceuta-shirt-message-hidden-tebas-criticism"
+    },
+    {
+      "term_normalized": "cospedal",
+      "display_name": "Cospedal",
+      "explained_at": "2026-09-17T17:27:00+02:00",
+      "rank": 5,
+      "explanation": "Reedición solicitada desde Telegram: la Policía aportó audios de Villarejo con Cospedal que podrían incriminarla en Kitchen, con tres alternativas de remate irónico.",
+      "context_fingerprint": "cospedal-kitchen-audios-rewrite-distinct-ironic-alternatives"
+    },
+    {
+      "term_normalized": "guardans",
+      "display_name": "Guardans",
+      "explained_at": "2026-09-17T18:28:00+02:00",
+      "rank": 7,
+      "explanation": "Ignasi Guardans volvió a circular por su crítica a que el PP tratara la crisis de Ceuta como un problema exclusivo de Sánchez, algo que calificó de «estupidez cósmica».",
+      "context_fingerprint": "guardans-ceuta-pp-sanchez-cosmic-stupidity-criticism"
+    },
+    {
+      "term_normalized": "#svgala2",
+      "display_name": "#SVGala2",
+      "explained_at": "2026-09-17T22:29:00+02:00",
+      "rank": 2,
+      "explanation": "La audiencia siguió la segunda gala de Supervivientes All Stars 2026, centrada en las pruebas, las nominaciones y la convivencia en los Cayos Cochinos.",
+      "context_fingerprint": "supervivientes-all-stars-2026-gala2-tests-nominations-live"
+    },
+    {
+      "term_normalized": "getafe",
+      "display_name": "Getafe",
+      "explained_at": "2026-09-17T22:29:00+02:00",
+      "rank": 5,
+      "explanation": "El Getafe perdió 1-0 ante el Betis en La Cartuja, con gol de Abde y expulsión de Mario Martín en un partido con polémica arbitral.",
+      "context_fingerprint": "betis-getafe-final-1-0-abde-mario-martin-red"
+    },
+    {
+      "term_normalized": "bournemouth",
+      "display_name": "Bournemouth",
+      "explained_at": "2026-09-17T23:31:00+02:00",
+      "rank": 5,
+      "explanation": "El Bournemouth venció 1-2 a la Real Sociedad en su primer partido europeo, con goles de Kluivert y Rayan; Sergio Gómez marcó para la Real.",
+      "context_fingerprint": "real-sociedad-bournemouth-final-1-2-european-debut"
+    },
+    {
+      "term_normalized": "#málagavillarreal",
+      "display_name": "#MálagaVillarreal",
+      "explained_at": "2026-09-17T23:31:00+02:00",
+      "rank": 6,
+      "explanation": "El Málaga se adelantó con Dotor y el Villarreal remontó antes del descanso con Moleiro y Pape Gueye; el snapshot mostraba 1-2 en el minuto 68, aún en juego.",
+      "context_fingerprint": "malaga-villarreal-live-68-1-2-dotor-moleiro-gueye"
+    },
+    {
+      "term_normalized": "deossa",
+      "display_name": "Deossa",
+      "explained_at": "2026-09-17T23:31:00+02:00",
+      "rank": 7,
+      "explanation": "Nelson Deossa destacó por su potencia en la medular durante la victoria 1-0 del Betis ante el Getafe.",
+      "context_fingerprint": "betis-getafe-final-1-0-deossa-midfield-power"
+    },
+    {
+      "term_normalized": "isco",
+      "display_name": "Isco",
+      "explained_at": "2026-09-17T23:31:00+02:00",
+      "rank": 8,
+      "explanation": "Isco llevó los mandos del Betis en el triunfo 1-0 ante el Getafe y fue sustituido por Dani Ceballos en el minuto 61.",
+      "context_fingerprint": "betis-getafe-final-1-0-isco-control-61-sub"
+    },
+    {
+      "term_normalized": "antony",
+      "display_name": "Antony",
+      "explained_at": "2026-09-17T23:31:00+02:00",
+      "rank": 9,
+      "explanation": "Antony hizo nueve remates, cuatro a puerta, y participó en la jugada del gol de Abde en el 1-0 del Betis al Getafe.",
+      "context_fingerprint": "betis-getafe-final-1-0-antony-nine-shots-build-up"
+    },
+    {
+      "term_normalized": "mario martín",
+      "display_name": "Mario Martín",
+      "explained_at": "2026-09-17T23:31:00+02:00",
+      "rank": 10,
+      "explanation": "Mario Martín fue expulsado en el minuto 86 por doble amarilla durante la derrota 1-0 del Getafe ante el Betis.",
+      "context_fingerprint": "betis-getafe-final-1-0-mario-martin-red-86"
+    },
+    {
+      "term_normalized": "barça",
+      "display_name": "Barça",
+      "explained_at": "2026-09-18T06:24:00+02:00",
+      "rank": 8,
+      "explanation": "El Barça goleó 7-2 al Racing con triplete de Raphinha y mantuvo el pleno liguero: seis victorias y 18 puntos.",
+      "context_fingerprint": "barca-racing-final-7-2-raphinha-hat-trick-perfect-start"
+    },
+    {
+      "term_normalized": "dime que no is out",
+      "display_name": "DIME QUE NO IS OUT",
+      "explained_at": "2026-09-18T06:24:00+02:00",
+      "rank": 9,
+      "explanation": "Los seguidores de VIOLETA impulsaron la frase por el estreno de «Dime que no», publicado el 17 de septiembre.",
+      "context_fingerprint": "violeta-dime-que-no-single-release-fandom-trend"
+    },
+    {
+      "term_normalized": "#realbetisgetafe",
+      "display_name": "#realbetisgetafe",
+      "explained_at": "2026-09-18T08:25:00+02:00",
+      "rank": 10,
+      "explanation": "El Betis venció 1-0 al Getafe con gol de Abde; Mario Martín fue expulsado en el minuto 86.",
+      "context_fingerprint": "real-betis-getafe-final-1-0-abde-mario-martin-red"
+    },
+    {
+      "term_normalized": "el censo electoral",
+      "display_name": "El Censo Electoral",
+      "explained_at": "2026-09-18T09:25:00+02:00",
+      "rank": 6,
+      "explanation": "El Supremo mantiene suspendido cautelarmente el voto de los nacionalizados por la ley de nietos; el debate afecta a su inclusión en el censo, no a su nacionalidad.",
+      "context_fingerprint": "supremo-ley-nietos-censo-vote-suspended-nationality-intact"
+    },
+    {
+      "term_normalized": "claudia tacoronte",
+      "display_name": "Claudia Tacoronte",
+      "explained_at": "2026-09-18T09:25:00+02:00",
+      "rank": 9,
+      "explanation": "México detuvo al presunto responsable del feminicidio de la estudiante española Claudia Tacoronte, asesinada en Cuautla durante un intercambio universitario.",
+      "context_fingerprint": "claudia-tacoronte-presumed-killer-arrested-cuautla"
+    },
+    {
+      "term_normalized": "#buenosdías",
+      "display_name": "#BuenosDías",
+      "explained_at": "2026-09-18T09:25:00+02:00",
+      "rank": 10,
+      "explanation": "Etiqueta de conversación espontánea con saludos, cafés, imágenes y buenos deseos al comenzar el viernes.",
+      "context_fingerprint": "buenosdias-routine-friday-morning-greetings"
+    },
+    {
+      "term_normalized": "madina",
+      "display_name": "Madina",
+      "explained_at": "2026-09-18T10:25:00+02:00",
+      "rank": 7,
+      "explanation": "Eduardo Madina criticó la gestión de la crisis de Ceuta, afirmó que no hay un paso del Gobierno que se entienda y señaló la falta de coordinación.",
+      "context_fingerprint": "madina-ceuta-government-management-coordination-criticism"
+    },
+    {
+      "term_normalized": "san josé de cupertino",
+      "display_name": "San José de Cupertino",
+      "explained_at": "2026-09-18T10:25:00+02:00",
+      "rank": 9,
+      "explanation": "Su festividad se celebra el 18 de septiembre; es conocido como el santo volador y patrón de estudiantes, aviadores y astronautas.",
+      "context_fingerprint": "san-jose-cupertino-feast-day-flying-saint-students-aviators"
+    },
+    {
+      "term_normalized": "josep martínez",
+      "display_name": "Josep Martínez",
+      "explained_at": "2026-09-18T12:28:00+02:00",
+      "rank": 2,
+      "explanation": "Primera convocatoria con la selección absoluta para el portero del Inter, que entra tras la lesión de Joan García.",
+      "context_fingerprint": "spain-nations-league-josep-martinez-first-call-joan-garcia-injury"
+    },
+    {
+      "term_normalized": "luis de la fuente",
+      "display_name": "Luis de la Fuente",
+      "explained_at": "2026-09-18T12:28:00+02:00",
+      "rank": 5,
+      "explanation": "Anunció la lista de España para la Nations League, con los estrenos de Josep Martínez y Roberto Fernández y los regresos de Huijsen y Fermín.",
+      "context_fingerprint": "spain-nations-league-squad-josep-roberto-debuts-huijsen-fermin-returns"
+    },
+    {
+      "term_normalized": "roberto fernández",
+      "display_name": "Roberto Fernández",
+      "explained_at": "2026-09-18T12:28:00+02:00",
+      "rank": 6,
+      "explanation": "Primera convocatoria con la absoluta para el delantero del Espanyol, que suma seis goles esta temporada.",
+      "context_fingerprint": "spain-nations-league-roberto-fernandez-first-call-six-goals"
+    },
+    {
+      "term_normalized": "roberto",
+      "display_name": "Roberto",
+      "explained_at": "2026-09-18T13:25:00+02:00",
+      "rank": 5,
+      "explanation": "Roberto Fernández recibió su primera convocatoria con la absoluta tras marcar seis goles en las seis primeras jornadas con el Espanyol.",
+      "context_fingerprint": "roberto-fernandez-first-spain-call-six-goals-six-games"
+    },
+    {
+      "term_normalized": "álvaro valles",
+      "display_name": "Álvaro Valles",
+      "explained_at": "2026-09-18T13:25:00+02:00",
+      "rank": 6,
+      "explanation": "Destacó en el triunfo 1-0 del Betis ante el Getafe, mantuvo la portería a cero y mostró seguridad también con el balón en los pies.",
+      "context_fingerprint": "betis-getafe-1-0-alvaro-valles-clean-sheet-standout"
+    },
+    {
+      "term_normalized": "nations league",
+      "display_name": "Nations League",
+      "explained_at": "2026-09-18T13:25:00+02:00",
+      "rank": 8,
+      "explanation": "España presentó su convocatoria para la Nations League, que comenzará el 26 de septiembre ante Inglaterra antes de medirse a Croacia y República Checa.",
+      "context_fingerprint": "spain-nations-league-squad-england-croatia-czechia"
+    },
+    {
+      "term_normalized": "huijsen",
+      "display_name": "Huijsen",
+      "explained_at": "2026-09-18T13:25:00+02:00",
+      "rank": 9,
+      "explanation": "Dean Huijsen regresó a la convocatoria de España para la Nations League tras quedarse fuera del Mundial por una lesión muscular.",
+      "context_fingerprint": "huijsen-spain-return-nations-league-after-world-cup-injury"
+    },
+    {
+      "term_normalized": "gavi",
+      "display_name": "Gavi",
+      "explained_at": "2026-09-18T16:28:00+02:00",
+      "rank": 9,
+      "explanation": "Gavi quedó fuera de la convocatoria de España para la Nations League; debe cumplir un partido de sanción por conducta antideportiva en la final del Mundial.",
+      "context_fingerprint": "spain-nations-league-gavi-omitted-one-match-suspension-world-cup-final"
+    },
+    {
+      "term_normalized": "#mañaneros18s",
+      "display_name": "#Mañaneros18S",
+      "explained_at": "2026-09-18T17:28:00+02:00",
+      "rank": 7,
+      "explanation": "Mañaneros analizó la crisis de Ceuta y las preguntas pendientes sobre la compra del ático de Ayuso, incluida su frase «con mi dinero público».",
+      "context_fingerprint": "mananeros18s-ceuta-ayuso-attic-public-money"
+    },
+    {
+      "term_normalized": "nike",
+      "display_name": "Nike",
+      "explained_at": "2026-09-18T17:28:00+02:00",
+      "rank": 10,
+      "explanation": "Mbappé dejó Nike tras dos décadas y fichó por la marca suiza On, que prepara su entrada en el fútbol y lanzará botas en 2027.",
+      "context_fingerprint": "mbappe-leaves-nike-signs-on-football-entry-2027"
+    }
+  ]
+}

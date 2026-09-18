@@ -1,0 +1,120 @@
+{
+  "project": "TTendencias",
+  "country": "ES",
+  "captured_at": "2026-09-18T18:04:06+02:00",
+  "primary_source": "trends24",
+  "top10": [
+    "#SVGala2",
+    "Vivas",
+    "Madina",
+    "Josep Martínez",
+    "#TEM18S",
+    "Luis de la Fuente",
+    "#Mañaneros18S",
+    "Barça",
+    "Bonares",
+    "Nike"
+  ],
+  "items": [
+    {
+      "rank": 1,
+      "name": "#SVGala2"
+    },
+    {
+      "rank": 2,
+      "name": "Vivas"
+    },
+    {
+      "rank": 3,
+      "name": "Madina"
+    },
+    {
+      "rank": 4,
+      "name": "Josep Martínez"
+    },
+    {
+      "rank": 5,
+      "name": "#TEM18S"
+    },
+    {
+      "rank": 6,
+      "name": "Luis de la Fuente"
+    },
+    {
+      "rank": 7,
+      "name": "#Mañaneros18S"
+    },
+    {
+      "rank": 8,
+      "name": "Barça"
+    },
+    {
+      "rank": 9,
+      "name": "Bonares"
+    },
+    {
+      "rank": 10,
+      "name": "Nike"
+    }
+  ],
+  "unchanged_from_previous": true,
+  "sources": {
+    "trends24": {
+      "ok": true,
+      "trends": [
+        "#SVGala2",
+        "Vivas",
+        "Madina",
+        "Josep Martínez",
+        "#TEM18S",
+        "Luis de la Fuente",
+        "#Mañaneros18S",
+        "Barça",
+        "Bonares",
+        "Nike",
+        "puerto de Ceuta",
+        "Roberto Fernández",
+        "ES-Alert",
+        "#lahora18s",
+        "Real Madrid",
+        "Álvaro Valles",
+        "JOAN GARCÍA",
+        "Huelva",
+        "Pirri",
+        "El Parlamento Europeo"
+      ],
+      "error": null
+    },
+    "getdaytrends": {
+      "ok": false,
+      "trends": [],
+      "error": "HTTPError: 502 Server Error: Bad Gateway for url: https://getdaytrends.com/es/spain/?_=1789747446"
+    },
+    "tweets24": {
+      "ok": true,
+      "trends": [
+        "#SVGala2",
+        "Vivas",
+        "Madina",
+        "Josep Martínez",
+        "#TEM18S",
+        "Luis de la Fuente",
+        "#Mañaneros18S",
+        "Barça",
+        "Bonares",
+        "Nike",
+        "puerto de Ceuta",
+        "Roberto Fernández",
+        "ES-Alert",
+        "#lahora18s",
+        "Real Madrid",
+        "Álvaro Valles",
+        "JOAN GARCÍA",
+        "Huelva",
+        "Pirri",
+        "El Parlamento Europeo"
+      ],
+      "error": null
+    }
+  }
+}

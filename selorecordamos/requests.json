@@ -1,0 +1,691 @@
+{
+  "requests": [
+    {
+      "created_at": "2026-09-14T23:58:08.944Z",
+      "type": "evaluate",
+      "tweet_id": "2095200022874714262",
+      "user": "@Ma_Rhea_",
+      "text": "Recordadme que no vuelva a comentar ningún tuit a personas que no te contestan nunca, anda y que los follen.",
+      "url": "https://x.com/Ma_Rhea_/status/2095200022874714262",
+      "datetime": "2026-09-02T17:19:47.000Z"
+    },
+    {
+      "created_at": "2026-09-14T23:58:20.757Z",
+      "type": "evaluate",
+      "tweet_id": "2095848942458077222",
+      "user": "@Charmeine_angel",
+      "text": "La próxima vez que diga que al día siguiente tengo día más tranquilo, que alguien me recuerde que es lo peor que puedo hacer",
+      "url": "https://x.com/Charmeine_angel/status/2095848942458077222",
+      "datetime": "2026-09-04T12:18:21.000Z"
+    },
+    {
+      "created_at": "2026-09-14T23:58:29.365Z",
+      "type": "evaluate",
+      "tweet_id": "2096276812053541338",
+      "user": "@andreasolerl",
+      "text": "Recordadme que esta red social no se puede bromear ni poner nada, porque te citan en candado y viene la policia de la diversión. Estoy hartisima.",
+      "url": "https://x.com/andreasolerl/status/2096276812053541338",
+      "datetime": "2026-09-05T16:38:33.000Z"
+    },
+    {
+      "created_at": "2026-09-14T23:58:57.493Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857190,
+      "telegram_message_id": 269,
+      "tweet_id": "2096318263642706021",
+      "user": "@S0ULBREACH",
+      "text": "⠀\n/ #𝑶𝒐𝒄: Yyy me dio limit. Recordadme. \n⠀⠀",
+      "url": "https://x.com/S0ULBREACH/status/2096318263642706021",
+      "datetime": "2026-09-05T19:23:16.000Z",
+      "instruction": "Esto no debería pasar el filtro. No pide nada"
+    },
+    {
+      "created_at": "2026-09-14T23:59:30.771Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857193,
+      "telegram_message_id": 271,
+      "tweet_id": "2096612067469869162",
+      "user": "@m4l4muj3",
+      "text": "recordadme que no vuelva a mondo nuncamas gracias",
+      "url": "https://x.com/m4l4muj3/status/2096612067469869162",
+      "datetime": "2026-09-06T14:50:44.000Z",
+      "instruction": "Evalúa pero si hay manera de entender que es mondo"
+    },
+    {
+      "created_at": "2026-09-15T00:00:01.246Z",
+      "type": "evaluate",
+      "tweet_id": "2096709284989956421",
+      "user": "@Fr0gzRc00L",
+      "text": "Recordadme de vez en cuando que hablo español porfas. A veces se me olvida ",
+      "url": "https://x.com/Fr0gzRc00L/status/2096709284989956421",
+      "datetime": "2026-09-06T21:17:03.000Z"
+    },
+    {
+      "created_at": "2026-09-15T00:00:38.665Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857200,
+      "telegram_message_id": 273,
+      "tweet_id": "2096765471051640958",
+      "user": "@squyii4",
+      "text": "siempre he querido que alguien me recuerde con la canción \"for the first time\" aunq nunca me lo dirian",
+      "url": "https://x.com/squyii4/status/2096765471051640958",
+      "datetime": "2026-09-07T01:00:18.000Z",
+      "instruction": "Recuerde con. Normalmente no entrarán en el filtro"
+    },
+    {
+      "created_at": "2026-09-15T00:00:53.837Z",
+      "type": "evaluate",
+      "tweet_id": "2096859270952239315",
+      "user": "@jrrojop",
+      "text": "Recordadme que no vuelva a mirar encuestas electorales si no quiero deprimirme.",
+      "url": "https://x.com/jrrojop/status/2096859270952239315",
+      "datetime": "2026-09-07T07:13:02.000Z"
+    },
+    {
+      "created_at": "2026-09-15T00:01:19.408Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857204,
+      "telegram_message_id": 275,
+      "tweet_id": "2097015959592509923",
+      "user": "@niimenii_",
+      "text": "Recordadme que no vuelva a cumpleaños infantiles que haga una almond mom",
+      "url": "https://x.com/niimenii_/status/2097015959592509923",
+      "datetime": "2026-09-07T17:35:40.000Z",
+      "instruction": "Evaluar si es que le vemos sentido al final. No entiendo lo que quiere decir"
+    },
+    {
+      "created_at": "2026-09-15T00:01:38.641Z",
+      "type": "evaluate",
+      "tweet_id": "2097062352864547302",
+      "user": "@iqpillhimedere",
+      "text": "Que alguien me recuerde que mi próximo post de Instagram tiene que tener cocteau twins - pepper trees de fondo gracias!!",
+      "url": "https://x.com/iqpillhimedere/status/2097062352864547302",
+      "datetime": "2026-09-07T20:40:01.000Z"
+    },
+    {
+      "created_at": "2026-09-15T00:01:53.401Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857208,
+      "telegram_message_id": 277,
+      "tweet_id": "2097677096990502988",
+      "user": "@Eduharkonnen",
+      "text": "Recordadme con orgullo.",
+      "url": "https://x.com/Eduharkonnen/status/2097677096990502988",
+      "datetime": "2026-09-09T13:22:47.000Z",
+      "instruction": "No debería pasar el filtro"
+    },
+    {
+      "created_at": "2026-09-15T00:02:06.504Z",
+      "type": "evaluate",
+      "tweet_id": "2097777751898161373",
+      "user": "@Marlenaa_22",
+      "text": "que alguien me recuerde lo guapa que soy que me apetece escucharlo, gracias",
+      "url": "https://x.com/Marlenaa_22/status/2097777751898161373",
+      "datetime": "2026-09-09T20:02:45.000Z"
+    },
+    {
+      "created_at": "2026-09-15T00:02:11.580Z",
+      "type": "evaluate",
+      "tweet_id": "2097909531825127695",
+      "user": "@cachivancio",
+      "text": "Recordadme que a partir de ahora odie al Betis con todas mis fuerzas ",
+      "url": "https://x.com/cachivancio/status/2097909531825127695",
+      "datetime": "2026-09-10T04:46:24.000Z"
+    },
+    {
+      "created_at": "2026-09-15T00:02:36.881Z",
+      "type": "evaluate",
+      "tweet_id": "2098185032493846918",
+      "user": "@leyrevss",
+      "text": "recordadme q no vuelva a hablar nunca mas",
+      "url": "https://x.com/leyrevss/status/2098185032493846918",
+      "datetime": "2026-09-10T23:01:08.000Z"
+    },
+    {
+      "created_at": "2026-09-15T00:02:41.433Z",
+      "type": "evaluate",
+      "tweet_id": "2098206442725491172",
+      "user": "@urrighthandg1rl",
+      "text": "hola recordadme que la proxima vez me ponga rodilleras, tengo las rodillas igual de rojas que dos tomates ",
+      "url": "https://x.com/urrighthandg1rl/status/2098206442725491172",
+      "datetime": "2026-09-11T00:26:13.000Z"
+    },
+    {
+      "created_at": "2026-09-15T00:02:46.230Z",
+      "type": "evaluate",
+      "tweet_id": "2098290885116961130",
+      "user": "@StefbucksCoffee",
+      "text": "Recordadme que no vuelva a intentar preparar una fiesta masiva en la que coordinar a mucha gente. Qué estrés.",
+      "url": "https://x.com/StefbucksCoffee/status/2098290885116961130",
+      "datetime": "2026-09-11T06:01:46.000Z"
+    },
+    {
+      "created_at": "2026-09-15T00:02:51.652Z",
+      "type": "evaluate",
+      "tweet_id": "2098461977693614094",
+      "user": "@Yaniiux",
+      "text": "Recordadme por favor que no vuelva a hacer reroll en el LoL ",
+      "url": "https://x.com/Yaniiux/status/2098461977693614094",
+      "datetime": "2026-09-11T17:21:37.000Z"
+    },
+    {
+      "created_at": "2026-09-15T00:05:18.313Z",
+      "type": "evaluate",
+      "tweet_id": "2098535480098791647",
+      "user": "@Anjals_simply",
+      "text": "Recordadme que compre la pintura Contrast Dreadful Visage cuando suba a BCN",
+      "url": "https://x.com/Anjals_simply/status/2098535480098791647",
+      "datetime": "2026-09-11T22:13:42.000Z"
+    },
+    {
+      "created_at": "2026-09-15T00:05:54.633Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857222,
+      "telegram_message_id": 280,
+      "tweet_id": "2098804624329236940",
+      "user": "@atz_1210",
+      "text": "Recordadme que para el tour de ateez haga mil freebies porque ahora la gente te mete la mano directamente en la bolsa o te piden 5 para sus amiguis y se te acaban en 2 segundos",
+      "url": "https://x.com/atz_1210/status/2098804624329236940",
+      "datetime": "2026-09-12T16:03:11.000Z",
+      "instruction": "Evalúa pero como ya he dicho. Un lenguaje que nos sobrepasa e intentamos entender que está diciendo."
+    },
+    {
+      "created_at": "2026-09-15T05:17:58.174Z",
+      "type": "evaluate",
+      "tweet_id": "2097346885551874371",
+      "user": "@ChicaAstronaut1",
+      "text": "Que alguien  me recuerde que tomar licuado de papaya antes de salir a la calle no es buena idea. ",
+      "url": "https://x.com/ChicaAstronaut1/status/2097346885551874371",
+      "datetime": "2026-09-08T15:30:38.000Z"
+    },
+    {
+      "created_at": "2026-09-15T05:18:14.756Z",
+      "type": "evaluate",
+      "tweet_id": "2098735664204280133",
+      "user": "@El_Luisi_27",
+      "text": "Que alguien me recuerde que no tome más chupitos en la ducha menuda resaca",
+      "url": "https://x.com/El_Luisi_27/status/2098735664204280133",
+      "datetime": "2026-09-12T11:29:09.000Z"
+    },
+    {
+      "created_at": "2026-09-15T10:32:05.218Z",
+      "type": "evaluate",
+      "tweet_id": "2099733832865898527",
+      "user": "@NoEsPaula",
+      "text": "Recuerdenle a Yahir que hace una semana se les estaba pudriendo la comida en el refri, ahora sí todos van a poder comerse los recalentados y comida que les lleven el viernes, ya no habrá desperdicio de comida\n#LaCasaDeLosFamososMéxicoMx\n#LCDLFMx\n#LaCasaDeLosFamososMéxico",
+      "url": "https://x.com/NoEsPaula/status/2099733832865898527",
+      "datetime": "2026-09-15T05:35:31.000Z"
+    },
+    {
+      "created_at": "2026-09-15T10:39:33.259Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857253,
+      "telegram_message_id": 401,
+      "tweet_id": "2097909531825127695",
+      "user": "@cachivancio",
+      "text": "Recordadme que a partir de ahora odie al Betis con todas mis fuerzas ",
+      "url": "https://x.com/cachivancio/status/2097909531825127695",
+      "datetime": "2026-09-10T04:46:24.000Z",
+      "instruction": "Adjunta una foto donde ha fallado un combinado de apuestas porque el Betis ha ganado y había apostado a que perdía o empataba. Evalúa de nuevo"
+    },
+    {
+      "created_at": "2026-09-15T10:39:54.513Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857255,
+      "telegram_message_id": 403,
+      "tweet_id": "2097062352864547302",
+      "user": "@iqpillhimedere",
+      "text": "Que alguien me recuerde que mi próximo post de Instagram tiene que tener cocteau twins - pepper trees de fondo gracias!!",
+      "url": "https://x.com/iqpillhimedere/status/2097062352864547302",
+      "datetime": "2026-09-07T20:40:01.000Z",
+      "instruction": "Orientado a quien es esa gente"
+    },
+    {
+      "created_at": "2026-09-15T11:09:48.082Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857263,
+      "telegram_message_id": 425,
+      "tweet_id": "2099810105214529735",
+      "user": "@chmeee",
+      "text": "Oh, después de cuatro años, ¡han vuelto \n@SeLoRecordamos\n! La mejor cuenta de recordadores de todo twitter.",
+      "url": "https://x.com/chmeee/status/2099810105214529735",
+      "datetime": "2026-09-15T10:38:36.000Z",
+      "instruction": "Evalúa para decir que les recordamos que también nos sonrojamos."
+    },
+    {
+      "created_at": "2026-09-15T12:42:04.476Z",
+      "type": "evaluate",
+      "tweet_id": "2099837591063351329",
+      "user": "@carolinabaigor6",
+      "text": "¿Campana fue la que dijo que, el domingo, reventó el Barrio Chino de los fans de charlotte y que al obelisco fueron solo 5 personas? Habría que recordarle el dicho \"MENOS ES MAS\"",
+      "url": "https://x.com/carolinabaigor6/status/2099837591063351329",
+      "datetime": "2026-09-15T12:27:49.000Z"
+    },
+    {
+      "created_at": "2026-09-15T13:08:39.593Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857271,
+      "telegram_message_id": 438,
+      "tweet_id": "2099843558891049280",
+      "user": "@NefruKemet",
+      "text": "“ Pero sí puedo recordarle algo que quizá olvide cuando vuelva a ponerse la corona. ”\n\nHizo una breve pausa. \n\n»",
+      "url": "https://x.com/NefruKemet/status/2099843558891049280",
+      "datetime": "2026-09-15T12:51:32.000Z",
+      "instruction": "Evalúa pero ten el cuenta que es en plan literario entrecomillado. Deberíamos contestar parecido."
+    },
+    {
+      "created_at": "2026-09-15T14:06:04.940Z",
+      "type": "evaluate",
+      "tweet_id": "2099854774459892131",
+      "user": "@Avoby_",
+      "text": "Si alguna vez estoy triste recordadme que escuche eternal sunshine",
+      "url": "https://x.com/Avoby_/status/2099854774459892131",
+      "datetime": "2026-09-15T13:36:06.000Z"
+    },
+    {
+      "created_at": "2026-09-15T14:13:30.401Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857279,
+      "telegram_message_id": 461,
+      "tweet_id": "2099854774459892131",
+      "user": "@Avoby_",
+      "text": "Si alguna vez estoy triste recordadme que escuche eternal sunshine",
+      "url": "https://x.com/Avoby_/status/2099854774459892131",
+      "datetime": "2026-09-15T13:36:06.000Z",
+      "instruction": "Hay que usar recuerde o le recordamos."
+    },
+    {
+      "created_at": "2026-09-15T15:22:16.653Z",
+      "type": "evaluate",
+      "tweet_id": "2099847272938819893",
+      "user": "@clinteastwoodX2",
+      "text": "Alexander Zverev siempre que puede trata de menospreciar a Carlos Alcaraz, intenta ponerse a su nivel.\n\nHabría que recordarle que el español le ganó el Roland Garros 2024, que tiene cinco Grand Slams más que él y que este año, en el Australian Open, le ganó este partido histórico",
+      "url": "https://x.com/clinteastwoodX2/status/2099847272938819893",
+      "datetime": "2026-09-15T13:06:17.000Z"
+    },
+    {
+      "created_at": "2026-09-15T17:06:17.844Z",
+      "type": "evaluate",
+      "tweet_id": "2099905516948296137",
+      "user": "@g13m__",
+      "text": "recordadme cuando quiera volver a cometer la imprudencia de venir al gimnasio a estas horas que no lo haga por favor",
+      "url": "https://x.com/g13m__/status/2099905516948296137",
+      "datetime": "2026-09-15T16:57:44.000Z"
+    },
+    {
+      "created_at": "2026-09-15T17:06:57.982Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857293,
+      "telegram_message_id": 482,
+      "tweet_id": "2099898166774845853",
+      "user": "@martistachiotti",
+      "text": "alguien puede recordarle a luana que quedó en placa planta después de perder una positiva con salvaciones multitudinarias dónde se salvó hasta campanita que era nueva, incluyendo a cinzia que según ella \"no tiene gente\" ? además de que se quedó gracias a los solangistas 2 veces.",
+      "url": "https://x.com/martistachiotti/status/2099898166774845853",
+      "datetime": "2026-09-15T16:28:31.000Z",
+      "instruction": "Se lo recordaríamos si hubieses entendido al menos tres palabras…"
+    },
+    {
+      "created_at": "2026-09-15T19:07:44.064Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857301,
+      "telegram_message_id": 490,
+      "tweet_id": "2099926480176152727",
+      "user": "@Jacob_GibbsTw",
+      "text": "Me permito recordarle a nuestros colegas sevillanos que las galicias no son cruzcampo, que he visto alguno que no sé si llegará vivo al partido de mañana",
+      "url": "https://x.com/Jacob_GibbsTw/status/2099926480176152727",
+      "datetime": "2026-09-15T18:21:02.000Z",
+      "instruction": "Cuando haya algo sobre Cruzcampo, caña a Cruzcampo a lo bestia con copia al communiste de Cruzcampo. Evalúa"
+    },
+    {
+      "created_at": "2026-09-15T19:08:36.414Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857304,
+      "telegram_message_id": 492,
+      "tweet_id": "2099899591009218609",
+      "user": "@Islands93161443",
+      "text": "Creo que no. 80% participación. Y es baja allí. Sobre lo demás, recordarle que denominar \"izquierda\" a la oposición (seguro que puede informarse de cada partido) es un poco arriesgado.",
+      "url": "https://x.com/Islands93161443/status/2099899591009218609",
+      "datetime": "2026-09-15T16:34:11.000Z",
+      "instruction": "Hablan sobre las elecciones en Suecia. Evalúa."
+    },
+    {
+      "created_at": "2026-09-15T21:06:41.318Z",
+      "type": "evaluate",
+      "tweet_id": "2099931843403366862",
+      "user": "@OscarDelDiablo",
+      "text": "15 de septiembre: día de recordarle a nuestrxs hermanxs vascxs, catalanxs y gallegxs: sí se puede.",
+      "url": "https://x.com/OscarDelDiablo/status/2099931843403366862",
+      "datetime": "2026-09-15T18:42:20.000Z"
+    },
+    {
+      "created_at": "2026-09-15T22:30:46.371Z",
+      "type": "evaluate",
+      "tweet_id": "2099982488609161383",
+      "user": "@CabaRM_",
+      "text": "Por cierto otra más del señor plus berreando los goles que le meten al Madrid. En el empate le llegan a enfocar y le ves agitando los brazos. Recordadme que para el siguiente partido ponga la radio de fondo.",
+      "url": "https://x.com/CabaRM_/status/2099982488609161383",
+      "datetime": "2026-09-15T22:03:35.000Z"
+    },
+    {
+      "created_at": "2026-09-15T22:31:21.494Z",
+      "type": "evaluate",
+      "tweet_id": "2099972288468721858",
+      "user": "@pauppallares",
+      "text": "Recordadme que no juegue más rankeds al LOL, solo partidas normales, por mi salud mental :)",
+      "url": "https://x.com/pauppallares/status/2099972288468721858",
+      "datetime": "2026-09-15T21:23:03.000Z"
+    },
+    {
+      "created_at": "2026-09-15T23:26:45.357Z",
+      "type": "evaluate",
+      "tweet_id": "2099996824152998284",
+      "user": "@juanchoceledon",
+      "text": "El asunto es que cuando reparten, dicen: Valle del Cauca, Antioquia, Bogotá. Y la costa. Hay que recordarle que la costa caribe tiene 7 departamentos y la isla de San Andrés",
+      "url": "https://x.com/juanchoceledon/status/2099996824152998284",
+      "datetime": "2026-09-15T23:00:33.000Z"
+    },
+    {
+      "created_at": "2026-09-15T23:27:10.725Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857322,
+      "telegram_message_id": 539,
+      "tweet_id": "2099993746452382075",
+      "user": "@JVSSSJVSSS",
+      "text": "Alguien debería de recordarle a este ministro que todos los ministros son responsables de las decisiones tomadas en sus consejos.",
+      "url": "https://x.com/JVSSSJVSSS/status/2099993746452382075",
+      "datetime": "2026-09-15T22:48:19.000Z",
+      "instruction": "Se refiere a Bolaños"
+    },
+    {
+      "created_at": "2026-09-15T23:27:36.262Z",
+      "type": "evaluate",
+      "tweet_id": "2099983693573914665",
+      "user": "@CabaRM_",
+      "text": "Por cierto otra más de carlitos plus berreando los goles que le meten al Madrid. En el empate le llegan a enfocar y le ves agitando los brazos. Recordadme que para el siguiente partido ponga la radio de fondo.",
+      "url": "https://x.com/CabaRM_/status/2099983693573914665",
+      "datetime": "2026-09-15T22:08:23.000Z"
+    },
+    {
+      "created_at": "2026-09-16T05:30:28.095Z",
+      "type": "evaluate",
+      "tweet_id": "2100015510490411073",
+      "user": "@TioCharlie0002",
+      "text": "Solo paso a recordarle a \n@Wolftankee\n que mañana es el #MiercolesDeMentadas para que luego no salga que no sabía o que se le olvidó así que propongo que los martes haya una pequeña sección llamada #MartesParaRecordarleAlPemdejoDelWolftankeeQueMananaEsMiercolesDeMentadas",
+      "url": "https://x.com/TioCharlie0002/status/2100015510490411073",
+      "datetime": "2026-09-16T00:14:48.000Z"
+    },
+    {
+      "created_at": "2026-09-16T05:30:39.388Z",
+      "type": "evaluate",
+      "tweet_id": "2100017414712816054",
+      "user": "@XdKuchau",
+      "text": "Mañana es mi cumpleaños y me he esforzado por recordarselo a todos mis amigos, es la primera vez que me esfuerzo por hacer que todos lo recuerden así que espero que lo hagan ",
+      "url": "https://x.com/XdKuchau/status/2100017414712816054",
+      "datetime": "2026-09-16T00:22:22.000Z"
+    },
+    {
+      "created_at": "2026-09-16T07:29:40.671Z",
+      "type": "evaluate",
+      "tweet_id": "2100111255713337796",
+      "user": "@MaderaChico",
+      "text": "Que Mourinho no haya cogido a los subnormales de Vinicius y Mbappé (y Konaté) para salvarlos de sus propias estupideces no augura nada bueno.\n\nY alguien va a tener que recordarle a Florentino que el Real Madrid no es la puta ONU donde cada retrasado se representa a sí mismo.",
+      "url": "https://x.com/MaderaChico/status/2100111255713337796",
+      "datetime": "2026-09-16T06:35:16.000Z"
+    },
+    {
+      "created_at": "2026-09-16T07:29:57.134Z",
+      "type": "evaluate",
+      "tweet_id": "2100105702832279909",
+      "user": "@Alexm_AZ",
+      "text": "La torpeza del gobierno con Ceuta es enorme, pero no solo por la crisis en sí.\n\nEl relato de la izquierda que más daño podría haberle hecho al PP en campaña era recordarle a Mazon y el Ventorro, y han decidido destruir esa posibilidad yéndose todo agosto de vacaciones (????)",
+      "url": "https://x.com/Alexm_AZ/status/2100105702832279909",
+      "datetime": "2026-09-16T06:13:12.000Z"
+    },
+    {
+      "created_at": "2026-09-16T08:17:05.982Z",
+      "type": "evaluate",
+      "tweet_id": "2100132853904232625",
+      "user": "@carrietrdp",
+      "text": "hay una señora en mi oficina a la que le gusta tomar café con pan y he tratado de recordarle que no debería por sus problemas de salud pero sigue comprando y COMPARTIENDOME cuando yo llevo avena para mí y le comparto manzanas ",
+      "url": "https://x.com/carrietrdp/status/2100132853904232625",
+      "datetime": "2026-09-16T08:01:05.000Z"
+    },
+    {
+      "created_at": "2026-09-16T08:17:23.897Z",
+      "type": "evaluate",
+      "tweet_id": "2100124551501709416",
+      "user": "@pasitrote",
+      "text": "Sería bueno recordarle a Capriles que ya María Corina hizo el trabajo que debió hacer él, si hubiese oído a MCM cuando fue candidato, para desenmascarar al régimen chavista; MCM si lo hizo y Gracias a ella pudo actuar Trump",
+      "url": "https://x.com/pasitrote/status/2100124551501709416",
+      "datetime": "2026-09-16T07:28:06.000Z"
+    },
+    {
+      "created_at": "2026-09-16T10:17:39.625Z",
+      "type": "evaluate",
+      "tweet_id": "2100149184036794737",
+      "user": "@OrlandoCel41290",
+      "text": "Recordarle al tonto de Herrera que no abrió la boca cuando el barsa, todo el equipo , no se la puso en el partido contra el Levante . Dais pena",
+      "url": "https://x.com/OrlandoCel41290/status/2100149184036794737",
+      "datetime": "2026-09-16T09:05:59.000Z"
+    },
+    {
+      "created_at": "2026-09-16T10:51:41.113Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857356,
+      "telegram_message_id": 643,
+      "tweet_id": "2100017414712816054",
+      "user": "@XdKuchau",
+      "text": "Mañana es mi cumpleaños y me he esforzado por recordarselo a todos mis amigos, es la primera vez que me esfuerzo por hacer que todos lo recuerden así que espero que lo hagan ",
+      "url": "https://x.com/XdKuchau/status/2100017414712816054",
+      "datetime": "2026-09-16T00:22:22.000Z",
+      "instruction": "Como mando el tuit de madrugada no sé si es hoy o mañana. Inclúyelo en la respuesta. Evalúa de nuevo."
+    },
+    {
+      "created_at": "2026-09-16T12:41:48.695Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857369,
+      "telegram_message_id": 650,
+      "tweet_id": "2100017414712816054",
+      "user": "@XdKuchau",
+      "text": "Mañana es mi cumpleaños y me he esforzado por recordarselo a todos mis amigos, es la primera vez que me esfuerzo por hacer que todos lo recuerden así que espero que lo hagan ",
+      "url": "https://x.com/XdKuchau/status/2100017414712816054",
+      "datetime": "2026-09-16T00:22:22.000Z",
+      "instruction": "Evalúa de nuevo este"
+    },
+    {
+      "created_at": "2026-09-16T12:42:11.381Z",
+      "type": "evaluate",
+      "tweet_id": "2100162871271326160",
+      "user": "@Mercelrubin",
+      "text": "Hola \n@Veolia_Es\n este coche es vuestro?Es q está mañana no hemos podido pasar con una señora de 91 años.Puede ser q el conductor se despistó un poquito y no se dió cuenta de q subió a la acera, le pasa a mucha gente, pero bueno si podéis recordárselo os lo agradecemos,un saludo ",
+      "url": "https://x.com/Mercelrubin/status/2100162871271326160",
+      "datetime": "2026-09-16T10:00:22.000Z"
+    },
+    {
+      "created_at": "2026-09-16T17:35:31.786Z",
+      "type": "evaluate",
+      "tweet_id": "2100260276843024453",
+      "user": "@keka_saco",
+      "text": "Este hombre está muy mal de la cabeza, de verdad. Yo creo que no se ha enterado de que es el Presidente del Gobierno de España. Alguien de su entorno debería recordárselo.",
+      "url": "https://x.com/keka_saco/status/2100260276843024453",
+      "datetime": "2026-09-16T16:27:25.000Z"
+    },
+    {
+      "created_at": "2026-09-16T20:03:43.639Z",
+      "type": "evaluate",
+      "tweet_id": "2100299158720581971",
+      "user": "@labanquetaBN",
+      "text": "Al entrenador se le pueden achacar muchas cosas, pero si a alguien que lleva pateando un balón desde los 3 años hay que recordarle como hacer una falta o que tiene que correr a defender, igual estamos empezando a infantilizar a gente adulta. El orgullo se tiene o no.",
+      "url": "https://x.com/labanquetaBN/status/2100299158720581971",
+      "datetime": "2026-09-16T19:01:55.000Z"
+    },
+    {
+      "created_at": "2026-09-16T20:07:36.116Z",
+      "type": "evaluate",
+      "tweet_id": "2100303918639022519",
+      "user": "@PizzaL0sViernes",
+      "text": "Recordadme no volver a comprar Oreo con sabor a pancake\n\nMe estoy kgando cosa mala",
+      "url": "https://x.com/PizzaL0sViernes/status/2100303918639022519",
+      "datetime": "2026-09-16T19:20:50.000Z"
+    },
+    {
+      "created_at": "2026-09-16T21:10:56.116Z",
+      "type": "evaluate",
+      "tweet_id": "2100311577534570624",
+      "user": "@MxMBrais",
+      "text": "Hay que recordarle a Claudio el Celta que se imaginaba cuando llegó. Un equipo VALIENTE.",
+      "url": "https://x.com/MxMBrais/status/2100311577534570624",
+      "datetime": "2026-09-16T19:51:16.000Z"
+    },
+    {
+      "created_at": "2026-09-16T23:10:36.176Z",
+      "type": "evaluate",
+      "tweet_id": "2100359953017872390",
+      "user": "@MarcoCJ_",
+      "text": "@cesaralo\n Recuérdele a \n@stevenarce\n  y a su amigo Barraza que Cristiano ganó más Champions con el Madrid que Messi con el mejor Barcelona de la historia ",
+      "url": "https://x.com/MarcoCJ_/status/2100359953017872390",
+      "datetime": "2026-09-16T23:03:30.000Z"
+    },
+    {
+      "created_at": "2026-09-17T07:59:45.981Z",
+      "type": "evaluate",
+      "tweet_id": "2100474218278256792",
+      "user": "@wksIkaksk",
+      "text": "alguien recuerdele a la gente q reproducir una canción, dar like o repostear algo no es suficiente activismo por hoy ",
+      "url": "https://x.com/wksIkaksk/status/2100474218278256792",
+      "datetime": "2026-09-17T06:37:33.000Z"
+    },
+    {
+      "created_at": "2026-09-17T09:06:02.689Z",
+      "type": "evaluate",
+      "tweet_id": "2100507008835187119",
+      "user": "@Moooont3",
+      "text": "Llevaban varios días avisando... Hay que enviar un mensaje para recordarle a la gente que va a llover?. Si la lluvia pilló a alguien en la calle, es porque quiso",
+      "url": "https://x.com/Moooont3/status/2100507008835187119",
+      "datetime": "2026-09-17T08:47:51.000Z"
+    },
+    {
+      "created_at": "2026-09-17T09:40:54.411Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857422,
+      "telegram_message_id": 752,
+      "tweet_id": "2100507008835187119",
+      "user": "@Moooont3",
+      "text": "Llevaban varios días avisando... Hay que enviar un mensaje para recordarle a la gente que va a llover?. Si la lluvia pilló a alguien en la calle, es porque quiso",
+      "url": "https://x.com/Moooont3/status/2100507008835187119",
+      "datetime": "2026-09-17T08:47:51.000Z",
+      "instruction": "Evalúa orientando con bromas a que más vale avisar que pagar las consecuencias. Ya tenemos historia."
+    },
+    {
+      "created_at": "2026-09-17T11:07:52.546Z",
+      "type": "evaluate",
+      "tweet_id": "2100536266248905175",
+      "user": "@MarleyAdol50489",
+      "text": "Cuando alguien se hace caquita encima, como nuestro amigo común, tengo otra cuenta para recordarle lo frágil que es",
+      "url": "https://x.com/MarleyAdol50489/status/2100536266248905175",
+      "datetime": "2026-09-17T10:44:06.000Z"
+    },
+    {
+      "created_at": "2026-09-17T11:17:18.381Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857425,
+      "telegram_message_id": 767,
+      "tweet_id": "2100536266248905175",
+      "user": "@MarleyAdol50489",
+      "text": "Cuando alguien se hace caquita encima, como nuestro amigo común, tengo otra cuenta para recordarle lo frágil que es",
+      "url": "https://x.com/MarleyAdol50489/status/2100536266248905175",
+      "datetime": "2026-09-17T10:44:06.000Z",
+      "instruction": "Oriéntalo a que no necesitamos competencia. Puede que no sea agradable el recordatorio pero es nuestro trabajo. Habla de algún departamento."
+    },
+    {
+      "created_at": "2026-09-17T13:13:33.252Z",
+      "type": "evaluate",
+      "tweet_id": "2100545433260974515",
+      "user": "@gelitoazul",
+      "text": "Alguien que me recuerde la importancia de yo misma mis cosas. Incluidos mis viajes como siempre lo he hecho. \n\nNo hay derecho a todo lo que estoy perdiendo ",
+      "url": "https://x.com/gelitoazul/status/2100545433260974515",
+      "datetime": "2026-09-17T11:20:32.000Z"
+    },
+    {
+      "created_at": "2026-09-17T14:06:48.152Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857430,
+      "telegram_message_id": 783,
+      "tweet_id": "2100584449394020844",
+      "user": "@yeruskat_",
+      "text": "Voy a dejar este tweet acá para que me recuerden durante viernes, sábado y domingo que no deje morir la racha con mis amigos en tiktok..",
+      "url": "https://x.com/yeruskat_/status/2100584449394020844",
+      "datetime": "2026-09-17T13:55:34.000Z",
+      "instruction": "Evalúa para mandármelo el viernes."
+    },
+    {
+      "created_at": "2026-09-17T14:07:32.567Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857433,
+      "telegram_message_id": 785,
+      "tweet_id": "2100582503807361201",
+      "user": "@ZonaMixta__",
+      "text": " “QUE ME RECUERDEN EN EL \n@RealBetis\n ES UNA ALEGRÍA”\n\n “Es otro club muy diferente de cuando estábamos nosotros, ha crecido muchísimo”\n\n “La exigencia hace pensar que hay que pelear por puestos Champions”\n\n Jorge Molina atiende a #ZonaMixta en la previa del choque ante el",
+      "url": "https://x.com/ZonaMixta__/status/2100582503807361201",
+      "datetime": "2026-09-17T13:47:50.000Z",
+      "instruction": "“Que me recuerden en” no debe pasar el filtro."
+    },
+    {
+      "created_at": "2026-09-17T19:06:15.039Z",
+      "type": "evaluate",
+      "tweet_id": "2100642486704083103",
+      "user": "@Ernesto_Fado",
+      "text": "Europa tiene que hacerse respetar. Que luego a todos les gusta nuestro dinero. Y a M’ Bappe recordarle que es Europeo.",
+      "url": "https://x.com/Ernesto_Fado/status/2100642486704083103",
+      "datetime": "2026-09-17T17:46:11.000Z"
+    },
+    {
+      "created_at": "2026-09-17T20:06:26.609Z",
+      "type": "evaluate",
+      "tweet_id": "2100654540903403940",
+      "user": "@WerfedoY",
+      "text": "Recordadme que nunca jamás vuelva a jugar al lol",
+      "url": "https://x.com/WerfedoY/status/2100654540903403940",
+      "datetime": "2026-09-17T18:34:05.000Z"
+    },
+    {
+      "created_at": "2026-09-17T21:14:40.931Z",
+      "type": "evaluate",
+      "tweet_id": "2100688495140565303",
+      "user": "@muellerteve",
+      "text": "Si alguna vez fundo una empresa, recordadme que la registre como IA: donde TODO está permitido y nada se penaliza.\n\n\nhttps://\nsubstack.com/@elmaldenuestr\notiempo/note/c-339575302?r=1b5xo7\n…",
+      "url": "https://x.com/muellerteve/status/2100688495140565303",
+      "datetime": "2026-09-17T20:49:00.000Z"
+    },
+    {
+      "created_at": "2026-09-17T23:07:59.600Z",
+      "type": "evaluate",
+      "tweet_id": "2100688049004806513",
+      "user": "@Luffy1uP",
+      "text": "Recordarle a \n@AvoKrys\n que mañana voy al gimnasio y que ella diga: yujuuuuu más bíceps, si es que eres la mejor amorcito mío, lo que me he podido reír...",
+      "url": "https://x.com/Luffy1uP/status/2100688049004806513",
+      "datetime": "2026-09-17T20:47:14.000Z"
+    },
+    {
+      "created_at": "2026-09-18T13:25:57.164Z",
+      "type": "evaluate",
+      "tweet_id": "2100938638435516695",
+      "user": "@togvaleri",
+      "text": "alguien recuérdele las mamadas que hizo",
+      "url": "https://x.com/togvaleri/status/2100938638435516695",
+      "datetime": "2026-09-18T13:22:59.000Z"
+    },
+    {
+      "created_at": "2026-09-18T15:08:35.006Z",
+      "type": "telegram_instruction",
+      "telegram_update_id": 184857472,
+      "telegram_message_id": 860,
+      "tweet_id": "2100958019936809254",
+      "user": "@politicodelared",
+      "text": "¡No es broma! \n\n Alguien dígale a #Krauze (\n@EnriqueKrauze\n) que obediencia no es igual a soberanía y recuérdenle que:\n El tratado de extradición no es una orden de entrega\n Cada solicitud debe satisfacer condiciones jurídicas mexicanas",
+      "url": "https://x.com/politicodelared/status/2100958019936809254",
+      "datetime": "2026-09-18T14:40:00.000Z",
+      "instruction": "No nos tomamos nuestro trabajo a broma."
+    }
+  ]
+}
