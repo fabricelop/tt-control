@@ -1,1 +1,1 @@
-Verify fresh X share after Worker deployment 2026-09-19
+Verify second fresh X share after canonicalization 2026-09-19
