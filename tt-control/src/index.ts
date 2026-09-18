@@ -1,4 +1,13 @@
-interface Env { DB: D1Database; TT_CONTROL_PASSWORD: string }
+interface Env { DB: D1Database; TT_CONTROL_PASSWORD: string; OPENAI_API_KEY?: string }
+
+async function ensureEditorialSchema(env:Env){
+  const statements=[
+    "CREATE TABLE IF NOT EXISTS drafts (id INTEGER PRIMARY KEY AUTOINCREMENT, news_id INTEGER NOT NULL, base_text TEXT, remate_a TEXT, remate_b TEXT, remate_c TEXT, research TEXT, sources_json TEXT, version INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL DEFAULT (datetime('now')), updated_at TEXT NOT NULL DEFAULT (datetime('now')))",
+    "CREATE UNIQUE INDEX IF NOT EXISTS idx_drafts_news_version ON drafts(news_id,version)"
+  ]
+  for(const sql of statements)await env.DB.prepare(sql).run()
+  for(const sql of ["ALTER TABLE news ADD COLUMN processing_error TEXT","ALTER TABLE news ADD COLUMN processing_started_at TEXT","ALTER TABLE news ADD COLUMN processing_finished_at TEXT"]){try{await env.DB.prepare(sql).run()}catch(_){}}
+}
 
 function radarDecision(section:string,title:string):{admit:boolean;reason:string}{
   const s=(section+' '+title).toLowerCase()
@@ -30,7 +39,7 @@ async function load(){
   processingCount.textContent=d.counts&&d.counts.PROCESSING?'('+d.counts.PROCESSING+')':'';
   readyCount.textContent=d.counts&&d.counts.READY?'('+d.counts.READY+')':'';
   const heading=document.querySelector('.list h2');heading.textContent=currentView==='SELECTED'?'Noticias seleccionadas':currentView==='PROCESSING'?'Noticias elaborándose':currentView==='READY'?'Noticias listas':'Noticias para valorar';
-  news.innerHTML=d.news.length?d.news.map(function(n){return '<article class="card"><div class="meta">'+fmtDate(n.published_at)+' '+(n.urgent?'<span class="urgent">· URGENTE</span>':'')+'</div><div class="title">'+esc(n.title)+'</div><div class="actions">'+(currentView==='NEW'?'<button class="yes" onclick="act('+n.id+',&quot;SELECTED&quot;)">✓ Seleccionar</button><button class="no" onclick="act('+n.id+',&quot;DISMISSED&quot;)">✕ Desestimar</button>':currentView==='SELECTED'?'<button onclick="act('+n.id+',&quot;NEW&quot;)">↩ Devolver a Entrada</button><button class="no" onclick="act('+n.id+',&quot;DISMISSED&quot;)">✕ Desestimar</button>':currentView==='PROCESSING'?'<span class="meta">En elaboración…</span>':'<span class="meta">Lista para redacción/publicación</span>')+'<button class="urgencyBtn '+(n.urgent?'isUrgent':'')+'" title="'+(n.urgent?'Marcar como no urgente':'Marcar como urgente')+'" onclick="urgent('+n.id+','+(n.urgent?0:1)+')">'+(n.urgent?'↓ U':'↑ U')+'</button></div></article>'}).join(''):'<div class="empty">'+(currentView==='SELECTED'?'No hay noticias seleccionadas.':currentView==='PROCESSING'?'No hay noticias elaborándose.':currentView==='READY'?'No hay noticias listas.':'No hay noticias pendientes.')+'</div>'
+  news.innerHTML=d.news.length?d.news.map(function(n){return '<article class="card" onclick="openDesk('+n.id+')"><div class="meta">'+fmtDate(n.published_at)+' '+(n.urgent?'<span class="urgent">· URGENTE</span>':'')+'</div><div class="title">'+esc(n.title)+'</div><div class="actions">'+(currentView==='NEW'?'<button class="yes" onclick="event.stopPropagation();act('+n.id+',&quot;SELECTED&quot;)">✓ Seleccionar</button><button class="no" onclick="act('+n.id+',&quot;DISMISSED&quot;)">✕ Desestimar</button>':currentView==='SELECTED'?'<button onclick="act('+n.id+',&quot;NEW&quot;)">↩ Devolver a Entrada</button><button class="no" onclick="act('+n.id+',&quot;DISMISSED&quot;)">✕ Desestimar</button>':currentView==='PROCESSING'?'<span class="meta">En elaboración…</span>':'<span class="meta">Lista para redacción/publicación</span>')+'<button class="urgencyBtn '+(n.urgent?'isUrgent':'')+'" title="'+(n.urgent?'Marcar como no urgente':'Marcar como urgente')+'" onclick="event.stopPropagation();urgent('+n.id+','+(n.urgent?0:1)+')">'+(n.urgent?'↓ U':'↑ U')+'</button></div></article>'}).join(''):'<div class="empty">'+(currentView==='SELECTED'?'No hay noticias seleccionadas.':currentView==='PROCESSING'?'No hay noticias elaborándose.':currentView==='READY'?'No hay noticias listas.':'No hay noticias pendientes.')+'</div>'
 }
 function showView(view,btn){currentView=view;document.querySelectorAll('nav button').forEach(function(x){x.classList.remove('active')});btn.classList.add('active');load()}
 function fmtDate(s){if(!s)return '';const v=String(s);const m=v.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/);if(m)return m[1]+'  '+m[2];const d=new Date(v);if(!isNaN(d.getTime())){const p=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Madrid',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(d);return p.replace(' ','  ')}return v}
@@ -52,6 +61,14 @@ async function urgent(id,value){
     await load()
   }catch(e){alert(e.message||e)}finally{actionBusy=false}
 }
+async function openDesk(id){
+  const r=await fetch('/api/news/'+id);const d=await r.json();if(!r.ok)return alert(d.error||'No se pudo abrir la noticia')
+  const n=d.news,dr=d.draft;const desk=document.querySelector('.detail')
+  desk.innerHTML='<h2>Mesa de redacción</h2><div class="meta">'+fmtDate(n.published_at)+'</div><h3>'+esc(n.title)+'</h3>'+
+    (n.processing_error?'<p class="urgent"><b>Error de elaboración:</b> '+esc(n.processing_error)+'</p>':'')+
+    (dr?'<h3>Versión base</h3><p>'+esc(dr.base_text||'')+'</p><h3>Remate A</h3><p>'+esc(dr.remate_a||'')+'</p><h3>Remate B</h3><p>'+esc(dr.remate_b||'')+'</p><h3>Remate C</h3><p>'+esc(dr.remate_c||'')+'</p><h3>Investigación</h3><p>'+esc(dr.research||'')+'</p>':
+    '<p>'+(n.status==='PROCESSING'?'Pendiente de elaboración automática.':'Selecciona o procesa esta noticia para generar la redacción.')+'</p>')
+}
 async function runNow(){const b=document.querySelector('.run');b.disabled=true;b.textContent='Ejecutando…';try{const r=await fetch('/api/run',{method:'POST'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Error de ejecución');b.textContent='✓ '+(d.discovered||0)+' nuevas · '+(d.claimed||0)+' a elaborar';await load();setTimeout(function(){b.textContent='▶ EJECUTAR'},1800)}catch(e){news.innerHTML='<div class="empty">Error: '+esc(e.message||e)+'</div>';b.textContent='⚠ Error'}finally{b.disabled=false}}
 load()
 </script></body></html>`;
@@ -59,7 +76,7 @@ load()
 async function ingest(env:Env){
   const run=await env.DB.prepare("INSERT INTO runs(started_at,trigger) VALUES(datetime('now'),'manual') RETURNING id").first<{id:number}>()
   try{
-    const claimed=await env.DB.prepare("UPDATE news SET status='PROCESSING',updated_at=datetime('now') WHERE status='SELECTED'").run()
+    const claimed=await env.DB.prepare("UPDATE news SET status='PROCESSING',processing_started_at=datetime('now'),processing_error=NULL,updated_at=datetime('now') WHERE status='SELECTED'").run()
 
     const r=await fetch('https://raw.githubusercontent.com/fabricelop/europapress-rss/main/recent.json',{headers:{'user-agent':'TT-Control/1.0'}})
     if(!r.ok)throw new Error('Europa Press repository '+r.status)
@@ -93,10 +110,13 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
   const u=new URL(req.url)
   try{
     if(req.method==='GET'&&u.pathname==='/login')return login()
+    await ensureEditorialSchema(env)
     if(req.method==='POST'&&u.pathname==='/login'){const form=await req.formData(),p=String(form.get('password')||'');if(!env.TT_CONTROL_PASSWORD||p!==env.TT_CONTROL_PASSWORD)return login('Contraseña incorrecta');return new Response(null,{status:303,headers:{location:'/','set-cookie':'tt_control='+encodeURIComponent(p)+'; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=31536000'}})}
     if(!authorized(req,env))return req.method==='GET'?new Response(null,{status:302,headers:{location:'/login'}}):Response.json({error:'No autorizado'},{status:401})
     if(req.method==='GET'&&u.pathname==='/')return new Response(HTML,{headers:{'content-type':'text/html;charset=UTF-8'}})
     if(req.method==='GET'&&u.pathname==='/api/news'){const requested=u.searchParams.get('status')||'NEW';const status=['NEW','SELECTED','PROCESSING','READY'].includes(requested)?requested:'NEW';const q=await env.DB.prepare("SELECT id,title,url,section,published_at,urgent FROM news WHERE status=? ORDER BY urgent DESC, published_at ASC, id ASC LIMIT 200").bind(status).all();const counts=await env.DB.prepare("SELECT status,COUNT(*) AS n FROM news WHERE status IN ('NEW','SELECTED','PROCESSING','READY') GROUP BY status").all();const c:any={NEW:0,SELECTED:0,PROCESSING:0,READY:0};for(const row of counts.results as any[])c[row.status]=row.n;return Response.json({news:q.results,counts:c})}
+    const detailMatch=u.pathname.match(/^\/api\/news\/(\d+)$/)
+    if(req.method==='GET'&&detailMatch){const id=Number(detailMatch[1]);const n=await env.DB.prepare("SELECT * FROM news WHERE id=?").bind(id).first();if(!n)return Response.json({error:'Noticia no encontrada'},{status:404});const d=await env.DB.prepare("SELECT * FROM drafts WHERE news_id=? ORDER BY version DESC LIMIT 1").bind(id).first();return Response.json({news:n,draft:d})}
     if(req.method==='GET'&&u.pathname==='/api/news/radar-dismissed'){const q=await env.DB.prepare("SELECT id,title,url,section,published_at,radar_reason FROM news WHERE status='RADAR_DISMISSED' ORDER BY published_at DESC,id DESC LIMIT 200").all();return Response.json({news:q.results})}
     if(req.method==='POST'&&u.pathname==='/api/news/recover'){const b:any=await req.json();await env.DB.batch([env.DB.prepare("UPDATE news SET status='NEW',updated_at=datetime('now') WHERE id=?").bind(b.id),env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'radar_recovery','1',datetime('now'))").bind(b.id)]);return Response.json({ok:true})}
     if(req.method==='POST'&&u.pathname==='/api/news/status'){const b:any=await req.json();if(!['NEW','SELECTED','DISMISSED'].includes(b.status))return Response.json({error:'Estado inválido'},{status:400});await env.DB.prepare("UPDATE news SET status=?,updated_at=datetime('now') WHERE id=?").bind(b.status,b.id).run();try{await env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'selection',?,datetime('now'))").bind(b.id,b.status).run()}catch(_){}return Response.json({ok:true})}
