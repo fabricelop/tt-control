@@ -124,7 +124,7 @@ async function discardReady(id){
   if(!confirm('¿Borrar esta noticia de Listas?'))return
   const r=await fetch('/api/news/discard-ready',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:id})})
   const d=await r.json();if(!r.ok)return alert(d.error||'No se pudo borrar')
-  document.querySelector('.detail').innerHTML='<h2>Mesa de redacción</h2><p>Noticia descartada.</p>';await load()
+  closeDesk();currentView='READY';document.querySelectorAll('nav button').forEach(function(x){x.classList.remove('active')});const rb=[...document.querySelectorAll('nav button')].find(function(x){return x.textContent.includes('Listas')});if(rb)rb.classList.add('active');await load()
 }
 async function markPublished(id,option){
   const labels=['BASE','A','B','C'];if(!confirm('¿Confirmar como publicada la variante '+labels[option]+'?'))return
