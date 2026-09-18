@@ -27,20 +27,23 @@ function radarTokens(section:string,title:string):string[]{
   const stop=new Set('para por con sin del las los una uno unos unas que como desde hasta sobre entre tras ante este esta estos estas sus han hay más muy pero porque donde cuando quien qué cómo'.split(' '))
   return (section+' '+title).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').match(/[a-z0-9]{3,}/g)?.filter(x=>!stop.has(x))||[]
 }
-async function learnedRadar(env:Env,section:string,title:string):Promise<{dismiss:boolean;score:number;reason:string}>{
+type RadarModel={pos:number;neg:number;pc:Map<string,number>;nc:Map<string,number>}
+async function buildRadarModel(env:Env):Promise<RadarModel>{
   const rows=await env.DB.prepare("SELECT title,section,status FROM news WHERE status IN ('DISMISSED','SELECTED','PROCESSING','READY','PUBLISHED') ORDER BY updated_at DESC LIMIT 1200").all()
   let pos=0,neg=0;const pc=new Map<string,number>(),nc=new Map<string,number>()
-  for(const r of rows.results as any[]){const positive=r.status!=='DISMISSED';positive?pos++:neg++;const seen=new Set(radarTokens(String(r.section||''),String(r.title||'')));for(const t of seen){const m=positive?pc:nc;m.set(t,(m.get(t)||0)+1)}}
-  if(pos<5||neg<20)return {dismiss:false,score:0,reason:'Aprendizaje aún insuficiente'}
+  for(const r of rows.results as any[]){const positive=r.status!=='DISMISSED';positive?pos++:neg++;for(const t of new Set(radarTokens(String(r.section||''),String(r.title||'')))){const m=positive?pc:nc;m.set(t,(m.get(t)||0)+1)}}
+  return {pos,neg,pc,nc}
+}
+function learnedRadar(model:RadarModel,section:string,title:string):{dismiss:boolean;score:number;reason:string}{
+  const {pos,neg,pc,nc}=model;if(pos<5||neg<20)return {dismiss:false,score:0,reason:'Aprendizaje aún insuficiente'}
   let score=0,evidence=0
-  for(const t of new Set(radarTokens(section,title))){const p=(pc.get(t)||0),n=(nc.get(t)||0);if(p+n<2)continue;score+=Math.log(((p+1)/(pos+2))/((n+1)/(neg+2)));evidence++}
+  for(const t of new Set(radarTokens(section,title))){const p=pc.get(t)||0,n=nc.get(t)||0;if(p+n<2)continue;score+=Math.log(((p+1)/(pos+2))/((n+1)/(neg+2)));evidence++}
   const avg=evidence?score/Math.sqrt(evidence):0
   return {dismiss:evidence>=2&&avg<-1.15,score:avg,reason:evidence>=2?'Radar aprendido de tus selecciones y descartes':'Poca evidencia aprendida'}
 }
 async function reclassifyBacklog(env:Env){
-  const q=await env.DB.prepare("SELECT id,title,section FROM news WHERE status='NEW' ORDER BY published_at DESC,id DESC LIMIT 1000").all()
-  let moved=0
-  for(const n of q.results as any[]){const d=await learnedRadar(env,String(n.section||''),String(n.title||''));if(d.dismiss){const r=await env.DB.prepare("UPDATE news SET status='RADAR_DISMISSED',radar_score=?,radar_reason=?,updated_at=datetime('now') WHERE id=? AND status='NEW'").bind(d.score,d.reason,n.id).run();moved+=Number(r.meta.changes||0)}}
+  const model=await buildRadarModel(env),q=await env.DB.prepare("SELECT id,title,section FROM news WHERE status='NEW' ORDER BY published_at DESC,id DESC LIMIT 1000").all();let moved=0
+  for(const n of q.results as any[]){const d=learnedRadar(model,String(n.section||''),String(n.title||''));if(d.dismiss){const r=await env.DB.prepare("UPDATE news SET status='RADAR_DISMISSED',radar_score=?,radar_reason=?,updated_at=datetime('now') WHERE id=? AND status='NEW'").bind(d.score,d.reason,n.id).run();moved+=Number(r.meta.changes||0)}}
   return moved
 }
 function agentAuthorized(req:Request,env:Env):boolean{
@@ -144,13 +147,14 @@ async function ingest(env:Env){
     const previous=await env.DB.prepare("SELECT MAX(published_at) AS checkpoint FROM news").first<{checkpoint:string|null}>()
     const checkpoint=previous?.checkpoint||''
     let admitted=0, discovered=0, radarDismissed=0
+    const radarModel=await buildRadarModel(env)
     for(const x of items){
       const title=String(x.title||x.titulo||'').trim();if(!title)continue
       const url=String(x.link||x.url||'');const key=url||String(x.id||x.guid||title+'|'+(x.date||x.published||''))
       const published=String(x.published_at||x.published||x.date||x.pubDate||'')
       if(checkpoint && published && published<=checkpoint)continue
       discovered++
-      const section=String(x.section||x.category||''),initial=radarDecision(section,title),learned=initial.admit?await learnedRadar(env,section,title):{dismiss:true,score:-9,reason:initial.reason}
+      const section=String(x.section||x.category||''),initial=radarDecision(section,title),learned=initial.admit?learnedRadar(radarModel,section,title):{dismiss:true,score:-9,reason:initial.reason}
       const decision={admit:!learned.dismiss,reason:learned.reason}
       const status=decision.admit?'NEW':'RADAR_DISMISSED'
       const write=await env.DB.prepare(`INSERT INTO news(source_key,title,url,section,published_at,detected_at,status,radar_reason,updated_at)
