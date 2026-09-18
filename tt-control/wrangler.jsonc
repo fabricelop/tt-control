@@ -8,8 +8,5 @@
       "database_name": "tt-control",
       "database_id": "874f0635-6a1a-4b7b-b10a-7ebd05363e2b"
     }
-  ],
-  "ai": {
-    "binding": "AI"
-  }
+  ]
 }
