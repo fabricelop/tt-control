@@ -1,13 +1,10 @@
 {
   "id": 320,
-  "base_text": "Trump anuncia un acuerdo con Dinamarca y Groenlandia para que EEUU asuma permanentemente el control de la seguridad de la isla. Groenlandia confirma el pacto, pendiente de trámites parlamentarios.",
-  "remate_a": "Groenlandia sigue donde estaba. Las llaves de seguridad, no tanto.",
-  "remate_b": "Trump lo llama histórico. El Ártico sigue sin pedir rueda de prensa.",
-  "remate_c": "El acuerdo es indefinido. Hasta la geopolítica trae letra pequeña.",
-  "research": "URGENTE. Contrastado el 18-09-2026 con Europa Press, Cadena SER y El País. Se atribuye a Trump el alcance de «control permanente»; el Gobierno groenlandés confirma el pacto.",
-  "sources": [
-    "https://www.europapress.es/internacional/noticia-trump-anuncia-acuerdo-dinamarca-groenlandia-control-seguridad-isla-20260918233922.html",
-    "https://cadenaser.com/nacional/2026/09/18/trump-anuncia-un-acuerdo-con-dinamarca-para-asumir-el-control-de-la-seguridad-de-groenlandia-cadena-ser/",
-    "https://elpais.com/internacional/2026-09-18/trump-anuncia-un-acuerdo-militar-historico-con-dinamarca-sobre-groenlandia.html"
-  ]
+  "base_text": "Trump anuncia un acuerdo con Dinamarca y Groenlandia sobre la seguridad de la isla. Copenhague habla de «seguridad compartida»; el «control permanente» es la versión de Trump. El pacto debe superar trámites parlamentarios.",
+  "remate_a": "Trump quería Groenlandia. De momento, unas llaves.",
+  "remate_b": "La soberanía sigue danesa; el mando cambia de manos.",
+  "remate_c": "Pidió la isla y acabó ampliando el parking militar.",
+  "research": "Actualizado y contrastado el 19-09-2026 con EFE, Europa Press y AP. Dinamarca confirma un acuerdo tripartito de seguridad compartida que se firmará durante la Asamblea General de la ONU y requerirá trámites parlamentarios; se atribuye expresamente a Trump la formulación de control permanente.",
+  "sources": ["https://efe.com/mundo/2026-09-19/trump-acuerdo-eeuu-seguridad-groenlandia/", "https://www.europapress.es/internacional/noticia-trump-anuncia-acuerdo-dinamarca-groenlandia-control-seguridad-isla-20260918233922.html", "https://apnews.com/article/4cf77cb4608b685a70410bd679479193"],
+  "image_url": ""
 }
