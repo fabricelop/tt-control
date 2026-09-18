@@ -1,1 +1,1 @@
-Manual TT Control sync requested 2026-09-18 after updated iOS X share
+Manual TT Control execution requested 2026-09-18 after iOS share normalization
