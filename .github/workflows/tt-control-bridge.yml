@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - 'bridge/results/*.json'
+      - 'bridge/sync-request.txt'
 
 permissions:
   contents: write
@@ -15,7 +16,7 @@ permissions:
 
 jobs:
   sync-pending:
-    if: github.event_name != 'push'
+    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[sync-pending]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -73,7 +74,7 @@ jobs:
           fi
 
   deliver-results:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[sync-pending]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
