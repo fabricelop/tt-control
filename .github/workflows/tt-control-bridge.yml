@@ -5,11 +5,13 @@ on:
   schedule:
     - cron: '50 * * * *'
   push:
+    branches: [main]
     paths:
       - 'bridge/results/*.json'
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   sync-pending:
@@ -17,26 +19,57 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Read PROCESSING queue from TT Control
         env:
           BRIDGE_TOKEN: ${{ secrets.TT_CONTROL_BRIDGE_TOKEN }}
         run: |
-          mkdir -p bridge/results
+          mkdir -p bridge
           curl --fail --silent --show-error \
             -H "Authorization: Bearer $BRIDGE_TOKEN" \
             "https://tt-control.fabricelop.workers.dev/api/agent/pending" \
-            -o bridge/pending.json
-          python -m json.tool bridge/pending.json >/dev/null
-      - name: Commit queue only when it changed
+            -o /tmp/pending.json
+          python -m json.tool /tmp/pending.json >/dev/null
+          COUNT=$(python - <<'PY'
+          import json
+          with open('/tmp/pending.json', encoding='utf-8') as f:
+              print(len(json.load(f).get('news', [])))
+          PY
+          )
+          echo "pending_count=$COUNT" >> "$GITHUB_ENV"
+
+      - name: Publish editorial queue branch
+        if: env.pending_count != '0'
         run: |
           git config user.name "tt-control-bridge"
           git config user.email "actions@users.noreply.github.com"
+          git checkout -B tt-control-editorial origin/main
+          mkdir -p bridge
+          cp /tmp/pending.json bridge/pending.json
           git add bridge/pending.json
           if git diff --cached --quiet; then
             echo "Queue unchanged"
+            exit 0
+          fi
+          git commit -m "Editorial queue: ${pending_count} item(s) ready for ChatGPT"
+          git push --force-with-lease origin tt-control-editorial
+
+      - name: Open editorial pull request when needed
+        if: env.pending_count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh pr view tt-control-editorial --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Editorial PR already open; commit update will trigger ChatGPT."
           else
-            git commit -m "Sync TT Control editorial queue"
-            git push
+            gh pr create \
+              --repo "$GITHUB_REPOSITORY" \
+              --base main \
+              --head tt-control-editorial \
+              --title "TT Control · cola editorial" \
+              --body "Cola automática de noticias en Elaborando. No fusionar manualmente: la actividad de esta PR sirve como disparador de la tarea editorial de ChatGPT."
           fi
 
   deliver-results:
