@@ -1,9 +1,13 @@
 {
   "id": 320,
-  "base_text": "Trump anuncia un acuerdo con Dinamarca y Groenlandia que, según afirma, dará a EEUU «control permanente» sobre la seguridad de la isla. Groenlandia confirma el pacto.",
+  "base_text": "Trump anuncia un acuerdo con Dinamarca y Groenlandia para que EEUU asuma de forma permanente el control de la seguridad de la isla. Groenlandia confirma el pacto, aún pendiente de trámites parlamentarios.",
   "remate_a": "Groenlandia sigue donde estaba. Las llaves de seguridad, no tanto.",
   "remate_b": "Trump lo llama histórico. El Ártico sigue sin pedir rueda de prensa.",
   "remate_c": "«Permanente» es una palabra grande. En geopolítica suele traer letra pequeña.",
   "research": "URGENTE. Contrastado el 18-09-2026 con Europa Press, Cadena SER y El País. Se atribuye a Trump el alcance de «control permanente»; el Gobierno groenlandés confirma el pacto.",
-  "sources": ["https://www.europapress.es/internacional/noticia-trump-anuncia-acuerdo-dinamarca-groenlandia-control-seguridad-isla-20260918233922.html","https://cadenaser.com/nacional/2026/09/18/trump-anuncia-un-acuerdo-con-dinamarca-para-asumir-el-control-de-la-seguridad-de-groenlandia-cadena-ser/","https://elpais.com/internacional/2026-09-18/trump-anuncia-un-acuerdo-militar-historico-con-dinamarca-sobre-groenlandia.html"]
+  "sources": [
+    "https://www.europapress.es/internacional/noticia-trump-anuncia-acuerdo-dinamarca-groenlandia-control-seguridad-isla-20260918233922.html",
+    "https://cadenaser.com/nacional/2026/09/18/trump-anuncia-un-acuerdo-con-dinamarca-para-asumir-el-control-de-la-seguridad-de-groenlandia-cadena-ser/",
+    "https://elpais.com/internacional/2026-09-18/trump-anuncia-un-acuerdo-militar-historico-con-dinamarca-sobre-groenlandia.html"
+  ]
 }
