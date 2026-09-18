@@ -12,3 +12,6 @@ Parallel prototype for TTiTTulares España. This branch does not alter the curre
 
 ## Editorial feedback
 Selection/dismissal, urgency corrections, and later punchline feedback are stored as separate signals.
+
+
+<!-- Cloudflare build trigger: permissions verified -->
