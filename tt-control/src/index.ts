@@ -126,7 +126,7 @@ async function requestRewrite(id,withReason){
   else if(!confirm('¿Pedir tres remates nuevos para esta noticia?'))return
   const r=await fetch('/api/news/rewrite',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:id,reason:reason.trim()})})
   const d=await r.json();if(!r.ok)return alert(d.error||'No se pudo reenviar')
-  closeDesk();currentView='PROCESSING';document.querySelectorAll('nav button').forEach(function(x){x.classList.remove('active')});const rb=[...document.querySelectorAll('nav button')].find(function(x){return x.textContent.includes('Elaborando')});if(rb)rb.classList.add('active');await load()
+  closeDesk();currentView='READY';document.querySelectorAll('nav button').forEach(function(x){x.classList.remove('active')});const rb=[...document.querySelectorAll('nav button')].find(function(x){return x.textContent.includes('Listas')});if(rb)rb.classList.add('active');await load()
 }
 async function interestingReady(id){
   if(!confirm('¿Marcar como interesante pero finalmente no publicar?'))return
