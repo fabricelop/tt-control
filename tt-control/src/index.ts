@@ -130,7 +130,7 @@ async function markPublished(id,option){
   const labels=['BASE','A','B','C'];if(!confirm('¿Confirmar como publicada la variante '+labels[option]+'?'))return
   const r=await fetch('/api/news/publish',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:id,variant:labels[option]})})
   const d=await r.json();if(!r.ok)return alert(d.error||'No se pudo registrar la publicación')
-  document.querySelector('.detail').innerHTML='<h2>Mesa de redacción</h2><p>✓ Publicación registrada en Historial · Variante '+labels[option]+'</p>';await load()
+  closeDesk();currentView='READY';document.querySelectorAll('nav button').forEach(function(x){x.classList.remove('active')});const rb=[...document.querySelectorAll('nav button')].find(function(x){return x.textContent.includes('Listas')});if(rb)rb.classList.add('active');await load()
 }
 async function openX(id,option){
   const r=await fetch('/api/news/'+id);const d=await r.json();if(!r.ok)return alert(d.error||'No se pudo abrir la noticia')
@@ -138,7 +138,7 @@ async function openX(id,option){
   const rem=[null,dr.remate_a,dr.remate_b,dr.remate_c][option]
   const text=String(dr.base_text||'')+(rem?' 🌶️ '+String(rem):'')
   if(text.length>280)return alert('Esta variante supera 280 caracteres ('+text.length+').')
-  window.location.href='twitter://post?message='+encodeURIComponent(text);setTimeout(function(){window.location.href='https://x.com/intent/post?text='+encodeURIComponent(text)},900)
+  if(/iPhone|iPad|iPod/i.test(navigator.userAgent)){window.location.href='twitter://post?message='+encodeURIComponent(text)}else{window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank','noopener')}
 }
 async function runNow(){const b=document.querySelector('.run');b.disabled=true;b.textContent='Ejecutando…';try{const r=await fetch('/api/run',{method:'POST'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Error de ejecución');b.textContent='✓ '+(d.discovered||0)+' nuevas · '+(d.claimed||0)+' a elaborar · '+(d.backlogDismissed||0)+' radar';await load();setTimeout(function(){b.textContent='▶ EJECUTAR'},1800)}catch(e){news.innerHTML='<div class="empty">Error: '+esc(e.message||e)+'</div>';b.textContent='⚠ Error'}finally{b.disabled=false}}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});load()
