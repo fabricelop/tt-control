@@ -34,7 +34,7 @@ jobs:
 
 
   sync-pending:
-    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[sync-pending]')
+    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[sync-pending]') || github.event.head_commit.modified[0] == 'bridge/sync-request.txt'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
