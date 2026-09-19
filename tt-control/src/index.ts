@@ -280,7 +280,7 @@ async function fetchMediaItems(){
   const feeds=[['EL PAÍS','https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/ultimas-noticias/portada'],['La Vanguardia','https://www.lavanguardia.com/rss/home.xml']]
   const all:any[]=[]
   for(const [source,url] of feeds){try{const r=await fetch(url,{headers:{'user-agent':'TT-Control-Media-Radar/1.0'}});if(r.ok)all.push(...parseFeed(await r.text(),source))}catch(_){}}
-  for(const [source,url] of [['Cadena SER','https://cadenaser.com/ultimas-noticias/'],['RTVE','https://www.rtve.es/noticias/'],['El HuffPost','https://www.huffingtonpost.es/ultimas-noticias']] as string[][]){try{const r=await fetch(url,{headers:{'user-agent':'TT-Control-Media-Radar/1.0'}});if(!r.ok)continue;const h=await r.text();const re=/<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;let m;while((m=re.exec(h))&&all.filter(x=>x.source===source).length<35){const title=xmlText(m[2]);if(title.length<35||title.length>240)continue;let link=m[1];if(link.startsWith('/'))link=new URL(link,url).toString();if(/^https?:/.test(link))all.push({source,url:link,title})}}catch(_){}}
+  for(const [source,url] of [['Cadena SER','https://cadenaser.com/ultimas-noticias/'],['RTVE','https://www.rtve.es/noticias/'],['El HuffPost','https://www.huffingtonpost.es/ultimas-noticias'],['20minutos','https://www.20minutos.es/ultima-hora/'],['ABC','https://www.abc.es/ultima-hora/'],['COPE','https://www.cope.es/ultima-hora']] as string[][]){try{const r=await fetch(url,{headers:{'user-agent':'TT-Control-Media-Radar/1.0'}});if(!r.ok)continue;const h=await r.text();const re=/<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;let m;while((m=re.exec(h))&&all.filter(x=>x.source===source).length<35){const title=xmlText(m[2]);if(title.length<35||title.length>240)continue;let link=m[1];if(link.startsWith('/'))link=new URL(link,url).toString();if(/^https?:/.test(link))all.push({source,url:link,title})}}catch(_){}}
   return all
 }
 async function runMediaRadar(env:Env){
@@ -298,11 +298,12 @@ ALERT = noticia verdaderamente importante que merece notificación inmediata al 
 ENTRY = merece revisión humana en Entrada, pero no interrumpir. Como regla, exige coincidencia en al menos 2 medios; excepcionalmente 1 fuente si el interés nacional es claro y alto.
 IGNORE = territorial/local rutinaria, declaraciones menores, agenda, opinión, servicio, lotería, horóscopo, previa/directo rutinario, repetición o asunto de poco alcance.
 No confundas que una noticia no admita humor con falta de interés. Política nacional española relevante debe conservarse. Evalúa el ACONTECIMIENTO, no la redacción del titular.
-Fuentes independientes: ${count} (${sources.join(', ')})
+Fuentes independientes detectadas: ${count} de 9 (${Math.round(count/9*100)}% de cobertura) (${sources.join(', ')})
 Titular representativo: ${n.title}
 Responde SOLO JSON {"level":"ALERT"|"ENTRY"|"IGNORE","reason":"frase breve"}.`
     const out:any=await env.AI.run('@cf/google/gemma-4-26b-a4b-it',{messages:[{role:'system',content:'Eres el editor de un radar de noticias español muy selectivo. Agrupa acontecimientos y devuelve JSON válido.'},{role:'user',content:prompt}],chat_template_kwargs:{enable_thinking:false}})
     const p=JSON.parse(String(out?.response||'').replace(/```json|```/g,'').trim()),level=String(p.level||'IGNORE').toUpperCase()
+    const coverage=count/9
     const safeLevel=(level==='ALERT'&&count<2)?'ENTRY':(level==='ALERT'||level==='ENTRY'?level:'IGNORE')
     const status=safeLevel==='ALERT'?'ALERTED':safeLevel==='ENTRY'?'ENTRY':'IGNORED'
     await env.DB.prepare("UPDATE media_radar SET importance=?,reason=?,status=? WHERE id=?").bind(safeLevel,String(p.reason||''),status,n.id).run()
