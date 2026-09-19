@@ -399,7 +399,9 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
         env.DB.prepare("UPDATE news SET status='READY',processing_error=NULL,processing_finished_at=datetime('now'),updated_at=datetime('now') WHERE id=? AND status IN ('PROCESSING','DISMISSED')").bind(id),
         env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'agent_completed',?,datetime('now'))").bind(id,String(version))
       ])
-      return Response.json({ok:true,id,version,status:'READY'})
+      const mediaRow:any=await env.DB.prepare("SELECT id FROM media_radar WHERE status='PREPARING' AND ('media:'||id)=(SELECT source_key FROM news WHERE id=?)").bind(id).first()
+      if(mediaRow)await env.DB.prepare("UPDATE media_radar SET status='PREPARED' WHERE id=?").bind(mediaRow.id).run()
+      return Response.json({ok:true,id,version,status:'READY',from_media_radar:!!mediaRow})
     }
     if(u.pathname==='/api/agent/error'){
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
