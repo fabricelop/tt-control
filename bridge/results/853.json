@@ -1,5 +1,13 @@
 {
   "id": 853,
-  "disposition": "DISMISSED",
-  "reason": "Suceso local grave con una víctima mortal y una investigación todavía abierta. Verificado que la Policía Nacional investiga la muerte violenta de una mujer hallada en su vivienda de Leganés, con la casa revuelta y un cuchillo con aparentes restos de sangre; no se descarta ninguna hipótesis. No se prepara publicación por bajo encaje editorial nacional y por la regla de no hacer humor con víctimas o sufrimiento."
+  "base_text": "La Policía Nacional investiga la muerte violenta de una mujer hallada en su domicilio de Leganés. Los agentes encontraron la vivienda revuelta y un cuchillo con aparentes restos de sangre.",
+  "remate_a": "Sin remate: noticia sobre una víctima.",
+  "remate_b": "Sin remate: investigación por una muerte violenta.",
+  "remate_c": "Sin remate: por respeto a la víctima.",
+  "research": "Información contrastada con Europa Press, Telemadrid y Cadena SER. La Policía Nacional investiga la muerte violenta de una mujer hallada en su domicilio de Leganés. El padre alertó tras encontrar la vivienda revuelta; los agentes localizaron a la mujer fallecida con signos de violencia y un cuchillo con aparentes restos de sangre. Homicidios y Policía Científica investigan y no se da por confirmada ninguna hipótesis.",
+  "sources": [
+    "https://www.europapress.es/madrid/noticia-policia-nacional-investiga-muerte-violenta-mujer-leganes-madrid-20260919230313.html",
+    "https://www.telemadrid.es/noticias/madrid/Investigan-la-muerte-violenta-de-una-mujer-en-Leganes-hallan-un-cuchillo-con-restos-de-sangre-en-su-domicilio-0-2927107274--20260919074758.html",
+    "https://cadenaser.com/nacional/2026/09/19/la-policia-investiga-la-muerte-violenta-de-una-mujer-hallada-en-su-vivienda-de-leganes-madrid-y-no-descarta-ninguna-hipotesis-radio-madrid/"
+  ]
 }
