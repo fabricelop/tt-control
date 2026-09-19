@@ -160,7 +160,7 @@ async function requestChatImage(id,option){
   const r=await fetch('/api/news/'+id),d=await r.json();if(!r.ok)return alert(d.error||'No se pudo abrir la noticia')
   const dr=d.draft,n=d.news;if(!dr)return alert('No hay borrador')
   const labels=['','A','B','C'],remates=['',dr.remate_a,dr.remate_b,dr.remate_c],label=labels[option],rem=remates[option]
-  const promptText='TTIMG #'+id+'-'+label+'\nNoticia: '+String(n.title||'')+'\nBase: '+String(dr.base_text||'')+'\nRemate '+label+': '+String(rem||'')+'\nGenera directamente una imagen editorial horizontal para este remate, con un gag visual específico y calidad de viñeta profesional TTiTTulares. No hagas una ilustración genérica.'
+  const promptText='TTIMG #'+id+'-'+label+'\\nNoticia: '+String(n.title||'')+'\\nBase: '+String(dr.base_text||'')+'\\nRemate '+label+': '+String(rem||'')+'\\nGenera directamente una imagen editorial horizontal para este remate, con un gag visual específico y calidad de viñeta profesional TTiTTulares. No hagas una ilustración genérica.'
   try{await navigator.clipboard.writeText(promptText)}catch(_){}
   const chat='https://chatgpt.com/'
   window.open(chat,'_blank','noopener')
