@@ -265,8 +265,18 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       if(req.method!=='POST')return new Response('Method Not Allowed',{status:405})
       const b:any=await req.json()
       const id=Number(b.id)
+      const disposition=String(b.disposition||'READY').toUpperCase()
+      if(!id)return Response.json({error:'id inválido'},{status:400})
+      if(disposition==='DISMISSED'){
+        const reason=String(b.reason||'Descartada por criterio editorial').slice(0,1000)
+        await env.DB.batch([
+          env.DB.prepare("UPDATE news SET status='DISMISSED',processing_error=NULL,processing_finished_at=datetime('now'),updated_at=datetime('now') WHERE id=? AND status='PROCESSING'").bind(id),
+          env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'agent_dismissed',?,datetime('now'))").bind(id,reason)
+        ])
+        return Response.json({ok:true,id,status:'DISMISSED',reason})
+      }
       const base=String(b.base_text||'').trim(),a=String(b.remate_a||'').trim(),rb=String(b.remate_b||'').trim(),rc=String(b.remate_c||'').trim();const ia=String(b.image_a_url||'').trim(),ib=String(b.image_b_url||'').trim(),ic=String(b.image_c_url||'').trim()
-      if(!id||!base||!a||!rb||!rc)return Response.json({error:'Faltan id, base_text o alguno de los tres remates'},{status:400})
+      if(!base||!a||!rb||!rc)return Response.json({error:'Faltan base_text o alguno de los tres remates'},{status:400})
       if([a,rb,rc].some(x=>base.length+' 🌶️ '.length+x.length>280))return Response.json({error:'Base + 🌶️ + remate supera 280 caracteres'},{status:400})
       const last=await env.DB.prepare("SELECT COALESCE(MAX(version),0) AS v FROM drafts WHERE news_id=?").bind(id).first<{v:number}>()
       const version=Number(last?.v||0)+1
