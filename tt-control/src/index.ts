@@ -224,7 +224,7 @@ async function runNow(silent=false){
     else console.warn('TT Control auto-run:',e)
   }finally{if(!silent)b.disabled=false;autoRunBusy=false}
 }
-if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{})
+if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})}).catch(()=>{})}
 load()
 setInterval(function(){if(!document.hidden)runNow(true)},300000)
 </script></body></html>`;
@@ -277,7 +277,7 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
   try{
     if(req.method==='GET'&&(u.pathname==='/icon.svg'||u.pathname==='/favicon.ico'))return new Response(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#1769e0"/><text x="32" y="41" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" font-weight="800" fill="white">TT</text><circle cx="52" cy="12" r="6" fill="#ff3b30"/></svg>`,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=300'}})
     if(req.method==='GET'&&u.pathname==='/manifest.webmanifest')return Response.json({name:'TT Control',short_name:'TT Control',id:'/',start_url:'/',scope:'/',display:'standalone',background_color:'#f4f6f9',theme_color:'#1769e0'},{headers:{'content-type':'application/manifest+json','cache-control':'no-cache'}})
-    if(req.method==='GET'&&u.pathname==='/sw.js')return new Response("self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(clients.claim()));self.addEventListener('fetch',()=>{});",{headers:{'content-type':'application/javascript','cache-control':'no-cache'}})
+    if(req.method==='GET'&&u.pathname==='/sw.js')return new Response("self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil((async()=>{await self.registration.unregister();const cs=await clients.matchAll({type:'window'});cs.forEach(c=>c.navigate(c.url))})()));",{headers:{'content-type':'application/javascript','cache-control':'no-store, no-cache, must-revalidate','clear-site-data':'\\"cache\\"'}})
     if(req.method==='GET'&&u.pathname==='/login')return login()
     await ensureEditorialSchema(env)
 
