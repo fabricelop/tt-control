@@ -312,7 +312,7 @@ Responde SOLO JSON {"level":"ALERT"|"ENTRY"|"IGNORE","reason":"frase breve"}.`
     const status=safeLevel==='ALERT'?'ALERTED':safeLevel==='ENTRY'?'ENTRY':'IGNORED'
     await env.DB.prepare("UPDATE media_radar SET importance=?,reason=?,status=? WHERE id=?").bind(safeLevel,String(p.reason||''),status,n.id).run()
     if(status==='ALERTED')alerts++;if(status==='ENTRY')entry++
-  }catch(_){await env.DB.prepare("UPDATE media_radar SET importance='IGNORE',reason='Clasificación LLM no disponible',status='IGNORED' WHERE id=?").bind(n.id).run()}}
+  }catch(e){console.log('Media radar LLM retry',n.id,String(e));await env.DB.prepare("UPDATE media_radar SET reason=? WHERE id=?").bind('Pendiente de reintento: clasificación LLM no disponible',n.id).run()}}
   return {items:items.length,touched,alerts,entry}
 }
 async function ingest(env:Env){
