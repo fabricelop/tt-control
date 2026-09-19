@@ -266,7 +266,9 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
       if(req.method!=='GET')return new Response('Method Not Allowed',{status:405})
       const q=await env.DB.prepare("SELECT n.id,n.title,n.url,n.section,n.published_at,n.urgent,(SELECT value FROM editorial_feedback f WHERE f.news_id=n.id AND f.kind='rewrite_request' ORDER BY f.id DESC LIMIT 1) AS rewrite_request,(SELECT COUNT(*) FROM drafts d WHERE d.news_id=n.id) AS previous_drafts FROM news n WHERE n.status='PROCESSING' ORDER BY n.urgent DESC,n.published_at ASC,n.id ASC LIMIT 50").all()
-      return Response.json({news:q.results})
+      const radar=await buildRadarModel(env)
+      const rc=await env.DB.prepare("SELECT status,COUNT(*) AS n FROM news GROUP BY status").all()
+      return Response.json({news:q.results,radar:{positive_samples:radar.pos,negative_samples:radar.neg,minimum_positive:5,minimum_negative:20,learning_active:radar.pos>=5&&radar.neg>=20,status_counts:Object.fromEntries((rc.results as any[]).map(x=>[String(x.status),Number(x.n)]))}})
     }
     if(u.pathname==='/api/agent/image'){
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
