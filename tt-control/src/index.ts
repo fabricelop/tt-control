@@ -167,7 +167,7 @@ async function requestChatImage(id,option){
       'Base: '+String(dr.base_text||''),
       'Remate '+label+': '+String(rem),
       'Genera directamente una imagen editorial horizontal para este remate, con un gag visual específico y calidad de viñeta profesional TTiTTulares. No hagas una ilustración genérica.'
-    ].join('\n')
+    ].join('\\n')
     await navigator.clipboard.writeText(promptText)
     alert('✓ TTIMG #'+id+'-'+label+' copiado con noticia, base y remate. Vuelve a este chat, pega y envía.')
   }catch(e){
