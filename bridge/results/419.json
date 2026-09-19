@@ -1,14 +1,14 @@
 {
   "id": 419,
-  "base_text": "EEUU autoriza una posible venta a Ucrania de defensa aérea por unos 2.700 millones de dólares. La operación, aún sujeta a revisión del Congreso, se financiaría con fondos europeos y estadounidenses.",
-  "remate_a": "La geopolítica también tiene carrito de la compra.",
-  "remate_b": "El Congreso aún tiene que pasar por caja.",
-  "remate_c": "Defensa aérea, financiación europea y papeleo americano.",
-  "research": "Contrastado con Reuters y Europa Press, que remiten a la notificación del Departamento de Estado al Congreso. La autorización potencial asciende a 2.700 millones de dólares, equivalentes a unos 2.333 millones de euros en la información española. Incluye mejoras de defensa aérea, misiles, radares contra drones y modificaciones de lanzadores. La venta todavía está sujeta a revisión del Congreso. Por tratarse de material militar destinado a una guerra activa, los remates son informativos y no humorísticos. Sin imagen de medios.",
+  "base_text": "EEUU autoriza una posible venta a Ucrania de defensa aérea por 2.700 millones de dólares, aún sujeta al Congreso. Se financiaría con aportaciones europeas y fondos estadounidenses de la era Biden.",
+  "remate_a": "Trump prometió acabar la guerra. De momento ha encontrado la caja.",
+  "remate_b": "La paz en 24 horas lleva 20 meses y ahora viene con catálogo.",
+  "remate_c": "No cerró la guerra, pero sí ha abierto la ventanilla de ventas.",
+  "research": "Reescritura siguiendo el rewrite_request: remates burlescos, irónicos y específicos, sin bromear con víctimas. Contrastado el 19-09-2026 con Reuters y la notificación estadounidense citada por la cobertura. La autorización potencial es de 2.700 millones de dólares (unos 2.333 millones de euros), incluye sistemas y mejoras de defensa aérea y sigue sujeta a revisión del Congreso. Reuters señala que Trump prometió acabar la guerra al asumir el cargo y que el objetivo sigue incumplido 20 meses después; ese contraste documentado es el objeto de la sátira, no la guerra ni sus víctimas. Todas las variantes Base + 🌶️ + remate quedan por debajo de 280 caracteres. Sin imagen reutilizada: no se ha identificado una imagen oficial/licenciada segura adecuada.",
   "sources": [
     "https://www.reuters.com/world/us-clears-way-27-billion-sale-ukraine-air-defense-development-upgrades-2026-09-18/",
-    "https://www.europapress.es/internacional/noticia-eeuu-aprueba-vender-ucrania-material-militar-2333-millones-20260919102742.html",
-    "https://www.investing.com/news/world-news/us-clears-way-for-27-billion-sale-to-ukraine-of-airdefense-development-upgrades-4908040"
+    "https://www.investing.com/news/world-news/us-clears-way-for-27-billion-sale-to-ukraine-of-airdefense-development-upgrades-4908040",
+    "https://www.europapress.es/internacional/noticia-eeuu-aprueba-vender-ucrania-material-militar-2333-millones-20260919102742.html"
   ],
   "image_url": "",
   "image_a_url": "",
