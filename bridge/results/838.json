@@ -1,14 +1,13 @@
 {
   "id": 838,
-  "base_text": "La OTAN celebra el acuerdo de EEUU, Dinamarca y Groenlandia para reforzar la seguridad en el Ártico. Dinamarca y Groenlandia dicen que respeta la soberanía de la isla.",
-  "remate_a": "Tras meses discutiendo quién manda, han acordado empezar por quién vigila.",
-  "remate_b": "Groenlandia no está en venta, pero la alarma ya tiene nuevo código.",
-  "remate_c": "La OTAN celebra el pacto. El deshielo diplomático también necesitaba vigilancia.",
-  "research": "Reuters informa de que Dinamarca y Groenlandia sostienen que el acuerdo no cede soberanía; AP describe el refuerzo de presencia militar estadounidense y la necesidad de ratificación; Cadena SER recoge el respaldo de la OTAN. La redacción evita presentar como hecho la caracterización de Trump de 'control permanente'.",
+  "base_text": "La OTAN celebra el acuerdo sobre Groenlandia. Trump dice que EEUU tendrá «control permanente» de su seguridad; Dinamarca y Groenlandia insisten en que no ceden soberanía.",
+  "remate_a": "Todos han firmado la paz con una versión distinta del contrato.",
+  "remate_b": "Trump compró el cartel de «Vigilado 24h» y ya lo llama escritura de propiedad.",
+  "remate_c": "Groenlandia no estaba en venta. Al final Trump se ha quedado con el servicio de conserjería.",
+  "research": "Reescritura solicitada: más divertida y sarcástica. Reuters y AP confirman la tensión entre la descripción de Trump («control permanente») y la insistencia de Dinamarca/Groenlandia en que no se cede soberanía; la OTAN ha acogido favorablemente el acuerdo.",
   "sources": [
     "https://www.europapress.es/internacional/noticia-otan-dice-acuerdo-eeuu-groenlandia-muy-bienvenido-20260919210050.html",
     "https://www.reuters.com/world/europe/greenland-denmark-say-us-deal-will-not-cede-sovereignty-2026-09-19/",
-    "https://apnews.com/article/4cf77cb4608b685a70410bd679479193",
-    "https://cadenaser.com/nacional/2026/09/19/la-otan-celebra-el-acuerdo-entre-eeuu-y-dinamarca-sobre-groenlandia-y-defiende-la-permanencia-de-la-alianza-en-el-artico-cadena-ser/"
+    "https://apnews.com/article/4cf77cb4608b685a70410bd679479193"
   ]
 }
