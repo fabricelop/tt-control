@@ -97,6 +97,20 @@ function extractPreparedHeadline(original, data) {
 export default async function handler(req, res) {
   if (req.method === "GET") return res.status(200).json({ ok: true, service: "ttittulares-telegram-webhook" });
   if (req.method !== "POST") return res.status(405).json({ ok: false });
+  // Internal notifications reuse the same Vercel Telegram environment as TTendencias.
+  // Authentication uses the existing webhook secret, so the bot token/chat id never need to live in GitHub.
+  if (req.headers["x-tt-control-notify"] === "1") {
+    const expected = process.env.TELEGRAM_WEBHOOK_SECRET;
+    const received = req.headers["x-tt-control-secret"];
+    if (!expected || received !== expected) return res.status(401).json({ ok: false });
+    const body = req.body || {};
+    const count = Math.max(0, Number(body.count || 0));
+    if (!count) return res.status(200).json({ ok: true, skipped: true });
+    const allowedChat = String(process.env.TELEGRAM_CHAT_ID || "");
+    await telegram("sendMessage", { chat_id: allowedChat, text: `✅ TT Control: ${count} noticia(s) nueva(s) en Listas.` });
+    return res.status(200).json({ ok: true, notified: count });
+  }
+
   const expected = process.env.TELEGRAM_WEBHOOK_SECRET;
   const received = req.headers["x-telegram-bot-api-secret-token"];
   if (!expected || received !== expected) return res.status(401).json({ ok: false });
