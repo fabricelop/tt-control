@@ -149,6 +149,20 @@ jobs:
             except Exception as e: print('HTTP_DETAIL_FAIL',h,repr(e))
           PY
 
+      - name: Inspect Cloudflare zones for custom-domain fallback
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request
+          u='https://api.cloudflare.com/client/v4/zones?account.id='+os.environ['CF_ACCOUNT']+'&per_page=50'
+          q=urllib.request.Request(u,headers={'Authorization':'Bearer '+os.environ['CF_TOKEN']})
+          try:
+            d=json.load(urllib.request.urlopen(q,timeout=15)); print('CF_ZONES',[(x.get('name'),x.get('status'),x.get('id')) for x in d.get('result',[])])
+          except Exception as e: print('CF_ZONES_FAIL',repr(e))
+          PY
+
       - name: Deploy TT Control Worker
         working-directory: tt-control
         env:
