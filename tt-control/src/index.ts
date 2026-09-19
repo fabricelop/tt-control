@@ -84,7 +84,7 @@ function agentAuthorized(req:Request,env:Env):boolean{
   if(!env.CHATGPT_BRIDGE_TOKEN)return false
   return (req.headers.get('authorization')||'')==='Bearer '+env.CHATGPT_BRIDGE_TOKEN
 }
-async function telegramApi(env:Env,method:string,body:any){if(!env.TELEGRAM_BOT_TOKEN)throw new Error('TELEGRAM_BOT_TOKEN no configurado');const r=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/'+method,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw new Error('Telegram '+method+' '+r.status);return r.json()}
+async function telegramApi(env:Env,method:string,body:any){if(!env.TELEGRAM_BOT_TOKEN)return {ok:false,skipped:true};const r=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/'+method,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});if(!r.ok)return {ok:false,status:r.status};return r.json()}
 function authorized(req:Request,env:Env):boolean{
   if(!env.TT_CONTROL_PASSWORD)return false
   const auth=req.headers.get('authorization')||''
