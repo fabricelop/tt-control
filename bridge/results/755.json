@@ -1,5 +1,15 @@
 {
   "id": 755,
-  "disposition": "DISMISSED",
-  "reason": "Ataque con heridos, incluidos menores; noticia de víctimas y sufrimiento sin necesidad editorial suficiente para publicación."
+  "base_text": "Autoridades de Górlovka, en la región ucraniana de Donetsk bajo control ruso, denuncian que un ataque ucraniano con drones contra un autobús ha dejado al menos once heridos, entre ellos dos niños. No consta verificación independiente.",
+  "remate_a": "Sin remate: hay víctimas, incluidos menores.",
+  "remate_b": "Sin remate: hay víctimas, incluidos menores.",
+  "remate_c": "Sin remate: hay víctimas, incluidos menores.",
+  "research": "Europa Press atribuye la información al alcalde de Górlovka, Ivan Prijodko. La noticia habla de al menos once heridos, incluidos dos menores. Al proceder la afirmación de autoridades locales bajo control ruso, la base mantiene la atribución y señala la falta de verificación independiente. No se añade humor por haber víctimas.",
+  "sources": [
+    "https://www.europapress.es/internacional/noticia-menos-once-heridos-incluidos-dos-ninos-causa-ataque-ucraniano-contra-autobus-donetsk-20260919181423.html"
+  ],
+  "image_url": "",
+  "image_a_url": "",
+  "image_b_url": "",
+  "image_c_url": ""
 }
