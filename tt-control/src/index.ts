@@ -330,7 +330,7 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       const version=Number(last?.v||0)+1
       await env.DB.batch([
         env.DB.prepare("INSERT INTO drafts(news_id,base_text,remate_a,remate_b,remate_c,research,sources_json,image_url,image_a_url,image_b_url,image_c_url,version,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,datetime('now'),datetime('now'))").bind(id,base,a,rb,rc,String(b.research||''),JSON.stringify(Array.isArray(b.sources)?b.sources:[]),String(b.image_url||''),ia,ib,ic,version),
-        env.DB.prepare("UPDATE news SET status='READY',processing_error=NULL,processing_finished_at=datetime('now'),updated_at=datetime('now') WHERE id=? AND status='PROCESSING'").bind(id),
+        env.DB.prepare("UPDATE news SET status='READY',processing_error=NULL,processing_finished_at=datetime('now'),updated_at=datetime('now') WHERE id=? AND status IN ('PROCESSING','DISMISSED')").bind(id),
         env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'agent_completed',?,datetime('now'))").bind(id,String(version))
       ])
       return Response.json({ok:true,id,version,status:'READY'})
