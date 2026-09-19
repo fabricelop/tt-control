@@ -48,6 +48,26 @@ jobs:
           except Exception as e: print('CF_USAGE_CHECK_FAILED='+repr(e))
           PY
 
+      - name: Inspect Cloudflare workers.dev settings
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python - <<'PY'
+          import os, json, urllib.request, urllib.error
+          account=os.environ['CLOUDFLARE_ACCOUNT_ID']; token=os.environ['CLOUDFLARE_API_TOKEN']
+          base='https://api.cloudflare.com/client/v4/accounts/'+account
+          headers={'Authorization':'Bearer '+token,'Content-Type':'application/json'}
+          for path in ['/workers/subdomain','/workers/services/tt-control','/workers/services/fabcalendar-bot']:
+            req=urllib.request.Request(base+path,headers=headers)
+            try:
+              with urllib.request.urlopen(req) as r: data=json.load(r)
+              print('CF_INSPECT '+path+' '+json.dumps(data,separators=(',',':')))
+            except urllib.error.HTTPError as e:
+              print('CF_INSPECT '+path+' HTTP '+str(e.code)+' '+e.read().decode(errors='replace'))
+            except Exception as e: print('CF_INSPECT '+path+' FAILED '+repr(e))
+          PY
+
       - name: Deploy TT Control Worker
         working-directory: tt-control
         env:
