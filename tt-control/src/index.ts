@@ -304,7 +304,9 @@ Responde SOLO JSON {"level":"ALERT"|"ENTRY"|"IGNORE","reason":"frase breve"}.`
     const out:any=await env.AI.run('@cf/google/gemma-4-26b-a4b-it',{messages:[{role:'system',content:'Eres el editor de un radar de noticias español muy selectivo. Agrupa acontecimientos y devuelve JSON válido.'},{role:'user',content:prompt}],chat_template_kwargs:{enable_thinking:false}})
     const p=JSON.parse(String(out?.response||'').replace(/```json|```/g,'').trim()),level=String(p.level||'IGNORE').toUpperCase()
     const coverage=count/9
-    const safeLevel=(level==='ALERT'&&count<2)?'ENTRY':(level==='ALERT'||level==='ENTRY'?level:'IGNORE')
+    let safeLevel=(level==='ALERT'&&count<2)?'ENTRY':(level==='ALERT'||level==='ENTRY'?level:'IGNORE')
+    if(coverage>=0.67)safeLevel='ALERT'
+    else if(coverage>=0.33&&safeLevel==='IGNORE')safeLevel='ENTRY'
     const status=safeLevel==='ALERT'?'ALERTED':safeLevel==='ENTRY'?'ENTRY':'IGNORED'
     await env.DB.prepare("UPDATE media_radar SET importance=?,reason=?,status=? WHERE id=?").bind(safeLevel,String(p.reason||''),status,n.id).run()
     if(status==='ALERTED')alerts++;if(status==='ENTRY')entry++
