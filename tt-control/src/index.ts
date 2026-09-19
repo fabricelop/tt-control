@@ -58,9 +58,23 @@ function learnedRadar(model:RadarModel,section:string,title:string):{dismiss:boo
   const dismiss=evidence>=2&&strongNeg>=2&&avg>=0.85
   return {dismiss,score:-avg,reason:dismiss?'Radar aprendido: varios términos repetidamente descartados':'Sin evidencia negativa suficiente'}
 }
+async function semanticRadar(env:Env,section:string,title:string,statistical:{dismiss:boolean;reason:string}):Promise<{dismiss:boolean;reason:string}>{
+  if(protectedNationalPolitics(section,title))return {dismiss:false,reason:'Política nacional: protegida del descarte automático'}
+  if(!statistical.dismiss)return statistical
+  try{
+    const fb=await env.DB.prepare("SELECT f.kind,f.value,n.title FROM editorial_feedback f JOIN news n ON n.id=f.news_id WHERE f.kind IN ('radar_reconsider_reason','dismiss_reason','selection_instruction') AND length(f.value)>2 ORDER BY f.id DESC LIMIT 40").all()
+    const examples=(fb.results as any[]).map(x=>'- '+x.kind+': '+String(x.value).slice(0,300)+' | '+String(x.title).slice(0,180)).join('\n')
+    const prompt=`Decide si esta noticia debe ser descartada automáticamente del radar editorial de TTiTTulares España o debe llegar a Entrada para decisión humana. Sé conservador: ante duda, KEEP. Política nacional española, Gobierno, Congreso, Senado, partidos nacionales y asuntos con impacto nacional: siempre KEEP. No confundas que una noticia no admita humor con que carezca de interés. Aprende especialmente de las correcciones del editor.\n\nCORRECCIONES/INSTRUCCIONES RECIENTES DEL EDITOR:\n${examples||'(sin comentarios todavía)'}\n\nNOTICIA:\nSección: ${section}\nTitular: ${title}\n\nResponde SOLO JSON: {"decision":"KEEP"|"DISCARD","reason":"frase breve"}`
+    const out:any=await env.AI.run('@cf/google/gemma-4-26b-a4b-it',{messages:[{role:'system',content:'Eres un clasificador editorial conservador. Devuelve JSON válido y nada más.'},{role:'user',content:prompt}],chat_template_kwargs:{enable_thinking:false}})
+    const raw=String(out?.response||out?.choices?.[0]?.message?.content||'').replace(/```json|\`\`\`/g,'').trim();const parsed=JSON.parse(raw)
+    const dismiss=String(parsed.decision).toUpperCase()==='DISCARD'
+    return {dismiss,reason:'LLM: '+String(parsed.reason|| (dismiss?'descarte semántico':'conservar por interés')).slice(0,300)}
+  }catch(e){return {dismiss:false,reason:'LLM no disponible: se conserva para revisión humana'}}
+}
+
 async function reclassifyBacklog(env:Env){
   const model=await buildRadarModel(env),q=await env.DB.prepare("SELECT id,title,section FROM news WHERE status='NEW' ORDER BY published_at DESC,id DESC LIMIT 1000").all();let moved=0
-  for(const n of q.results as any[]){const d=learnedRadar(model,String(n.section||''),String(n.title||''));if(d.dismiss){const r=await env.DB.prepare("UPDATE news SET status='RADAR_DISMISSED',radar_score=?,radar_reason=?,updated_at=datetime('now') WHERE id=? AND status='NEW'").bind(d.score,d.reason,n.id).run();moved+=Number(r.meta.changes||0)}}
+  for(const n of q.results as any[]){const d=learnedRadar(model,String(n.section||''),String(n.title||''));if(d.dismiss){const sem=await semanticRadar(env,String(n.section||''),String(n.title||''),d);if(sem.dismiss){const r=await env.DB.prepare("UPDATE news SET status='RADAR_DISMISSED',radar_score=?,radar_reason=?,updated_at=datetime('now') WHERE id=? AND status='NEW'").bind(d.score,sem.reason,n.id).run();moved+=Number(r.meta.changes||0)}}}
   return moved
 }
 function agentAuthorized(req:Request,env:Env):boolean{
@@ -77,7 +91,7 @@ function login(message=''){return new Response(`<!doctype html><html lang="es"><
 
 const HTML = `<!doctype html><html lang="es"><head><meta charset="utf-8"><link rel="icon" href="/favicon.ico"><link rel="icon" href="/icon.svg?v=2" type="image/svg+xml"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TT Control</title><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#1769e0"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="TT Control"><style>
 :root{font-family:Inter,system-ui,sans-serif;color:#e8edf5;background:#090b10;color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#090b10}.top{height:68px;background:#0f131a;border-bottom:1px solid #29313d;display:flex;align-items:center;padding:0 24px;gap:18px;position:sticky;top:0}.brand{font-size:22px;font-weight:800}.manual{background:#121923;color:#6aa8ff;border:1px solid #3578d4;border-radius:10px;padding:11px 14px;font-weight:700}.run{margin-left:auto;background:#1769e0;color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:700}.layout{display:grid;grid-template-columns:210px minmax(430px,1fr) minmax(360px,.9fr);min-height:calc(100vh - 68px)}nav{padding:22px 14px;border-right:1px solid #29313d;background:#0f131a}nav button{display:block;width:100%;text-align:left;border:0;background:none;padding:12px;border-radius:9px;font-size:15px}.active{background:#182a44!important;color:#7eb5ff;font-weight:700}.list{padding:22px}.detail{padding:22px;border-left:1px solid #29313d;background:#0f131a}.card{background:#11161e;border:1px solid #29313d;border-radius:12px;padding:15px;margin-bottom:12px}.meta{font-size:12px;color:#9aa6b6;margin-bottom:6px}.title{font-weight:700;line-height:1.35}.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.split{display:inline-flex}.split>button{border-radius:8px 0 0 8px!important}.split>.more{border-radius:0 8px 8px 0!important;padding-left:7px!important;padding-right:7px!important;border-left:0!important}.actions button{border:1px solid #3a4555;background:#171d26;color:#e8edf5;border-radius:8px;padding:8px 10px}.publish{background:#e8edf5!important;color:#0b0e13!important;border-color:#e8edf5!important}.danger{background:#32191c!important;color:#ff8f8f!important;border-color:#71343a!important}.remateChoice{border:1px solid #303947;border-radius:10px;padding:10px;margin:8px 0;background:#151b24}.remateChoice p{margin:6px 0}.yes{background:#163122!important;color:#9be5b3!important;border-color:#315c3e!important}.no{background:#32191c!important;color:#ff9b9b!important;border-color:#71343a!important}.urgent{color:#ff7b72;font-weight:800}.urgencyBtn{min-width:34px;padding:5px 7px!important;font-size:12px;font-weight:800}.urgencyBtn.isUrgent{background:#d92d20!important;color:#fff;border-color:#d92d20!important}.empty{color:#9aa6b6;padding:30px 0}.mobileClose{display:none}.radarAgree{background:#163122!important;color:#9be5b3!important}.radarDisagree{background:#32191c!important;color:#ff9b9b!important}@media(max-width:850px){.layout{display:block}nav{display:flex;overflow:auto;border-right:0;border-bottom:1px solid #29313d;padding:8px}.detail{display:none}.detail.mobileOpen{display:block;position:fixed;inset:68px 0 0 0;z-index:20;overflow:auto;padding:16px}.mobileClose{display:inline-block!important;float:right;margin-bottom:10px}.card{padding:14px}.actions button{min-height:42px}.list{padding:12px}.top{padding:0 8px;gap:7px}.brand{font-size:18px}.top #stamp{display:none}.manual{padding:9px 10px;font-size:12px}nav button{white-space:nowrap;width:auto}.run{padding:10px 12px}}
-</style></head><body><header class="top"><div class="brand">TT Control</div><span id="stamp">TTiTTulares</span><button class="manual" onclick="openManual()">＋ NOTICIA</button><button class="run" onclick="runNow()">▶ EJECUTAR</button></header><main class="layout"><nav><button class="active" onclick="showView(\'READY\',this)">Listas <b id="readyCount"></b></button><button onclick="showView(\'NEW\',this)">Entrada <b id="newCount"></b></button><button onclick="showView(\'PROCESSING\',this)">Elaborando <b id="processingCount"></b></button><button onclick="showView('RADAR_DISMISSED',this)">Descartadas radar <b id="radarCount"></b></button></nav><section class="list"><h2>Noticias para valorar</h2><div id="news" class="empty">Cargando…</div></section><aside class="detail"><h2>Mesa de redacción</h2><p>Selecciona una noticia. La investigación, versión base y los tres remates se incorporarán en la siguiente fase.</p><p><b>Urgencia</b> y <b>relevancia editorial</b> se aprenden por separado.</p></aside></main><script>
+</style></head><body><header class="top"><div class="brand">TT Control</div><span id="stamp">TTiTTulares</span><button class="manual" onclick="openManual()">＋ NOTICIA</button><span id="autoCountdown" class="meta" title="Próxima ejecución automática">Auto · 05:00</span><button class="run" onclick="runNow()">▶ EJECUTAR</button></header><main class="layout"><nav><button class="active" onclick="showView(\'READY\',this)">Listas <b id="readyCount"></b></button><button onclick="showView(\'NEW\',this)">Entrada <b id="newCount"></b></button><button onclick="showView(\'PROCESSING\',this)">Elaborando <b id="processingCount"></b></button><button onclick="showView('RADAR_DISMISSED',this)">Descartadas radar <b id="radarCount"></b></button></nav><section class="list"><h2>Noticias para valorar</h2><div id="news" class="empty">Cargando…</div></section><aside class="detail"><h2>Mesa de redacción</h2><p>Selecciona una noticia. La investigación, versión base y los tres remates se incorporarán en la siguiente fase.</p><p><b>Urgencia</b> y <b>relevancia editorial</b> se aprenden por separado.</p></aside></main><script>
 let currentView='READY'
 async function load(){
   try{
@@ -247,8 +261,11 @@ async function runNow(silent=false){
   }finally{if(!silent)b.disabled=false;autoRunBusy=false}
 }
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{})
-load()
-setInterval(function(){runNow(true)},300000)
+let nextAutoRun=Date.now()+300000
+function updateCountdown(){const left=Math.max(0,nextAutoRun-Date.now()),m=Math.floor(left/60000),s=Math.floor((left%60000)/1000);const el=document.getElementById('autoCountdown');if(el)el.textContent='Auto · '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+load();updateCountdown()
+setInterval(updateCountdown,1000)
+setInterval(async function(){nextAutoRun=Date.now()+300000;updateCountdown();await runNow(true)},300000)
 </script></body></html>`;
 
 async function ingest(env:Env){
@@ -270,7 +287,8 @@ async function ingest(env:Env){
       if(checkpoint && published && published<=checkpoint)continue
       discovered++
       const section=String(x.section||x.category||''),initial=radarDecision(section,title),learned=initial.admit?learnedRadar(radarModel,section,title):{dismiss:true,score:-9,reason:initial.reason}
-      const decision={admit:!learned.dismiss,reason:learned.reason}
+      const semantic=learned.dismiss?await semanticRadar(env,section,title,learned):learned
+      const decision={admit:!semantic.dismiss,reason:semantic.reason}
       const status=decision.admit?'NEW':'RADAR_DISMISSED'
       const write=await env.DB.prepare(`INSERT INTO news(source_key,title,url,section,published_at,detected_at,status,radar_reason,updated_at)
         VALUES(?,?,?,?,?,datetime('now'),?,?,datetime('now')) ON CONFLICT(source_key) DO NOTHING`)
