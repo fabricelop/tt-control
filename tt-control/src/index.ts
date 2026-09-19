@@ -5,7 +5,9 @@ async function ensureEditorialSchema(env:Env){
     "CREATE TABLE IF NOT EXISTS drafts (id INTEGER PRIMARY KEY AUTOINCREMENT, news_id INTEGER NOT NULL, base_text TEXT, remate_a TEXT, remate_b TEXT, remate_c TEXT, research TEXT, sources_json TEXT, version INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL DEFAULT (datetime('now')), updated_at TEXT NOT NULL DEFAULT (datetime('now')))",
     "CREATE UNIQUE INDEX IF NOT EXISTS idx_drafts_news_version ON drafts(news_id,version)",
     "CREATE TABLE IF NOT EXISTS publications (id INTEGER PRIMARY KEY AUTOINCREMENT, news_id INTEGER NOT NULL, draft_id INTEGER, variant TEXT NOT NULL, final_text TEXT NOT NULL, published_at TEXT NOT NULL DEFAULT (datetime('now')))",
-    "CREATE INDEX IF NOT EXISTS idx_publications_news ON publications(news_id)"
+    "CREATE INDEX IF NOT EXISTS idx_publications_news ON publications(news_id)",
+    "CREATE TABLE IF NOT EXISTS media_radar (id INTEGER PRIMARY KEY AUTOINCREMENT, fingerprint TEXT NOT NULL UNIQUE, title TEXT NOT NULL, url TEXT NOT NULL, source TEXT NOT NULL, sources_json TEXT NOT NULL DEFAULT '[]', source_count INTEGER NOT NULL DEFAULT 1, importance TEXT NOT NULL DEFAULT 'PENDING', reason TEXT, status TEXT NOT NULL DEFAULT 'NEW', first_seen TEXT NOT NULL DEFAULT (datetime('now')), last_seen TEXT NOT NULL DEFAULT (datetime('now')))",
+    "CREATE INDEX IF NOT EXISTS idx_media_radar_status ON media_radar(status,last_seen)"
   ]
   for(const sql of statements)await env.DB.prepare(sql).run()
   for(const sql of ["ALTER TABLE news ADD COLUMN processing_error TEXT","ALTER TABLE news ADD COLUMN processing_started_at TEXT","ALTER TABLE news ADD COLUMN processing_finished_at TEXT","ALTER TABLE drafts ADD COLUMN image_url TEXT","ALTER TABLE drafts ADD COLUMN ai_image_base64 TEXT","ALTER TABLE drafts ADD COLUMN image_a_url TEXT","ALTER TABLE drafts ADD COLUMN image_b_url TEXT","ALTER TABLE drafts ADD COLUMN image_c_url TEXT"]){try{await env.DB.prepare(sql).run()}catch(_){}}
@@ -269,6 +271,29 @@ setInterval(updateCountdown,1000)
 setInterval(async function(){nextAutoRun=Date.now()+300000;updateCountdown();await runNow(true)},300000)
 </script></body></html>`;
 
+
+function mediaNorm(s:string){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ ]/g,' ').replace(/\b(el|la|los|las|un|una|de|del|al|y|en|por|para|con|que|se|su|sus)\b/g,' ').replace(/\s+/g,' ').trim()}
+function mediaFingerprint(title:string){return mediaNorm(title).split(' ').filter(x=>x.length>2).slice(0,8).sort().join('|')}
+function xmlText(s:string){return s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,'$1').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim()}
+function parseFeed(xml:string,source:string){const out:any[]=[];for(const m of xml.matchAll(/<(item|entry)\b[\s\S]*?<\/\1>/gi)){const b=m[0],tm=b.match(/<title[^>]*>([\s\S]*?)<\/title>/i),lm=b.match(/<link[^>]*href=["']([^"']+)/i)||b.match(/<link[^>]*>([\s\S]*?)<\/link>/i);if(tm&&lm)out.push({title:xmlText(tm[1]),url:xmlText(lm[1]),source})}return out.slice(0,40)}
+async function fetchMediaItems(){
+  const feeds=[['EL PAÍS','https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/ultimas-noticias/portada'],['La Vanguardia','https://www.lavanguardia.com/rss/home.xml']]
+  const all:any[]=[]
+  for(const [source,url] of feeds){try{const r=await fetch(url,{headers:{'user-agent':'TT-Control-Media-Radar/1.0'}});if(r.ok)all.push(...parseFeed(await r.text(),source))}catch(_){}}
+  for(const [source,url] of [['Cadena SER','https://cadenaser.com/ultimas-noticias/'],['RTVE','https://www.rtve.es/noticias/']] as string[][]){try{const r=await fetch(url,{headers:{'user-agent':'TT-Control-Media-Radar/1.0'}});if(!r.ok)continue;const h=await r.text();const re=/<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;let m;while((m=re.exec(h))&&all.filter(x=>x.source===source).length<35){const title=xmlText(m[2]);if(title.length<35||title.length>240)continue;let link=m[1];if(link.startsWith('/'))link=new URL(link,url).toString();if(/^https?:/.test(link))all.push({source,url:link,title})}}catch(_){}}
+  return all
+}
+async function runMediaRadar(env:Env){
+  const items=await fetchMediaItems();let touched=0,alerts=0
+  for(const x of items){const fp=mediaFingerprint(x.title);if(fp.length<12)continue;const similar:any=await env.DB.prepare("SELECT * FROM media_radar WHERE status IN ('NEW','ALERTED') AND last_seen>=datetime('now','-18 hours') ORDER BY last_seen DESC LIMIT 80").all();let row:any=null
+    const toks=new Set(fp.split('|'));for(const r of similar.results as any[]){const rt=new Set(String(r.fingerprint).split('|'));const overlap=[...toks].filter(t=>rt.has(t)).length/Math.max(1,Math.min(toks.size,rt.size));if(overlap>=.55){row=r;break}}
+    if(row){const ss=new Set<string>(JSON.parse(row.sources_json||'[]'));ss.add(x.source);await env.DB.prepare("UPDATE media_radar SET sources_json=?,source_count=?,last_seen=datetime('now') WHERE id=?").bind(JSON.stringify([...ss]),ss.size,row.id).run();touched++;continue}
+    await env.DB.prepare("INSERT OR IGNORE INTO media_radar(fingerprint,title,url,source,sources_json) VALUES(?,?,?,?,?)").bind(fp,x.title,x.url,x.source,JSON.stringify([x.source])).run();touched++
+  }
+  const q:any=await env.DB.prepare("SELECT * FROM media_radar WHERE status='NEW' AND last_seen>=datetime('now','-3 hours') ORDER BY source_count DESC,last_seen DESC LIMIT 25").all()
+  for(const n of q.results as any[]){try{const prompt=`Evalúa si este acontecimiento merece INTERRUMPIR al editor de una cuenta española de actualidad con una alerta móvil. Prioriza noticias importantes de España/política nacional, grandes sucesos, decisiones institucionales/económicas relevantes, acontecimientos internacionales de gran impacto y deporte/cultura realmente destacados. No alertes por noticias territoriales rutinarias, opinión, horóscopos, resultados de lotería, previas/directos rutinarios ni contenido de servicio. Que aparezca en varios grandes medios aumenta la importancia, pero una exclusiva muy importante también vale. Fuentes detectadas: ${n.sources_json}. Titular: ${n.title}. Responde SOLO JSON {"alert":true|false,"reason":"breve"}.`;const out:any=await env.AI.run('@cf/google/gemma-4-26b-a4b-it',{messages:[{role:'system',content:'Clasificador editorial español conservador de alertas móviles. JSON solamente.'},{role:'user',content:prompt}],chat_template_kwargs:{enable_thinking:false}});const p=JSON.parse(String(out?.response||'').replace(/```json|\`\`\`/g,'').trim());await env.DB.prepare("UPDATE media_radar SET importance=?,reason=?,status=? WHERE id=?").bind(p.alert?'HIGH':'LOW',String(p.reason||''),p.alert?'ALERTED':'IGNORED',n.id).run();if(p.alert)alerts++}catch(_){}}
+  return {items:items.length,touched,alerts}
+}
 async function ingest(env:Env){
   const run=await env.DB.prepare("INSERT INTO runs(started_at,trigger) VALUES(datetime('now'),'manual') RETURNING id").first<{id:number}>()
   try{
@@ -305,7 +330,7 @@ async function ingest(env:Env){
   }catch(e){await env.DB.prepare("UPDATE runs SET finished_at=datetime('now'),status='ERROR',error=? WHERE id=?").bind(String(e),run!.id).run();throw e}
 }
 
-export default {async fetch(req:Request,env:Env):Promise<Response>{
+export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionContext){ctx.waitUntil(runMediaRadar(env))},async fetch(req:Request,env:Env):Promise<Response>{
   const u=new URL(req.url)
   try{
     if(req.method==='GET'&&(u.pathname==='/icon.svg'||u.pathname==='/favicon.ico'))return new Response(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#1769e0"/><text x="32" y="41" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" font-weight="800" fill="white">TT</text><circle cx="52" cy="12" r="6" fill="#ff3b30"/></svg>`,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=300'}})
@@ -313,6 +338,8 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
     if(req.method==='GET'&&u.pathname==='/sw.js')return new Response("self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(clients.claim()));self.addEventListener('fetch',()=>{});",{headers:{'content-type':'application/javascript','cache-control':'no-cache'}})
     if(req.method==='GET'&&u.pathname==='/login')return login()
     await ensureEditorialSchema(env)
+    if(req.method==='GET'&&u.pathname==='/api/public/media-alerts'){const q=await env.DB.prepare("SELECT id,title,url,source,sources_json,source_count,reason,last_seen FROM media_radar WHERE status='ALERTED' ORDER BY last_seen DESC LIMIT 20").all();return Response.json({alerts:q.results})}
+    if(req.method==='POST'&&u.pathname==='/api/media-radar/run'&&authorized(req,env))return Response.json(await runMediaRadar(env))
 
     // Private editorial bridge. This is deliberately separate from the browser session:
     // a future ChatGPT connector/automation can read PROCESSING items and return verified drafts.
