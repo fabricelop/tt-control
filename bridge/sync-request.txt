@@ -1,1 +1,1 @@
-manual-run verify editorial queue 2026-09-19T11:07:00Z
+scheduled-run 2026-09-19T13:55:50+02:00
