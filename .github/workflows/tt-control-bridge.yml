@@ -125,6 +125,18 @@ jobs:
           npx wrangler pages project create tt-control-access --production-branch=main || true
           npx wrangler pages deploy /tmp/tt-fallback --project-name=tt-control-access --branch=main
 
+      - name: Probe public DNS and HTTPS
+        run: |
+          python - <<'PY'
+          import socket,urllib.request
+          for h in ['tt-control.fabricelop.workers.dev','fabcalendar-bot.fabricelop.workers.dev','tt-control-access.pages.dev']:
+            try: print('DNS',h,socket.getaddrinfo(h,443))
+            except Exception as e: print('DNS_FAIL',h,repr(e))
+            try:
+              with urllib.request.urlopen('https://'+h+'/',timeout=10) as r: print('HTTPS',h,r.status,r.geturl())
+            except Exception as e: print('HTTPS_FAIL',h,repr(e))
+          PY
+
       - name: Deploy TT Control Worker
         working-directory: tt-control
         env:
