@@ -36,10 +36,19 @@ async function buildRadarModel(env:Env):Promise<RadarModel>{
 }
 function learnedRadar(model:RadarModel,section:string,title:string):{dismiss:boolean;score:number;reason:string}{
   const {pos,neg,pc,nc}=model;if(pos<5||neg<20)return {dismiss:false,score:0,reason:'Aprendizaje aún insuficiente'}
-  let score=0,evidence=0
-  for(const t of new Set(radarTokens(section,title))){const p=pc.get(t)||0,n=nc.get(t)||0;if(p+n<2)continue;score+=Math.log(((p+1)/(pos+2))/((n+1)/(neg+2)));evidence++}
-  const avg=evidence?score/Math.sqrt(evidence):0
-  return {dismiss:evidence>=2&&avg<-1.15,score:avg,reason:evidence>=2?'Radar aprendido de tus selecciones y descartes':'Poca evidencia aprendida'}
+  // Learn repeated rejection signals directly. The previous class-normalized score became
+  // excessively conservative when negative examples greatly outnumbered positives.
+  let score=0,evidence=0,strongNeg=0
+  for(const t of new Set(radarTokens(section,title))){
+    const p=pc.get(t)||0,n=nc.get(t)||0
+    if(p+n<3)continue
+    const tokenScore=Math.log((n+1)/(p+1))
+    score+=tokenScore;evidence++
+    if(n>=3&&n>=3*(p+1))strongNeg++
+  }
+  const avg=evidence?score/evidence:0
+  const dismiss=evidence>=2&&strongNeg>=2&&avg>=0.85
+  return {dismiss,score:-avg,reason:dismiss?'Radar aprendido: varios términos repetidamente descartados':'Sin evidencia negativa suficiente'}
 }
 async function reclassifyBacklog(env:Env){
   const model=await buildRadarModel(env),q=await env.DB.prepare("SELECT id,title,section FROM news WHERE status='NEW' ORDER BY published_at DESC,id DESC LIMIT 1000").all();let moved=0
@@ -268,7 +277,7 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       const q=await env.DB.prepare("SELECT n.id,n.title,n.url,n.section,n.published_at,n.urgent,(SELECT value FROM editorial_feedback f WHERE f.news_id=n.id AND f.kind='rewrite_request' ORDER BY f.id DESC LIMIT 1) AS rewrite_request,(SELECT COUNT(*) FROM drafts d WHERE d.news_id=n.id) AS previous_drafts FROM news n WHERE n.status='PROCESSING' ORDER BY n.urgent DESC,n.published_at ASC,n.id ASC LIMIT 50").all()
       const radar=await buildRadarModel(env)
       const rc=await env.DB.prepare("SELECT status,COUNT(*) AS n FROM news GROUP BY status").all()
-      return Response.json({news:q.results,radar:{positive_samples:radar.pos,negative_samples:radar.neg,minimum_positive:5,minimum_negative:20,learning_active:radar.pos>=5&&radar.neg>=20,status_counts:Object.fromEntries((rc.results as any[]).map(x=>[String(x.status),Number(x.n)]))}})
+      return Response.json({news:q.results,editorial_instructions:{remates:"OBLIGATORIO por defecto en todos los tuits que admitan humor: tres remates realmente humorísticos y específicos de la noticia. Deben ser burlescos, satíricos, irónicos o de humor negro/fino según el contexto; buscar contradicciones, hemeroteca, protagonistas, consecuencias y detalles verificados que permitan un giro inesperado. No usar como remate una continuación informativa del titular, una frase hecha, una obviedad ni una paráfrasis. Investigar también para encontrar el ángulo cómico más fuerte. Al menos una alternativa debe ser claramente más mordaz. En política, basar la sátira en hechos/contradicciones documentados sin pedir el voto ni convertirla en propaganda partidista. Nunca bromear con víctimas, tragedias, abusos, catástrofes o sufrimiento humano.",length:"Cada variante base + 🌶️ + remate debe caber en 280 caracteres antes de entregarla."},radar:{positive_samples:radar.pos,negative_samples:radar.neg,minimum_positive:5,minimum_negative:20,learning_active:radar.pos>=5&&radar.neg>=20,status_counts:Object.fromEntries((rc.results as any[]).map(x=>[String(x.status),Number(x.n)]))}})
     }
     if(u.pathname==='/api/agent/image'){
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
