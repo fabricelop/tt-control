@@ -4,9 +4,12 @@
   "remate_a": "En algunas ciudades 230 euros no alquilan un piso. En Teruel intentan que alquilen un médico.",
   "remate_b": "Oferta rural: vivienda a 230 euros. El verdadero especialista buscado era el casero.",
   "remate_c": "Teruel prueba una técnica revolucionaria para atraer trabajadores: que puedan pagar la vivienda.",
-  "research": "La noticia procede del post compartido de El Periódico. El borrador se limita a la afirmación del titular compartido.",
+  "research": "Referencia manual. La búsqueda confirma la escasez de sanitarios rurales y el uso de vivienda como incentivo en Teruel, pero no localicé una segunda fuente indexada de esta oferta exacta; mantener cautela editorial.",
   "sources": [
-    "https://x.com/elperiodico/status/2101023847344419074"
+    "https://terueltoday.com/teruel/sanidad-teruel-nuevo-plan-medicos-plazas-fijas"
   ],
-  "image_url": ""
+  "image_url": "",
+  "image_a_url": "",
+  "image_b_url": "",
+  "image_c_url": ""
 }
