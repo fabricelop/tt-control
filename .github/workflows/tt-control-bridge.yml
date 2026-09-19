@@ -115,6 +115,16 @@ jobs:
             except Exception as e: print('SCRIPT_CONTENT '+n+' '+repr(e))
           PY
 
+      - name: Create Pages fallback probe
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          mkdir -p /tmp/tt-fallback
+          printf '%s' '<!doctype html><meta charset="utf-8"><title>TT Control fallback</title><h1>TT Control fallback OK</h1>' > /tmp/tt-fallback/index.html
+          npx wrangler pages project create tt-control-access --production-branch=main || true
+          npx wrangler pages deploy /tmp/tt-fallback --project-name=tt-control-access --branch=main
+
       - name: Deploy TT Control Worker
         working-directory: tt-control
         env:
