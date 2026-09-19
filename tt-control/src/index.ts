@@ -229,6 +229,14 @@ load()
 setInterval(function(){if(!document.hidden)runNow(true)},300000)
 </script></body></html>`;
 
+function duplicateTitleKey(title:string){return title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim()}
+async function collapseProcessingDuplicates(env:Env){
+  const q=await env.DB.prepare("SELECT id,title,published_at FROM news WHERE status='PROCESSING' ORDER BY published_at ASC,id ASC").all()
+  const seen=new Map<string,number>();let duplicates=0
+  for(const row of q.results as any[]){const key=duplicateTitleKey(String(row.title||''));if(!key)continue;const keep=seen.get(key);if(!keep){seen.set(key,Number(row.id));continue}await env.DB.batch([env.DB.prepare("UPDATE news SET status='DISMISSED',processing_started_at=NULL,processing_error=NULL,updated_at=datetime('now') WHERE id=? AND status='PROCESSING'").bind(row.id),env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'duplicate_of',?,datetime('now'))").bind(row.id,String(keep))]);duplicates++}
+  return duplicates
+}
+
 async function ingest(env:Env){
   const run=await env.DB.prepare("INSERT INTO runs(started_at,trigger) VALUES(datetime('now'),'manual') RETURNING id").first<{id:number}>()
   try{
@@ -280,6 +288,7 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
       if(req.method!=='POST')return new Response('Method Not Allowed',{status:405})
       const result:any=await ingest(env)
       result.backlogDismissed=await reclassifyBacklog(env)
+      result.duplicatesCollapsed=await collapseProcessingDuplicates(env)
       return Response.json(result)
     }
     if(u.pathname==='/api/agent/pending'){
@@ -422,7 +431,7 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
     if(req.method==='POST'&&u.pathname==='/api/news/interesting-ready'){const b:any=await req.json(),id=Number(b.id);if(!id)return Response.json({error:'id inválido'},{status:400});const n=await env.DB.prepare("SELECT status FROM news WHERE id=?").bind(id).first<{status:string}>();if(!n)return Response.json({error:'Noticia no encontrada'},{status:404});if(n.status!=='READY')return Response.json({error:'Solo se puede decidir sobre noticias que estén en Listas'},{status:409});await env.DB.batch([env.DB.prepare("UPDATE news SET status='INTERESTING',updated_at=datetime('now') WHERE id=?").bind(id),env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'ready_decision','INTERESTING_NOT_PUBLISHED',datetime('now'))").bind(id)]);return Response.json({ok:true})}
     if(req.method==='POST'&&u.pathname==='/api/news/discard-ready'){const b:any=await req.json(),id=Number(b.id);if(!id)return Response.json({error:'id inválido'},{status:400});const n=await env.DB.prepare("SELECT status FROM news WHERE id=?").bind(id).first<{status:string}>();if(!n)return Response.json({error:'Noticia no encontrada'},{status:404});if(n.status!=='READY')return Response.json({error:'Solo se pueden borrar noticias que estén en Listas'},{status:409});await env.DB.batch([env.DB.prepare("UPDATE news SET status='DISMISSED',updated_at=datetime('now') WHERE id=?").bind(id),env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'ready_decision','DISMISSED',datetime('now'))").bind(id)]);return Response.json({ok:true})}
     if(req.method==='POST'&&u.pathname==='/api/news/urgent'){const b:any=await req.json(),v=b.value?1:0;await env.DB.prepare("UPDATE news SET urgent=?,updated_at=datetime('now') WHERE id=?").bind(v,b.id).run();try{await env.DB.prepare("INSERT INTO editorial_feedback(news_id,kind,value,created_at) VALUES(?,'urgency',?,datetime('now'))").bind(b.id,String(v)).run()}catch(_){}return Response.json({ok:true})}
-    if(req.method==='POST'&&u.pathname==='/api/run'){const result:any=await ingest(env);result.backlogDismissed=await reclassifyBacklog(env);return Response.json(result)}
+    if(req.method==='POST'&&u.pathname==='/api/run'){const result:any=await ingest(env);result.backlogDismissed=await reclassifyBacklog(env);result.duplicatesCollapsed=await collapseProcessingDuplicates(env);return Response.json(result)}
     return new Response('Not Found',{status:404})
   }catch(e){return Response.json({error:e instanceof Error?e.message:String(e)},{status:500})}
 }}
