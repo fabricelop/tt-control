@@ -1,1 +1,1 @@
-manual-run radar reclassify 2026-09-19T09:29:00Z
+scheduled-run 2026-09-19T11:52:13+02:00
