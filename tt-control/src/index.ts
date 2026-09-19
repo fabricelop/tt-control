@@ -100,6 +100,7 @@ let openNewsId=0
 async function loadRadarSensitivity(){try{const r=await fetch('/api/radar-sensitivity',{cache:'no-store'}),d=await r.json();if(r.ok)radarSensitivity.value=String(d.value||3)}catch(_){}}
 async function setRadarSensitivity(v){try{const r=await fetch('/api/radar-sensitivity',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({value:Number(v)})});if(!r.ok)throw new Error('No se pudo guardar');await runNow(true)}catch(e){alert(e.message||e)}}
 async function load(){
+  loadRadarSensitivity();
   const desk=document.querySelector('.detail');if(!openNewsId){desk.classList.remove('mobileOpen');desk.innerHTML=''}
   try{
   const r=await fetch('/api/news?status='+encodeURIComponent(currentView),{cache:'no-store'});let d;try{d=await r.json()}catch(_){throw new Error('Respuesta inválida del servidor ('+r.status+')')}if(!r.ok)throw new Error(d.error||('Error '+r.status));
