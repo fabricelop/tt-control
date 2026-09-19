@@ -4,10 +4,12 @@
   "remate_a": "Nike pierde a Mbappé. On entra al fútbol fichando al delantero.",
   "remate_b": "De Nike a On. También hace transiciones rápidas fuera del campo.",
   "remate_c": "On quería entrar en el fútbol: empezó por Mbappé.",
-  "research": "Contrastado con Reuters, Financial Times y El País.",
+  "research": "Recontrastado con Reuters: Mbappé termina su relación con Nike y firma con On; el acuerdo incluye efectivo y acciones. On prepara sus primeras botas de fútbol para 2027.",
   "sources": [
-    "https://www.reuters.com/sports/swiss-sportswear-brand-signs-french-footballer-mbapp-nike-2026-09-18/",
-    "https://elpais.com/economia/2026-09-18/mbappe-rompe-con-nike-y-ficha-por-on-la-marca-de-zapatillas-participada-por-federer.html"
+    "https://www.reuters.com/sports/swiss-sportswear-brand-signs-french-footballer-mbapp-nike-2026-09-18/"
   ],
-  "image_url": ""
+  "image_url": "",
+  "image_a_url": "",
+  "image_b_url": "",
+  "image_c_url": ""
 }
