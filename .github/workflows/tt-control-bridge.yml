@@ -84,6 +84,21 @@ jobs:
             except Exception as e: print('WORKER_ROUTE '+n+' '+repr(e))
           PY
 
+      - name: Inspect Cloudflare zones
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request
+          a=os.environ['CLOUDFLARE_ACCOUNT_ID']; t=os.environ['CLOUDFLARE_API_TOKEN']
+          u='https://api.cloudflare.com/client/v4/zones?account.id='+a+'&per_page=50'
+          try:
+            with urllib.request.urlopen(urllib.request.Request(u,headers={'Authorization':'Bearer '+t})) as r:d=json.load(r)
+            print('CF_ZONES '+json.dumps([{'id':x.get('id'),'name':x.get('name'),'status':x.get('status')} for x in d.get('result',[])],separators=(',',':')))
+          except Exception as e: print('CF_ZONES_FAILED '+repr(e))
+          PY
+
       - name: Deploy TT Control Worker
         working-directory: tt-control
         env:
