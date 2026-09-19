@@ -98,17 +98,25 @@ jobs:
         run: |
           set -e
           git diff --name-only --diff-filter=AM HEAD^ HEAD -- 'bridge/results/*.json' > /tmp/result_files
+          FAILED=0
           while IFS= read -r file; do
             [ -z "$file" ] && continue
             echo "Delivering $file"
-            curl --fail --silent --show-error \
+            HTTP=$(curl --silent --show-error \
+              -o /tmp/delivery-response.json -w "%{http_code}" \
               -X POST \
               -H "Authorization: Bearer $BRIDGE_TOKEN" \
               -H "Content-Type: application/json" \
               --data-binary "@$file" \
-              "https://tt-control.fabricelop.workers.dev/api/agent/complete"
+              "https://tt-control.fabricelop.workers.dev/api/agent/complete" || true)
+            cat /tmp/delivery-response.json || true
             echo
+            if [ "$HTTP" -lt 200 ] || [ "$HTTP" -ge 300 ]; then
+              echo "::error file=$file::TT Control rejected result (HTTP $HTTP)"
+              FAILED=$((FAILED+1))
+            fi
           done < /tmp/result_files
+          [ "$FAILED" -eq 0 ] || exit 1
 
       - name: Notify Telegram of new Listas
         env:
