@@ -1,0 +1,16 @@
+{
+  "id": 346,
+  "base_text": "Murcia afronta este sábado una jornada nubosa y con lluvia: AEMET eleva la probabilidad de precipitación al 100% por la mañana y al 75% por la tarde, con temperaturas en la capital entre 19 y 27 grados.",
+  "remate_a": "El paraguas vuelve a tener jornada laboral en Murcia.",
+  "remate_b": "Nubes, lluvia y el paraguas pidiendo salir de casa.",
+  "remate_c": "AEMET pone el 100%. El sol hoy juega desde el banquillo.",
+  "research": "Verificado con AEMET para Murcia del 19-09-2026: 100% de precipitación de 00-12 y 75% de 12-24; 19/27 ºC en la capital.",
+  "sources": [
+    "https://www.aemet.es/es/eltiempo/widgets/municipios/murcia-id30030",
+    "https://www.aemet.es/es/eltiempo/prediccion/municipios/horas/tabla/murcia-id30030"
+  ],
+  "image_url": "",
+  "image_a_url": "",
+  "image_b_url": "",
+  "image_c_url": ""
+}
