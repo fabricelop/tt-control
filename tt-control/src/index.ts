@@ -157,14 +157,13 @@ async function openX(id,option){
   if(/iPhone|iPad|iPod/i.test(navigator.userAgent)){window.location.href='twitter://post?message='+encodeURIComponent(text)}else{window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank','noopener')}
 }
 async function requestChatImage(id,option){
-  const r=await fetch('/api/news/'+id),d=await r.json();if(!r.ok)return alert(d.error||'No se pudo abrir la noticia')
-  const dr=d.draft,n=d.news;if(!dr)return alert('No hay borrador')
-  const labels=['','A','B','C'],remates=['',dr.remate_a,dr.remate_b,dr.remate_c],label=labels[option],rem=remates[option]
-  const promptText='TTIMG #'+id+'-'+label+'\\nNoticia: '+String(n.title||'')+'\\nBase: '+String(dr.base_text||'')+'\\nRemate '+label+': '+String(rem||'')+'\\nGenera directamente una imagen editorial horizontal para este remate, con un gag visual específico y calidad de viñeta profesional TTiTTulares. No hagas una ilustración genérica.'
-  try{await navigator.clipboard.writeText(promptText)}catch(_){}
-  const chat='https://chatgpt.com/'
-  window.open(chat,'_blank','noopener')
-  setTimeout(function(){alert('Petición TTIMG copiada. Pégala en ChatGPT y envíala.')},250)
+  const labels=['','A','B','C'],label=labels[option],promptText='TTIMG #'+id+'-'+label
+  try{
+    await navigator.clipboard.writeText(promptText)
+    alert('✓ '+promptText+' copiado. Vuelve a este chat, pega y envía.')
+  }catch(_){
+    prompt('Copia esto y pégalo en este chat:',promptText)
+  }
 }
 async function createAiImage(id,regenerate=false){
   const r=await fetch('/api/news/ai-image',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:id,regenerate:regenerate})});const d=await r.json();if(!r.ok)return alert(d.error||'No se pudo crear la imagen');await openDesk(id)
