@@ -1,1 +1,1 @@
-editorial-resync 2026-09-19T15:54:00+02:00
+scheduled-editorial-run 2026-09-19T15:55:00+02:00
