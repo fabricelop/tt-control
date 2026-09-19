@@ -4,10 +4,10 @@
   "remate_a": "Septiembre ha pasado por Reinosa vestido de enero.",
   "remate_b": "Reinosa ha activado el modo «sacar la chaqueta».",
   "remate_c": "El verano se ha dado de baja primero en Reinosa.",
-  "research": "Europa Press atribuye a AEMET el registro de 1 ºC en Reinosa a las 08:30 como mínima nacional en ese momento. Se formula como observación registrada, no como previsión meteorológica regional. No se encontró una segunda fuente primaria accesible que permitiera añadir más detalle sin riesgo, por lo que la base se limita estrictamente al dato atribuido.",
+  "research": "Europa Press atribuye a AEMET el registro de 1 ºC en Reinosa a las 08:30 como mínima nacional en ese momento. AEMET mantiene su tabla nacional de observaciones y extremos diarios. Se formula como observación registrada, no como previsión regional, y no se añade imagen de archivo de medios.",
   "sources": [
     "https://www.europapress.es/cantabria/noticia-reinosa-amanece-grado-minima-pais-20260919093000.html",
-    "https://www.aemet.es/"
+    "https://www.aemet.es/es/eltiempo/observacion/ultimosdatos?datos=det&k=esp&w=1"
   ],
   "image_url": "",
   "image_a_url": "",
