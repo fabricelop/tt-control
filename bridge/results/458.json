@@ -1,13 +1,15 @@
 {
   "id": 458,
-  "base_text": "Dinamarca defiende el acuerdo de seguridad con EEUU sobre Groenlandia. El ministro Lars Løkke Rasmussen sostiene que el escenario en el Ártico ha cambiado y espera firmar el texto la próxima semana.",
-  "remate_a": "Copenhague habla de seguridad compartida; Washington, de control.",
-  "remate_b": "El Ártico cambia y el diccionario diplomático también.",
-  "remate_c": "Mismo acuerdo, dos palabras clave: «compartida» y «control».",
-  "research": "Contrastado con Europa Press y cobertura coincidente. Dinamarca presenta el pacto como un refuerzo de la seguridad compartida en el Ártico; las autoridades danesas no han respaldado la formulación de Donald Trump sobre un supuesto control permanente estadounidense de la seguridad de Groenlandia.",
+  "base_text": "Dinamarca y Groenlandia respaldan un acuerdo con EEUU que ampliará su papel militar sin ceder soberanía. Trump lo llama «control permanente»; Copenhague insiste en que la isla sigue siendo groenlandesa.",
+  "remate_a": "Trump quería comprar Groenlandia. Ha acabado ampliando el alquiler.",
+  "remate_b": "Trump pidió la isla entera. Le han dado más llaves de la base.",
+  "remate_c": "De «será nuestra» a «puede ampliar el aparcamiento militar».",
+  "research": "Reescritura siguiendo exactamente el rewrite_request y la regla editorial global contra frases hechas. Contrastado el 19-09-2026 con AP, Reuters/cobertura internacional, declaraciones danesas y antecedentes oficiales del Departamento de Estado. El acuerdo amplía el papel militar estadounidense y prevé acceso/bases/sobrevuelo permanentes, pero Dinamarca y Groenlandia subrayan que no transfiere soberanía. El contraste satírico se apoya en el hecho documentado de que Trump había reclamado adquirir Groenlandia y llegó a amenazar con tomarla, mientras el acuerdo final mantiene la soberanía danesa y amplía derechos militares estadounidenses ya existentes. Todas las variantes Base + 🌶️ + remate quedan por debajo de 280 caracteres. Sin imagen: no se ha identificado una imagen oficial/reutilizable segura que mejore la publicación.",
   "sources": [
-    "https://www.europapress.es/internacional/noticia-dinamarca-groenlandia-confirman-acuerdo-trump-hablan-seguridad-compartida-isla-20260919004248.html",
-    "https://www.elboletin.com/dinamarca-defiende-el-acuerdo-de-seguridad-sobre-groenlandia-ante-el-cambio-de-escenario-en-el-artico/"
+    "https://apnews.com/article/4cf77cb4608b685a70410bd679479193",
+    "https://www.theguardian.com/world/2026/sep/18/united-states-denmark-greenland-security",
+    "https://www.euronews.com/2026/09/19/us-and-denmark-reach-deal-over-greenlands-security",
+    "https://2021-2025.state.gov/u-s-security-cooperation-with-denmark/"
   ],
   "image_url": "",
   "image_a_url": "",
