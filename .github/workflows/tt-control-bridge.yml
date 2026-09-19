@@ -121,7 +121,14 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           mkdir -p /tmp/tt-fallback
-          printf '%s' '<!doctype html><meta charset="utf-8"><title>TT Control fallback</title><h1>TT Control fallback OK</h1>' > /tmp/tt-fallback/index.html
+          cat > /tmp/tt-fallback/_worker.js <<'JS'
+export default { async fetch(request) {
+  const u = new URL(request.url);
+  const target = 'https://tt-control.fabricelop.workers.dev' + u.pathname + u.search;
+  const headers = new Headers(request.headers); headers.set('host','tt-control.fabricelop.workers.dev');
+  return fetch(target,{method:request.method,headers,body:['GET','HEAD'].includes(request.method)?undefined:request.body,redirect:'manual'});
+}}
+JS
           npx wrangler pages project create tt-control-access --production-branch=main || true
           npx wrangler pages deploy /tmp/tt-fallback --project-name=tt-control-access --branch=main
 
