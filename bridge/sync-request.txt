@@ -1,1 +1,1 @@
-manual-run verify queue 2026-09-19T09:13:00Z
+manual-run radar stats 2026-09-19T09:18:00Z
