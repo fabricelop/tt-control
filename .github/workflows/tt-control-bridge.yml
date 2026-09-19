@@ -137,6 +137,18 @@ jobs:
             except Exception as e: print('HTTPS_FAIL',h,repr(e))
           PY
 
+      - name: Inspect Cloudflare 403 responses
+        run: |
+          python - <<'PY'
+          import urllib.request,urllib.error
+          for h in ['tt-control.fabricelop.workers.dev','fabcalendar-bot.fabricelop.workers.dev','tt-control-access.pages.dev']:
+            req=urllib.request.Request('https://'+h+'/',headers={'User-Agent':'Mozilla/5.0'})
+            try:
+              with urllib.request.urlopen(req,timeout=10) as r: print('HTTP_DETAIL',h,r.status,dict(r.headers),r.read(500).decode(errors='replace'))
+            except urllib.error.HTTPError as e: print('HTTP_DETAIL',h,e.code,dict(e.headers),e.read(1000).decode(errors='replace'))
+            except Exception as e: print('HTTP_DETAIL_FAIL',h,repr(e))
+          PY
+
       - name: Deploy TT Control Worker
         working-directory: tt-control
         env:
