@@ -279,7 +279,9 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
     if(req.method==='GET'&&u.pathname==='/manifest.webmanifest')return Response.json({name:'TT Control',short_name:'TT Control',id:'/',start_url:'/',scope:'/',display:'standalone',background_color:'#f4f6f9',theme_color:'#1769e0'},{headers:{'content-type':'application/manifest+json','cache-control':'no-cache'}})
     if(req.method==='GET'&&u.pathname==='/sw.js')return new Response("self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil((async()=>{await self.registration.unregister();const cs=await clients.matchAll({type:'window'});cs.forEach(c=>c.navigate(c.url))})()));",{headers:{'content-type':'application/javascript','cache-control':'no-store, no-cache, must-revalidate','clear-site-data':'\\"cache\\"'}})
     if(req.method==='GET'&&u.pathname==='/login')return login()
-    await ensureEditorialSchema(env)
+    // Keep the UI reachable even if a schema migration/query is temporarily failing.
+    // Schema maintenance runs only on API paths that need the database.
+    if(u.pathname!=='/'&&u.pathname!=='/login')await ensureEditorialSchema(env)
 
     // Private editorial bridge. This is deliberately separate from the browser session:
     // a future ChatGPT connector/automation can read PROCESSING items and return verified drafts.
@@ -381,7 +383,7 @@ export default {async fetch(req:Request,env:Env):Promise<Response>{
     }
     if(req.method==='GET'&&u.pathname==='/api/public/ready-count'){const row=await env.DB.prepare("SELECT COUNT(*) AS n FROM news WHERE status='READY'").first<{n:number}>();return Response.json({ready:Number(row?.n||0)},{headers:{'cache-control':'no-store'}})}
     if(!authorized(req,env))return req.method==='GET'?new Response(null,{status:302,headers:{location:'/login'}}):Response.json({error:'No autorizado'},{status:401})
-    if(req.method==='GET'&&u.pathname==='/')return new Response(HTML,{headers:{'content-type':'text/html;charset=UTF-8'}})
+    if(req.method==='GET'&&u.pathname==='/')return new Response(HTML,{headers:{'content-type':'text/html;charset=UTF-8','cache-control':'no-store, no-cache, must-revalidate','pragma':'no-cache'}})
     if(req.method==='GET'&&u.pathname==='/api/news'){const requested=u.searchParams.get('status')||'NEW';const status=['NEW','SELECTED','PROCESSING','READY','PUBLISHED','RADAR_DISMISSED'].includes(requested)?requested:'NEW';const q=await env.DB.prepare("SELECT n.id,n.title,n.url,n.section,n.published_at,n.urgent FROM news n WHERE n.status=? ORDER BY n.urgent DESC, n.published_at ASC, n.id ASC LIMIT 200").bind(status).all();const counts=await env.DB.prepare("SELECT status,COUNT(*) AS n FROM news WHERE status IN ('NEW','SELECTED','PROCESSING','READY','PUBLISHED','RADAR_DISMISSED') GROUP BY status").all();const c:any={NEW:0,SELECTED:0,PROCESSING:0,READY:0,PUBLISHED:0,RADAR_DISMISSED:0};for(const row of counts.results as any[])c[row.status]=row.n;return Response.json({news:q.results,counts:c},{headers:{'cache-control':'no-store'}})}
     const editorialImageMatch=u.pathname.match(/^\/api\/editorial-image\/(\d+)\/([ABC])$/)
     if(req.method==='GET'&&editorialImageMatch){
