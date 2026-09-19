@@ -68,6 +68,22 @@ jobs:
             except Exception as e: print('CF_INSPECT '+path+' FAILED '+repr(e))
           PY
 
+      - name: Inspect Worker subdomain routes
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request
+          a=os.environ['CLOUDFLARE_ACCOUNT_ID']; t=os.environ['CLOUDFLARE_API_TOKEN']; h={'Authorization':'Bearer '+t}
+          for n in ['tt-control','fabcalendar-bot']:
+            u=f'https://api.cloudflare.com/client/v4/accounts/{a}/workers/services/{n}/environments/production/subdomain'
+            try:
+              with urllib.request.urlopen(urllib.request.Request(u,headers=h)) as r:d=json.load(r)
+              print('WORKER_ROUTE '+n+' '+json.dumps(d,separators=(',',':')))
+            except Exception as e: print('WORKER_ROUTE '+n+' '+repr(e))
+          PY
+
       - name: Deploy TT Control Worker
         working-directory: tt-control
         env:
