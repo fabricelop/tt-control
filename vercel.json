@@ -5,5 +5,13 @@
       "src": "/(.*)",
       "dest": "https://tt-control.fabricelop.workers.dev/$1"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-TT-Fallback", "value": "vercel" }
+      ]
+    }
   ]
 }
