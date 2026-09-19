@@ -284,49 +284,42 @@ async function fetchMediaItems(){
   return all
 }
 async function runMediaRadar(env:Env){
-  const items=await fetchMediaItems();let touched=0,alerts=0
-  for(const x of items){const fp=mediaFingerprint(x.title);if(fp.length<12)continue;const similar:any=await env.DB.prepare("SELECT * FROM media_radar WHERE status IN ('NEW','ALERTED') AND last_seen>=datetime('now','-18 hours') ORDER BY last_seen DESC LIMIT 80").all();let row:any=null
-    const toks=new Set(fp.split('|'));for(const r of similar.results as any[]){const rt=new Set(String(r.fingerprint).split('|'));const overlap=[...toks].filter(t=>rt.has(t)).length/Math.max(1,Math.min(toks.size,rt.size));if(overlap>=.55){row=r;break}}
-    if(row){const ss=new Set<string>(JSON.parse(row.sources_json||'[]'));ss.add(x.source);await env.DB.prepare("UPDATE media_radar SET sources_json=?,source_count=?,last_seen=datetime('now') WHERE id=?").bind(JSON.stringify([...ss]),ss.size,row.id).run();touched++;continue}
+  const items=await fetchMediaItems();let touched=0,alerts=0,entry=0
+  for(const x of items){const fp=mediaFingerprint(x.title);if(fp.length<12)continue;const similar:any=await env.DB.prepare("SELECT * FROM media_radar WHERE status IN ('NEW','ENTRY','ALERTED','IGNORED') AND last_seen>=datetime('now','-18 hours') ORDER BY last_seen DESC LIMIT 120").all();let row:any=null
+    const toks=new Set(fp.split('|'));for(const r of similar.results as any[]){const rt=new Set(String(r.fingerprint).split('|'));const overlap=[...toks].filter(t=>rt.has(t)).length/Math.max(1,Math.min(toks.size,rt.size));if(overlap>=.48){row=r;break}}
+    if(row){const ss=new Set<string>(JSON.parse(row.sources_json||'[]'));ss.add(x.source);await env.DB.prepare("UPDATE media_radar SET sources_json=?,source_count=?,last_seen=datetime('now'),status=CASE WHEN status='IGNORED' AND ?>=2 THEN 'NEW' ELSE status END WHERE id=?").bind(JSON.stringify([...ss]),ss.size,ss.size,row.id).run();touched++;continue}
     await env.DB.prepare("INSERT OR IGNORE INTO media_radar(fingerprint,title,url,source,sources_json) VALUES(?,?,?,?,?)").bind(fp,x.title,x.url,x.source,JSON.stringify([x.source])).run();touched++
   }
-  const q:any=await env.DB.prepare("SELECT * FROM media_radar WHERE status='NEW' AND last_seen>=datetime('now','-3 hours') ORDER BY source_count DESC,last_seen DESC LIMIT 25").all()
-  for(const n of q.results as any[]){try{const prompt=`Evalúa si este acontecimiento merece INTERRUMPIR al editor de una cuenta española de actualidad con una alerta móvil. Prioriza noticias importantes de España/política nacional, grandes sucesos, decisiones institucionales/económicas relevantes, acontecimientos internacionales de gran impacto y deporte/cultura realmente destacados. No alertes por noticias territoriales rutinarias, opinión, horóscopos, resultados de lotería, previas/directos rutinarios ni contenido de servicio. Que aparezca en varios grandes medios aumenta la importancia, pero una exclusiva muy importante también vale. Fuentes detectadas: ${n.sources_json}. Titular: ${n.title}. Responde SOLO JSON {"alert":true|false,"reason":"breve"}.`;const out:any=await env.AI.run('@cf/google/gemma-4-26b-a4b-it',{messages:[{role:'system',content:'Clasificador editorial español conservador de alertas móviles. JSON solamente.'},{role:'user',content:prompt}],chat_template_kwargs:{enable_thinking:false}});const p=JSON.parse(String(out?.response||'').replace(/```json|\`\`\`/g,'').trim());await env.DB.prepare("UPDATE media_radar SET importance=?,reason=?,status=? WHERE id=?").bind(p.alert?'HIGH':'LOW',String(p.reason||''),p.alert?'ALERTED':'IGNORED',n.id).run();if(p.alert)alerts++}catch(_){}}
-  return {items:items.length,touched,alerts}
+  const q:any=await env.DB.prepare("SELECT * FROM media_radar WHERE status='NEW' AND last_seen>=datetime('now','-4 hours') ORDER BY source_count DESC,last_seen DESC LIMIT 40").all()
+  for(const n of q.results as any[]){try{
+    const sources=JSON.parse(n.sources_json||'[]'),count=Number(n.source_count||sources.length||1)
+    const prompt=`Clasifica este acontecimiento para TTiTTulares España. El objetivo es REDUCIR AL MENOS UN 90% el volumen bruto y conservar solo noticias con interés editorial real. Distingue tres niveles:
+ALERT = noticia verdaderamente importante que merece notificación inmediata al móvil. Normalmente debe aparecer en 3 o más medios independientes. Con 2 medios, solo ALERT si es claramente de primera magnitud (gran decisión política/institucional nacional, gran suceso, guerra/crisis internacional de alto impacto, dato económico excepcional, gran resultado deportivo/cultural). Con 1 medio, ALERT únicamente ante una exclusiva o acontecimiento inequívocamente extraordinario.
+ENTRY = merece revisión humana en Entrada, pero no interrumpir. Como regla, exige coincidencia en al menos 2 medios; excepcionalmente 1 fuente si el interés nacional es claro y alto.
+IGNORE = territorial/local rutinaria, declaraciones menores, agenda, opinión, servicio, lotería, horóscopo, previa/directo rutinario, repetición o asunto de poco alcance.
+No confundas que una noticia no admita humor con falta de interés. Política nacional española relevante debe conservarse. Evalúa el ACONTECIMIENTO, no la redacción del titular.
+Fuentes independientes: ${count} (${sources.join(', ')})
+Titular representativo: ${n.title}
+Responde SOLO JSON {"level":"ALERT"|"ENTRY"|"IGNORE","reason":"frase breve"}.`
+    const out:any=await env.AI.run('@cf/google/gemma-4-26b-a4b-it',{messages:[{role:'system',content:'Eres el editor de un radar de noticias español muy selectivo. Agrupa acontecimientos y devuelve JSON válido.'},{role:'user',content:prompt}],chat_template_kwargs:{enable_thinking:false}})
+    const p=JSON.parse(String(out?.response||'').replace(/```json|```/g,'').trim()),level=String(p.level||'IGNORE').toUpperCase()
+    const safeLevel=(level==='ALERT'&&count<2)?'ENTRY':(level==='ALERT'||level==='ENTRY'?level:'IGNORE')
+    const status=safeLevel==='ALERT'?'ALERTED':safeLevel==='ENTRY'?'ENTRY':'IGNORED'
+    await env.DB.prepare("UPDATE media_radar SET importance=?,reason=?,status=? WHERE id=?").bind(safeLevel,String(p.reason||''),status,n.id).run()
+    if(status==='ALERTED')alerts++;if(status==='ENTRY')entry++
+  }catch(_){await env.DB.prepare("UPDATE media_radar SET importance='IGNORE',reason='Clasificación LLM no disponible',status='IGNORED' WHERE id=?").bind(n.id).run()}}
+  return {items:items.length,touched,alerts,entry}
 }
 async function ingest(env:Env){
   const run=await env.DB.prepare("INSERT INTO runs(started_at,trigger) VALUES(datetime('now'),'manual') RETURNING id").first<{id:number}>()
   try{
-    const claimed={meta:{changes:0}}
-
-    const r=await fetch('https://raw.githubusercontent.com/fabricelop/europapress-rss/main/recent.json',{headers:{'user-agent':'TT-Control/1.0'}})
-    if(!r.ok)throw new Error('Europa Press repository '+r.status)
-    const raw:any=await r.json(),items=Array.isArray(raw)?raw:(raw.items||raw.entries||raw.news||[])
-    const previous=await env.DB.prepare("SELECT MAX(published_at) AS checkpoint FROM news").first<{checkpoint:string|null}>()
-    const checkpoint=previous?.checkpoint||''
-    let admitted=0, discovered=0, radarDismissed=0
-    const radarModel=await buildRadarModel(env)
-    for(const x of items){
-      const title=String(x.title||x.titulo||'').trim();if(!title)continue
-      const url=String(x.link||x.url||'');const key=url||String(x.id||x.guid||title+'|'+(x.date||x.published||''))
-      const published=String(x.published_at||x.published||x.date||x.pubDate||'')
-      if(checkpoint && published && published<=checkpoint)continue
-      discovered++
-      const section=String(x.section||x.category||''),initial=radarDecision(section,title),learned=initial.admit?learnedRadar(radarModel,section,title):{dismiss:true,score:-9,reason:initial.reason}
-      const semantic=learned.dismiss?await semanticRadar(env,section,title,learned):learned
-      const decision={admit:!semantic.dismiss,reason:semantic.reason}
-      const status=decision.admit?'NEW':'RADAR_DISMISSED'
-      const write=await env.DB.prepare(`INSERT INTO news(source_key,title,url,section,published_at,detected_at,status,radar_reason,updated_at)
-        VALUES(?,?,?,?,?,datetime('now'),?,?,datetime('now')) ON CONFLICT(source_key) DO NOTHING`)
-        .bind(key,title,url,section,published,status,decision.reason).run()
-      if(write.meta.changes){
-        if(decision.admit)admitted++
-        else radarDismissed++
-      }
-    }
+    const claimed={meta:{changes:0}},media=await runMediaRadar(env)
+    const candidates:any=await env.DB.prepare("SELECT * FROM media_radar WHERE status='ENTRY' AND last_seen>=datetime('now','-12 hours') ORDER BY source_count DESC,last_seen DESC LIMIT 60").all()
+    let admitted=0,discovered=Number(media.items||0),radarDismissed=0
+    for(const x of candidates.results as any[]){const key='radar:'+x.id;const write=await env.DB.prepare(`INSERT INTO news(source_key,title,url,section,published_at,detected_at,status,radar_reason,updated_at)
+      VALUES(?,?,?,?,datetime('now'),datetime('now'),'NEW',?,datetime('now')) ON CONFLICT(source_key) DO NOTHING`).bind(key,x.title,x.url,'Radar de medios',x.reason||('Coincidencia en '+x.source_count+' medios')).run();if(write.meta.changes){admitted++;await env.DB.prepare("UPDATE media_radar SET status='SENT_ENTRY' WHERE id=?").bind(x.id).run()}}
     await env.DB.prepare("UPDATE runs SET finished_at=datetime('now'),discovered=?,admitted=?,radar_dismissed=?,status='OK' WHERE id=?").bind(discovered,admitted,radarDismissed,run!.id).run()
-    const latest=items.reduce((m:any,x:any)=>{const p=String(x.published_at||x.published||x.date||x.pubDate||'');return p>m?p:m},checkpoint)
-    return {ok:true,discovered,admitted,radarDismissed,claimed:Number(claimed.meta.changes||0),checkpoint:latest||checkpoint}
+    return {ok:true,discovered,admitted,radarDismissed,claimed:Number(claimed.meta.changes||0),media}
   }catch(e){await env.DB.prepare("UPDATE runs SET finished_at=datetime('now'),status='ERROR',error=? WHERE id=?").bind(String(e),run!.id).run();throw e}
 }
 
