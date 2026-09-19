@@ -120,18 +120,20 @@ jobs:
 
       - name: Notify Telegram of new Listas
         env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_WEBHOOK_URL: ${{ secrets.TELEGRAM_WEBHOOK_URL }}
+          TELEGRAM_WEBHOOK_SECRET: ${{ secrets.TELEGRAM_WEBHOOK_SECRET }}
         run: |
-          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
-            echo "Telegram secrets not configured in GitHub; skipping notification."
+          COUNT=$(grep -cve '^$' /tmp/result_files || true)
+          [ "$COUNT" -gt 0 ] || exit 0
+          if [ -z "$TELEGRAM_WEBHOOK_URL" ] || [ -z "$TELEGRAM_WEBHOOK_SECRET" ]; then
+            echo "Telegram webhook URL/secret not configured in GitHub; skipping notification."
             exit 0
           fi
-          COUNT=$(grep -cve '^ /tmp/result_files || true)
-          [ "$COUNT" -gt 0 ] || exit 0
-          export TEXT="✅ TT Control: $COUNT noticia(s) nueva(s) en Listas."
+          export COUNT
           curl --fail --silent --show-error \
             -X POST \
             -H "Content-Type: application/json" \
-            --data "$(python -c 'import json,os; print(json.dumps({"chat_id":os.environ["TELEGRAM_CHAT_ID"],"text":os.environ["TEXT"]}))')" \
-            "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage"
+            -H "x-tt-control-notify: 1" \
+            -H "x-tt-control-secret: $TELEGRAM_WEBHOOK_SECRET" \
+            --data "$(python -c 'import json,os; print(json.dumps({"count":int(os.environ["COUNT"])}))')" \
+            "$TELEGRAM_WEBHOOK_URL"
