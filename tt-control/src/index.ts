@@ -248,7 +248,7 @@ async function runNow(silent=false){
 }
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{})
 load()
-setInterval(function(){if(!document.hidden)runNow(true)},300000)
+setInterval(function(){runNow(true)},300000)
 </script></body></html>`;
 
 async function ingest(env:Env){
