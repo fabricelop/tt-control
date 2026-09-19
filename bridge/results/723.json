@@ -1,5 +1,16 @@
 {
   "id": 723,
-  "disposition": "DISMISSED",
-  "reason": "Suceso con víctima mortal; sin ángulo editorial que justifique publicación en TTiTTulares y no procede humor."
+  "base_text": "Una jueza de Morelos dicta prisión preventiva a Francisco Javier N., investigado por el feminicidio de la estudiante española Claudia Tacoronte en Cuautla. La investigación complementaria tendrá un plazo de cuatro meses.",
+  "remate_a": "Sin remate: noticia sobre una víctima de feminicidio.",
+  "remate_b": "Sin remate: noticia sobre una víctima de feminicidio.",
+  "remate_c": "Sin remate: noticia sobre una víctima de feminicidio.",
+  "research": "Europa Press y El Universal de México coinciden en que Francisco Javier N. fue vinculado a proceso por feminicidio y quedó en prisión preventiva; la investigación complementaria tiene un plazo de cuatro meses. Por tratarse de una víctima, no se añade humor.",
+  "sources": [
+    "https://www.europapress.es/internacional/noticia-dictan-prision-preventiva-mexico-presunto-asesino-espanola-claudia-tacoronte-20260919160900.html",
+    "https://www.eluniversal.com.mx/estados/vinculan-a-proceso-a-francisco-javier-n-por-el-feminicidio-de-claudia-tacoronte-le-dictan-prision-preventiva-oficiosa/"
+  ],
+  "image_url": "",
+  "image_a_url": "",
+  "image_b_url": "",
+  "image_c_url": ""
 }
