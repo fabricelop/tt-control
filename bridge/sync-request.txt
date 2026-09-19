@@ -1,1 +1,1 @@
-manual-run editorial retry 2026-09-19T09:04:00Z
+manual-run verify queue 2026-09-19T09:13:00Z
