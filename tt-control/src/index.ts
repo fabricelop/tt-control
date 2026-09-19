@@ -180,8 +180,24 @@ async function copyImage(url){
 async function processingAct(id,status){
   const r=await fetch('/api/news/processing-status',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:id,status:status})});const d=await r.json();if(!r.ok)return alert(d.error||'No se pudo mover la noticia');await load()
 }
-async function runNow(){const b=document.querySelector('.run');b.disabled=true;b.textContent='Ejecutando…';try{const r=await fetch('/api/run',{method:'POST'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Error de ejecución');b.textContent='✓ '+(d.discovered||0)+' nuevas · '+(d.claimed||0)+' a elaborar · '+(d.backlogDismissed||0)+' radar';await load();setTimeout(function(){b.textContent='▶ EJECUTAR'},1800)}catch(e){news.innerHTML='<div class="empty">Error: '+esc(e.message||e)+'</div>';b.textContent='⚠ Error'}finally{b.disabled=false}}
-if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});load()
+let autoRunBusy=false
+async function runNow(silent=false){
+  if(autoRunBusy)return
+  autoRunBusy=true
+  const b=document.querySelector('.run')
+  if(!silent){b.disabled=true;b.textContent='Ejecutando…'}
+  try{
+    const r=await fetch('/api/run',{method:'POST'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Error de ejecución')
+    if(!silent){b.textContent='✓ '+(d.discovered||0)+' nuevas · '+(d.claimed||0)+' a elaborar · '+(d.backlogDismissed||0)+' radar';setTimeout(function(){b.textContent='▶ EJECUTAR'},1800)}
+    await load()
+  }catch(e){
+    if(!silent){news.innerHTML='<div class="empty">Error: '+esc(e.message||e)+'</div>';b.textContent='⚠ Error'}
+    else console.warn('TT Control auto-run:',e)
+  }finally{if(!silent)b.disabled=false;autoRunBusy=false}
+}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{})
+load()
+setInterval(function(){if(!document.hidden)runNow(true)},300000)
 </script></body></html>`;
 
 async function ingest(env:Env){
