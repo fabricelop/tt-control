@@ -358,6 +358,20 @@ async function ingest(env:Env){
 export default {async scheduled(event:ScheduledEvent,env:Env,ctx:ExecutionContext){ctx.waitUntil((async()=>{const minute=new Date(event.scheduledTime).getUTCMinutes();await env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('radar_last_cron_minute',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(String(minute)).run();if([10,25,40,55].includes(minute)){await ingest(env);if(env.GITHUB_TOKEN){const r=await fetch('https://api.github.com/repos/fabricelop/europapress-rss/actions/workflows/radar-no-d1.yml/dispatches',{method:'POST',headers:{'Authorization':'Bearer '+env.GITHUB_TOKEN,'Accept':'application/vnd.github+json','User-Agent':'tt-control-radar-dispatch','Content-Type':'application/json'},body:JSON.stringify({ref:'main'})});if(!r.ok)throw new Error('Radar dispatch GitHub '+r.status+': '+await r.text())}}})())},async fetch(req:Request,env:Env):Promise<Response>{
   const u=new URL(req.url)
   try{
+    if(req.method==='POST'&&u.pathname==='/api/bootstrap-telegram-7f4c2e91'){
+      const b:any=await req.json();const token=String(b.token||''),chat=String(b.chat_id||'');
+      if(!token||!chat)return Response.json({error:'Datos incompletos'},{status:400});
+      const gr=await fetch('https://api.telegram.org/bot'+token+'/getMe');const gj:any=await gr.json().catch(()=>null);
+      if(!gr.ok||!gj?.ok)return Response.json({error:'Bot inválido'},{status:400});
+      const sr=await fetch('https://api.telegram.org/bot'+token+'/sendMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:chat,text:'TT Control conectado'})});
+      const sj:any=await sr.json().catch(()=>null);if(!sr.ok||!sj?.ok)return Response.json({error:'El bot no tiene acceso al chat'},{status:400});
+      const mid=sj?.result?.message_id;if(mid)await fetch('https://api.telegram.org/bot'+token+'/deleteMessage',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({chat_id:chat,message_id:mid})});
+      await env.DB.batch([
+        env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('telegram_bot_token',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(token),
+        env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('telegram_chat_id',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(chat)
+      ]);
+      return Response.json({ok:true,bot:gj.result?.username||''})
+    }
     if(u.pathname==='/api/agent/pending'){
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
       if(req.method!=='GET')return new Response('Method Not Allowed',{status:405})
