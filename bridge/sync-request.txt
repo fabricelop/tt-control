@@ -1,1 +1,1 @@
-manual pending isolation test 2026-09-20T16:41:00Z
+schema independent pending test 2026-09-20T16:43:00Z
