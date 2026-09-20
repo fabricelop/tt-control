@@ -397,6 +397,15 @@ export default {async scheduled(event:ScheduledEvent,env:Env,ctx:ExecutionContex
       const secret=req.headers.get('x-telegram-bot-api-secret-token')||''
       if(env.TELEGRAM_WEBHOOK_SECRET&&secret!==env.TELEGRAM_WEBHOOK_SECRET)return new Response('Forbidden',{status:403})
       const update:any=await req.clone().json(),cq=update?.callback_query,data=String(cq?.data||''),msg=cq?.message||{}
+      if(cq&&env.GITHUB_TOKEN){
+        let configuredToken=String(env.TELEGRAM_BOT_TOKEN||'')
+        if(!configuredToken){try{const ts:any=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_bot_token'").first();configuredToken=String(ts?.value||'')}catch(_){}}
+        if(!configuredToken&&(data==='delete:message'||data.startsWith('dg:')||data.startsWith('emergency:')||data.startsWith('prepare:')||data.startsWith('dismiss:'))){
+          const payload=btoa(JSON.stringify({callback_query_id:String(cq.id||''),data,chat_id:String(msg?.chat?.id||''),message_id:Number(msg?.message_id||0)}))
+          const dr=await fetch('https://api.github.com/repos/fabricelop/europapress-rss/actions/workflows/telegram-callback.yml/dispatches',{method:'POST',headers:{'Authorization':'Bearer '+env.GITHUB_TOKEN,'Accept':'application/vnd.github+json','User-Agent':'tt-control-telegram-callback','Content-Type':'application/json'},body:JSON.stringify({ref:'main',inputs:{payload}})})
+          if(!dr.ok)console.log('Telegram callback dispatch failed',dr.status,await dr.text())
+        }
+      }
       if(cq&&data==='delete:message'){
         const diagnostic={at:new Date().toISOString(),callback_query_id:cq.id,chat_id:msg?.chat?.id,message_id:msg?.message_id}
         const ack=await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Borrando…'})
