@@ -349,6 +349,17 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
     if(req.method==='GET'&&u.pathname==='/manifest.webmanifest')return Response.json({name:'TT Control',short_name:'TT Control',id:'/',start_url:'/',scope:'/',display:'standalone',background_color:'#f4f6f9',theme_color:'#1769e0'},{headers:{'content-type':'application/manifest+json','cache-control':'no-cache'}})
     if(req.method==='GET'&&u.pathname==='/sw.js')return new Response("self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(clients.claim()));self.addEventListener('fetch',()=>{});",{headers:{'content-type':'application/javascript','cache-control':'no-cache'}})
     if(req.method==='GET'&&u.pathname==='/login')return login()
+    // Telegram callbacks that must remain available even when D1 is unavailable.
+    if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
+      const secret=req.headers.get('x-telegram-bot-api-secret-token')||''
+      if(env.TELEGRAM_WEBHOOK_SECRET&&secret!==env.TELEGRAM_WEBHOOK_SECRET)return new Response('Forbidden',{status:403})
+      const update:any=await req.clone().json(),cq=update?.callback_query,data=String(cq?.data||''),msg=cq?.message||{}
+      if(cq&&data==='delete:message'){
+        await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Borrada.'})
+        if(msg.message_id)await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id})
+        return Response.json({ok:true,deleted:true})
+      }
+    }
     await ensureEditorialSchema(env)
     if(req.method==='POST'&&u.pathname==='/api/telegram-credentials'&&req.headers.get('authorization')==='Bearer '+String(env.CHATGPT_BRIDGE_TOKEN||'')){const b:any=await req.json();const token=String(b.token||''),chat=String(b.chat_id||'');if(!token||!chat)return Response.json({error:'Datos incompletos'},{status:400});await env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('telegram_bot_token',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(token).run();await env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('telegram_chat_id',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(chat).run();return Response.json({ok:true})}
     if(req.method==='GET'&&u.pathname==='/api/radar-sensitivity'){const s=await env.DB.prepare("SELECT value FROM app_settings WHERE key='radar_sensitivity'").first<{value:string}>();return Response.json({value:Math.max(1,Math.min(5,Number(s?.value||3)))})}
