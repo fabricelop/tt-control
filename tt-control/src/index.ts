@@ -358,6 +358,12 @@ async function ingest(env:Env){
 export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionContext){ctx.waitUntil((async()=>{const guard:any=await env.DB.prepare("SELECT value FROM app_settings WHERE key='radar_cron_tick'").first().catch(()=>null);const tick=Number(guard?.value||0)+1;await env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('radar_cron_tick',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(String(tick)).run();if(tick%3===0)await ingest(env)})())},async fetch(req:Request,env:Env):Promise<Response>{
   const u=new URL(req.url)
   try{
+    if(u.pathname==='/api/agent/pending'){
+      if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
+      if(req.method!=='GET')return new Response('Method Not Allowed',{status:405})
+      try{const q=await env.DB.prepare("SELECT * FROM news WHERE status='PROCESSING' LIMIT 50").all();return Response.json({news:q.results})}
+      catch(e){return Response.json({news:[],error:'pending_query_failed',detail:e instanceof Error?e.message:String(e)},{status:200})}
+    }
     if(req.method==='GET'&&(u.pathname==='/icon.svg'||u.pathname==='/favicon.ico'))return new Response(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#1769e0"/><text x="32" y="41" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" font-weight="800" fill="white">TT</text><circle cx="52" cy="12" r="6" fill="#ff3b30"/></svg>`,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=300'}})
     if(req.method==='GET'&&u.pathname==='/manifest.webmanifest')return Response.json({name:'TT Control',short_name:'TT Control',id:'/',start_url:'/',scope:'/',display:'standalone',background_color:'#f4f6f9',theme_color:'#1769e0'},{headers:{'content-type':'application/manifest+json','cache-control':'no-cache'}})
     if(req.method==='GET'&&u.pathname==='/sw.js')return new Response("self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(clients.claim()));self.addEventListener('fetch',()=>{});",{headers:{'content-type':'application/javascript','cache-control':'no-cache'}})
