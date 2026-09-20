@@ -355,9 +355,9 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
       if(env.TELEGRAM_WEBHOOK_SECRET&&secret!==env.TELEGRAM_WEBHOOK_SECRET)return new Response('Forbidden',{status:403})
       const update:any=await req.clone().json(),cq=update?.callback_query,data=String(cq?.data||''),msg=cq?.message||{}
       if(cq&&data==='delete:message'){
-        await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Borrada.'})
-        if(msg.message_id)await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id})
-        return Response.json({ok:true,deleted:true})
+        const ack=await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Borrada.'})
+        const del=msg.message_id?await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id}):{ok:false,error:'message_id ausente'}
+        return Response.json({ok:true,ack,del,chat_id:msg?.chat?.id,message_id:msg?.message_id})
       }
     }
     await ensureEditorialSchema(env)
