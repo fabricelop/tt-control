@@ -460,7 +460,7 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
       try{
         const q=await env.DB.prepare("SELECT * FROM news WHERE status='PROCESSING' LIMIT 50").all()
         return Response.json({news:q.results,control_instruction:null,editorial_instructions:{remates:"Tres remates cuando proceda; nunca bromear sobre víctimas o sufrimiento.",length:"Cada variante debe caber en 280 caracteres."},radar:{positive_samples:0,negative_samples:0,minimum_positive:5,minimum_negative:20,learning_active:false,status_counts:{}}})
-      }catch(e){return Response.json({error:'pending_query_failed',detail:String(e)},{status:500})}
+      }catch(e){return Response.json({news:[],error:'pending_query_failed',detail:String(e)},{status:200})}
     }
     if(u.pathname==='/api/agent/image'){
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
