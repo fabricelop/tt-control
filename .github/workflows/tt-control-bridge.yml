@@ -41,17 +41,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run TT Control cycle
-        env:
-          BRIDGE_TOKEN: ${{ secrets.TT_CONTROL_BRIDGE_TOKEN }}
-        run: |
-          curl --fail --silent --show-error \
-            -X POST \
-            -H "Authorization: Bearer $BRIDGE_TOKEN" \
-            "https://tt-control.fabricelop.workers.dev/api/agent/run" \
-            -o /tmp/run.json
-          python -m json.tool /tmp/run.json
-
       - name: Read PROCESSING queue from TT Control
         env:
           BRIDGE_TOKEN: ${{ secrets.TT_CONTROL_BRIDGE_TOKEN }}
