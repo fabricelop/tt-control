@@ -355,7 +355,7 @@ async function ingest(env:Env){
   }catch(e){await env.DB.prepare("UPDATE runs SET finished_at=datetime('now'),status='ERROR',error=? WHERE id=?").bind(String(e),run!.id).run();throw e}
 }
 
-export default {async scheduled(event:ScheduledEvent,env:Env,ctx:ExecutionContext){ctx.waitUntil((async()=>{const minute=new Date(event.scheduledTime).getUTCMinutes();await env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('radar_last_cron_minute',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(String(minute)).run();if([10,25,40,55].includes(minute)){await ingest(env);if(env.GITHUB_TOKEN){const r=await fetch('https://api.github.com/repos/fabricelop/europapress-rss/actions/workflows/radar-no-d1.yml/dispatches',{method:'POST',headers:{'Authorization':'Bearer '+env.GITHUB_TOKEN,'Accept':'application/vnd.github+json','User-Agent':'tt-control-radar-dispatch','Content-Type':'application/json'},body:JSON.stringify({ref:'main'})});if(!r.ok)throw new Error('Radar dispatch GitHub '+r.status+': '+await r.text())}}})())},async fetch(req:Request,env:Env):Promise<Response>{
+export default {async scheduled(event:ScheduledEvent,env:Env,ctx:ExecutionContext){ctx.waitUntil((async()=>{const minute=new Date(event.scheduledTime).getUTCMinutes();await env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('radar_last_cron_minute',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(String(minute)).run();if([10,25,40,55].includes(minute))await ingest(env)})())},async fetch(req:Request,env:Env):Promise<Response>{
   const u=new URL(req.url)
   try{
     if(u.pathname==='/api/agent/pending'){
