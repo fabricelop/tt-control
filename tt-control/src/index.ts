@@ -395,14 +395,13 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
         try{
           const api='https://api.github.com/repos/fabricelop/europapress-rss/contents/telegram/emergency-requests.json'
           const h={'Authorization':'Bearer '+env.GITHUB_TOKEN,'Accept':'application/vnd.github+json','User-Agent':'tt-control-emergency','Content-Type':'application/json'}
-          const gr=await fetch(api,{headers:h});if(!gr.ok)throw new Error('GitHub read '+gr.status)
+          let gr:any,gj:any,old:any,wr:any\n          for(let attempt=0;attempt<4;attempt++){\n            gr=await fetch(api,{headers:h});if(!gr.ok)throw new Error('GitHub read '+gr.status)\n            gj=await gr.json();old=JSON.parse(atob(String(gj.content||'').replace(/\\n/g,'')));old.requests=Array.isArray(old.requests)?old.requests:[]\n            if(!old.requests.some((x:any)=>x.action===action&&x.id===id&&x.message_id===msg.message_id))old.requests.push({action,id,at:new Date().toISOString(),chat,message_id:msg.message_id})\n            const body={message:'Registrar accion Telegram '+action,content:btoa(unescape(encodeURIComponent(JSON.stringify(old,null,2)+'\\n'))),sha:gj.sha,branch:'main'}\n            wr=await fetch(api,{method:'PUT',headers:h,body:JSON.stringify(body)});if(wr.ok)break\n            if(wr.status!==409)throw new Error('GitHub write '+wr.status)\n          }\n          if(!wr?.ok)throw new Error('GitHub write conflict after retries')\n          await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:action==='prepare'?'Preparar registrado':'Accion registrada'})\n          return Response.json({ok:true,stored:true})\n          /*
           const gj:any=await gr.json(),old=JSON.parse(atob(String(gj.content||'').replace(/\\n/g,'')))
           old.requests=Array.isArray(old.requests)?old.requests:[]
           if(!old.requests.some((x:any)=>x.action===action&&x.id===id&&x.message_id===msg.message_id))old.requests.push({action,id,at:new Date().toISOString(),chat,message_id:msg.message_id})
           const body={message:'Registrar accion Telegram '+action,content:btoa(unescape(encodeURIComponent(JSON.stringify(old,null,2)+'\\n'))),sha:gj.sha,branch:'main'}
           const wr=await fetch(api,{method:'PUT',headers:h,body:JSON.stringify(body)});if(!wr.ok)throw new Error('GitHub write '+wr.status)
-          return Response.json({ok:true,stored:true})
-        }catch(e){return Response.json({ok:true,stored:false,error:String(e)})}
+          */\n        }catch(e){await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'No registrado. Pulsa de nuevo.',show_alert:true});return Response.json({ok:true,stored:false,error:String(e)})}
       }
     }
     await ensureEditorialSchema(env)
