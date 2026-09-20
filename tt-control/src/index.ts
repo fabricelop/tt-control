@@ -377,6 +377,13 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
         const del=msg.message_id?await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id}):{ok:false,error:'message_id ausente'}
         return Response.json({ok:true,ack,del})
       }
+      if(cq&&data.startsWith('dg:')){
+        const ids=data.slice(3).split(',').map((x:string)=>Number(x)).filter((x:number)=>Number.isInteger(x))
+        const results:any[]=[]
+        for(const mid of ids)results.push(await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:mid}))
+        if(msg.message_id&&!ids.includes(Number(msg.message_id)))results.push(await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id}))
+        return Response.json({ok:true,deleted:ids,results})
+      }
     }
     if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
       const update:any=await req.clone().json(),cq=update?.callback_query,data=String(cq?.data||''),msg=cq?.message||{},chat=String(msg?.chat?.id||'')
