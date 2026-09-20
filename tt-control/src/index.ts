@@ -13,7 +13,7 @@ async function ensureEditorialSchema(env:Env){
     "CREATE INDEX IF NOT EXISTS idx_news_status_published ON news(status,published_at,id)",
     "CREATE TABLE IF NOT EXISTS app_settings (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT (datetime('now')))"
   ]
-  for(const sql of statements)await env.DB.prepare(sql).run()
+  for(const sql of statements){try{await env.DB.prepare(sql).run()}catch(e){/* tablas/índices heredados pueden tener esquemas antiguos; no bloquear endpoints existentes */}}
   for(const sql of ["ALTER TABLE news ADD COLUMN processing_error TEXT","ALTER TABLE news ADD COLUMN processing_started_at TEXT","ALTER TABLE news ADD COLUMN processing_finished_at TEXT","ALTER TABLE drafts ADD COLUMN image_url TEXT","ALTER TABLE drafts ADD COLUMN ai_image_base64 TEXT","ALTER TABLE drafts ADD COLUMN image_a_url TEXT","ALTER TABLE drafts ADD COLUMN image_b_url TEXT","ALTER TABLE drafts ADD COLUMN image_c_url TEXT"]){try{await env.DB.prepare(sql).run()}catch(_){}}
 }
 
