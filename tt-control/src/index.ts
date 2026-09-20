@@ -376,8 +376,7 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
             const api='https://api.github.com/repos/fabricelop/europapress-rss/contents/telegram/delete-diagnostic.json'
             const h={'Authorization':'Bearer '+env.GITHUB_TOKEN,'Accept':'application/vnd.github+json','User-Agent':'tt-control-delete-diagnostic','Content-Type':'application/json'}
             const gr=await fetch(api,{headers:h});let sha:any=undefined;if(gr.ok){const gj:any=await gr.json();sha=gj.sha}
-            const body:any={message:'Registrar diagnóstico borrado Telegram',content:btoa(unescape(encodeURIComponent(JSON.stringify({...diagnostic,ack,del},null,2)+'
-'))),branch:'main'};if(sha)body.sha=sha
+            const body:any={message:'Registrar diagnóstico borrado Telegram',content:btoa(unescape(encodeURIComponent(JSON.stringify({...diagnostic,ack,del},null,2)+'\\n'))),branch:'main'};if(sha)body.sha=sha
             await fetch(api,{method:'PUT',headers:h,body:JSON.stringify(body)})
           }catch(_){}
         }
