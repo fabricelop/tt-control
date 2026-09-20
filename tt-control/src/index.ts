@@ -8,6 +8,7 @@ async function ensureEditorialSchema(env:Env){
     "CREATE INDEX IF NOT EXISTS idx_publications_news ON publications(news_id)",
     "CREATE TABLE IF NOT EXISTS media_radar (id INTEGER PRIMARY KEY AUTOINCREMENT, fingerprint TEXT NOT NULL UNIQUE, title TEXT NOT NULL, url TEXT NOT NULL, source TEXT NOT NULL, sources_json TEXT NOT NULL DEFAULT '[]', source_count INTEGER NOT NULL DEFAULT 1, importance TEXT NOT NULL DEFAULT 'PENDING', reason TEXT, status TEXT NOT NULL DEFAULT 'NEW', first_seen TEXT NOT NULL DEFAULT (datetime('now')), last_seen TEXT NOT NULL DEFAULT (datetime('now')))",
     "CREATE INDEX IF NOT EXISTS idx_media_radar_status ON media_radar(status,last_seen)",
+    "CREATE INDEX IF NOT EXISTS idx_news_status_published ON news(status,published_at,id)",
     "CREATE TABLE IF NOT EXISTS app_settings (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT (datetime('now')))"
   ]
   for(const sql of statements)await env.DB.prepare(sql).run()
@@ -340,7 +341,7 @@ async function ingest(env:Env){
   }catch(e){await env.DB.prepare("UPDATE runs SET finished_at=datetime('now'),status='ERROR',error=? WHERE id=?").bind(String(e),run!.id).run();throw e}
 }
 
-export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionContext){ctx.waitUntil(ingest(env))},async fetch(req:Request,env:Env):Promise<Response>{
+export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionContext){ctx.waitUntil((async()=>{const guard:any=await env.DB.prepare("SELECT value FROM app_settings WHERE key='radar_cron_tick'").first().catch(()=>null);const tick=Number(guard?.value||0)+1;await env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('radar_cron_tick',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(String(tick)).run();if(tick%3===0)await ingest(env)})())},async fetch(req:Request,env:Env):Promise<Response>{
   const u=new URL(req.url)
   try{
     if(req.method==='GET'&&(u.pathname==='/icon.svg'||u.pathname==='/favicon.ico'))return new Response(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#1769e0"/><text x="32" y="41" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" font-weight="800" fill="white">TT</text><circle cx="52" cy="12" r="6" fill="#ff3b30"/></svg>`,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=300'}})
