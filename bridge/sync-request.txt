@@ -1,1 +1,1 @@
-schema independent pending test 2026-09-20T16:43:00Z
+capture exact D1 error 2026-09-20T16:46:00Z
