@@ -422,17 +422,14 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
         if(action==='prepare'){
           try{
             await ensureEditorialSchema(env)
-            const api='https://api.github.com/repos/fabricelop/europapress-rss/contents/telegram/events.json'
-            const h={'Authorization':'Bearer '+String(env.GITHUB_TOKEN||''),'Accept':'application/vnd.github+json','User-Agent':'tt-control-prepare'}
-            const gr=await fetch(api,{headers:h});if(!gr.ok)throw new Error('No se pudo leer events.json: '+gr.status)
-            const gj:any=await gr.json(),doc=JSON.parse(atob(String(gj.content||'').replace(/\\n/g,'')))
-            const events=Array.isArray(doc)?doc:(Array.isArray(doc.events)?doc.events:(Array.isArray(doc.items)?doc.items:[]))
-            const ev=events.find((x:any)=>String(x.id||x.event_id||'')===id)
-            if(!ev)throw new Error('Evento '+id+' no encontrado')
-            const title=String(ev.title||'').trim(),url=String(ev.url||'').trim(),source=String((ev.sources||[])[0]||ev.source||'Radar')
-            if(!title&&!url)throw new Error('Evento sin titulo ni URL')
+            const rawText=String(msg?.text||msg?.caption||'')
+            const parts=rawText.split(/\\n+/).map((x:string)=>x.trim()).filter(Boolean)
+            const title=String(parts.find((x:string)=>!x.startsWith('📰')&&!x.startsWith('Fuentes:'))||('Radar '+id)).trim()
+            const rows=msg?.reply_markup?.inline_keyboard||[]
+            let url=''
+            for(const row of rows)for(const btn of row||[])if(btn?.url&&!url)url=String(btn.url)
             const key='telegram:'+id.toLowerCase()
-            await env.DB.prepare("INSERT INTO news(source,source_key,title,url,section,published_at,detected_at,status,radar_reason,updated_at,processing_started_at) VALUES(?,?,?,?, 'Telegram',datetime('now'),datetime('now'),'PROCESSING','Seleccionada en Telegram',datetime('now'),datetime('now')) ON CONFLICT(source_key) DO UPDATE SET title=excluded.title,url=excluded.url,status='PROCESSING',updated_at=datetime('now'),processing_started_at=datetime('now')").bind(source,key,title||url,url).run()
+            await env.DB.prepare("INSERT INTO news(source,source_key,title,url,section,published_at,detected_at,status,radar_reason,updated_at,processing_started_at) VALUES(?,?,?,?, 'Telegram',datetime('now'),datetime('now'),'PROCESSING','Seleccionada en Telegram',datetime('now'),datetime('now')) ON CONFLICT(source_key) DO UPDATE SET title=excluded.title,url=excluded.url,status='PROCESSING',updated_at=datetime('now'),processing_started_at=datetime('now')").bind('Telegram/Radar',key,title,url).run()
             await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Enviada a Elaborando.'})
             if(msg.message_id)await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id})
             return Response.json({ok:true,stored:true,processing:true,event_id:id})
