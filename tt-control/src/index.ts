@@ -321,7 +321,7 @@ Responde SOLO JSON {"level":"ALERT"|"ENTRY"|"IGNORE","reason":"frase breve"}.`
     const status=safeLevel==='ALERT'?'ALERTED':safeLevel==='ENTRY'?'ENTRY':'IGNORED'
     await env.DB.prepare("UPDATE media_radar SET importance=?,reason=?,status=? WHERE id=?").bind(safeLevel,String(p.reason||''),status,n.id).run()
     if(status==='ALERTED')alerts++;if(status==='ENTRY')entry++
-  }catch(e){console.log('Media radar LLM retry',n.id,String(e));await env.DB.prepare("UPDATE media_radar SET reason=? WHERE id=?").bind('Pendiente de reintento: clasificación LLM no disponible',n.id).run()}}
+  }catch(e){console.log('Media radar LLM retry',n.id,String(e));const sources=JSON.parse(n.sources_json||'[]'),count=Number(n.source_count||sources.length||1),coverage=count/9;if(coverage>=alertCoverage){await env.DB.prepare("UPDATE media_radar SET importance='ALERT',reason=?,status='ALERTED' WHERE id=?").bind('Promovida por cobertura de '+count+'/9 medios; clasificación LLM pendiente',n.id).run();alerts++}else if(coverage>=entryCoverage){await env.DB.prepare("UPDATE media_radar SET importance='ENTRY',reason=?,status='ENTRY' WHERE id=?").bind('Promovida por cobertura de '+count+'/9 medios; clasificación LLM pendiente',n.id).run();entry++}else await env.DB.prepare("UPDATE media_radar SET reason=? WHERE id=?").bind('Pendiente de reintento: clasificación LLM no disponible',n.id).run()}}
   return {items:items.length,touched,alerts,entry}
 }
 async function ingest(env:Env){
@@ -337,7 +337,7 @@ async function ingest(env:Env){
   }catch(e){await env.DB.prepare("UPDATE runs SET finished_at=datetime('now'),status='ERROR',error=? WHERE id=?").bind(String(e),run!.id).run();throw e}
 }
 
-export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionContext){ctx.waitUntil(runMediaRadar(env))},async fetch(req:Request,env:Env):Promise<Response>{
+export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionContext){ctx.waitUntil(ingest(env))},async fetch(req:Request,env:Env):Promise<Response>{
   const u=new URL(req.url)
   try{
     if(req.method==='GET'&&(u.pathname==='/icon.svg'||u.pathname==='/favicon.ico'))return new Response(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#1769e0"/><text x="32" y="41" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" font-weight="800" fill="white">TT</text><circle cx="52" cy="12" r="6" fill="#ff3b30"/></svg>`,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=300'}})
