@@ -69,8 +69,7 @@ async function semanticRadar(env:Env,section:string,title:string,statistical:{di
   if(!statistical.dismiss)return statistical
   try{
     const fb=await env.DB.prepare("SELECT f.kind,f.value,n.title FROM editorial_feedback f JOIN news n ON n.id=f.news_id WHERE f.kind IN ('radar_reconsider_reason','dismiss_reason','selection_instruction') AND length(f.value)>2 ORDER BY f.id DESC LIMIT 40").all()
-    const examples=(fb.results as any[]).map(x=>'- '+x.kind+': '+String(x.value).slice(0,300)+' | '+String(x.title).slice(0,180)).join('
-')
+    const examples=(fb.results as any[]).map(x=>'- '+x.kind+': '+String(x.value).slice(0,300)+' | '+String(x.title).slice(0,180)).join('\\n')
     const prompt=`Decide si esta noticia debe ser descartada automáticamente del radar editorial de TTiTTulares España o debe llegar a Entrada para decisión humana. Sé conservador: ante duda, KEEP. Política nacional española, Gobierno, Congreso, Senado, partidos nacionales y asuntos con impacto nacional: siempre KEEP. No confundas que una noticia no admita humor con que carezca de interés. Aprende especialmente de las correcciones del editor.
 
 CORRECCIONES/INSTRUCCIONES RECIENTES DEL EDITOR:
