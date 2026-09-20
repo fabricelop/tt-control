@@ -1,9 +1,12 @@
 {
   "id": 907,
   "base_text": "EE.UU. atacó el sábado una lancha rápida en el Caribe y murieron sus cuatro ocupantes. El Comando Sur afirma que estaba implicada en narcotráfico; no ha aportado pruebas públicas sobre la carga ni identificado a los fallecidos.",
-  "remate_a": "Sin remate: noticia sobre víctimas.",
-  "remate_b": "Sin remate: noticia sobre víctimas.",
-  "remate_c": "Sin remate: noticia sobre víctimas.",
-  "research": "Contrastado el 20-09-2026 con Reuters, AP y RTVE. Las tres fuentes atribuyen al Comando Sur de EE.UU. la afirmación de que la embarcación estaba vinculada al narcotráfico. AP señala que no se han presentado pruebas públicas directas de que las embarcaciones atacadas transportasen drogas; Reuters indica que no se facilitaron la ubicación exacta ni las identidades de los cuatro fallecidos.",
-  "sources": ["https://www.reuters.com/world/us-says-it-killed-four-people-strike-vessel-caribbean-2026-09-20/", "https://apnews.com/article/95f3d4ae10f8e2a4a193f601101898d9", "https://www.rtve.es/noticias/20260920/eeuu-mata-a-cuatro-personas-tripulaban-embarcacion-caribe-ataque-aereo/17232387.shtml"]
+  "remate_a": "La acusación llegó con precisión militar; las pruebas, de momento, siguen buscando puerto.",
+  "remate_b": "El Pentágono ya ha dictado la versión oficial. La parte de demostrarla parece viajar en otra embarcación.",
+  "remate_c": "Cuatro muertos y una certeza oficial sobre narcotráfico. Lo que todavía no ha aparecido en público es la prueba.",
+  "research": "Contrastado el 20-09-2026 con Reuters y AP. Ambas informan del ataque y de la atribución estadounidense al narcotráfico; AP señala la falta de pruebas públicas directas sobre la carga. El humor apunta exclusivamente a la justificación oficial y la ausencia de pruebas públicas, no a las víctimas.",
+  "sources": [
+    "https://www.reuters.com/world/us-says-it-killed-four-people-strike-vessel-caribbean-2026-09-20/",
+    "https://apnews.com/article/95f3d4ae10f8e2a4a193f601101898d9"
+  ]
 }
