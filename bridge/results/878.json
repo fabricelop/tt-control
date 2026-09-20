@@ -1,12 +1,9 @@
 {
   "id": 878,
-  "base_text": "La campaña presidencial de Brasil entra en su recta final con Lula y Flávio Bolsonaro como principales candidatos. La relación con EE.UU. y las medidas de Washington pesan en el debate.",
-  "remate_a": "Trump no se presenta en Brasil, pero ya hace campaña por poderes.",
-  "remate_b": "La papeleta es brasileña; la sombra, de importación.",
-  "remate_c": "Trump ha internacionalizado el MAGA: ahora también hace de candidato fantasma en Brasil.",
-  "research": "Reverificado el 20-09-2026. Reuters documenta una carrera ajustada entre Lula y Flávio Bolsonaro y el peso de asuntos vinculados a EE.UU. Los remates se apoyan en ese contexto y no recomiendan voto. Reescritura solicitada: remates dirigidos específicamente contra Trump.",
-  "sources": [
-    "https://www.reuters.com/world/americas/lula-would-beat-bolsonaro-brazilian-runoff-cntmda-poll-suggests-2026-09-15/",
-    "https://www.reuters.com/world/americas/brazils-lula-raises-welfare-benefit-ahead-october-election-2026-09-17/"
-  ]
+  "base_text": "Brasil vota el 4 de octubre con Lula y Flávio Bolsonaro en una carrera muy ajustada. Trump ha entrado en campaña por sus aranceles y presiones a Brasil; Flávio niega recibir ayuda de Washington.",
+  "remate_a": "Trump no sale en la papeleta, pero quiere reservar asiento en el recuento.",
+  "remate_b": "Trump exporta una especialidad sin arancel: meterse en elecciones ajenas.",
+  "remate_c": "America First, pero con palco VIP en las elecciones de los demás.",
+  "research": "Reverificado el 20-09-2026. Reuters sitúa a Lula 46%-44% sobre Flávio Bolsonaro en un eventual segundo turno de Datafolha. EFE recoge que Flávio niega ayuda del Gobierno de EE.UU. y que Lula denuncia injerencias; la presión comercial y arancelaria de la Administración Trump forma parte del debate. Se respeta el rewrite_request: los tres remates se dirigen contra Trump.",
+  "sources": ["https://www.reuters.com/world/americas/lula-maintains-lead-over-flavio-bolsonaro-ahead-brazil-election-datafolha-poll-2026-09-17/", "https://efe.com/mundo/2026-09-17/flavio-bolsonaro-niega-ayuda-campana-gobierno-estados-unidos/", "https://efe.com/mundo/2026-06-05/trump-presion-brasil-pugna-electoral-lula-flavio-bolsonaro/"]
 }
