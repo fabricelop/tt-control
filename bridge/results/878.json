@@ -1,9 +1,12 @@
 {
   "id": 878,
   "base_text": "La campaña presidencial de Brasil entra en su recta final con Lula y Flávio Bolsonaro como principales candidatos, mientras la relación con EE.UU. y las medidas de Washington forman parte del debate electoral.",
-  "remate_a": "Sin remate: información política.",
-  "remate_b": "Sin remate: información política.",
-  "remate_c": "Sin remate: información política.",
-  "research": "Reverificado el 20-09-2026. Reuters (17-09-2026) recoge que Datafolha sitúa a Lula con 46% y a Flávio Bolsonaro con 44% en una eventual segunda vuelta. Folha documentó que la respuesta brasileña a las medidas de Estados Unidos figura entre los asuntos de campaña. Se distinguen hechos de declaraciones partidistas.",
-  "sources": ["https://www.reuters.com/world/americas/lula-maintains-lead-over-flavio-bolsonaro-ahead-brazil-election-datafolha-poll-2026-09-17/", "https://www1.folha.uol.com.br/poder/2026/08/genialquaest-lula-venceria-flavio-bolsonaro-por-39-a-30-no-1o-turno-e-44-a-39-no-2o-turno.shtml"]
+  "remate_a": "Brasil entra en campaña con un candidato más que no sale en la papeleta: Washington.",
+  "remate_b": "La soberanía brasileña está en campaña; la política exterior estadounidense también ha pedido acreditación.",
+  "remate_c": "Trump no se presenta en Brasil, pero la campaña ya le ha reservado silla en primera fila.",
+  "research": "Reverificado el 20-09-2026. Reuters documenta una carrera ajustada entre Lula y Flávio Bolsonaro y el peso de asuntos vinculados a EE.UU. Los remates se apoyan en ese contexto y no recomiendan voto.",
+  "sources": [
+    "https://www.reuters.com/world/americas/lula-would-beat-bolsonaro-brazilian-runoff-cntmda-poll-suggests-2026-09-15/",
+    "https://www.reuters.com/world/americas/brazils-lula-raises-welfare-benefit-ahead-october-election-2026-09-17/"
+  ]
 }
