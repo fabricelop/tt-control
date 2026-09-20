@@ -1,11 +1,9 @@
 {
   "id": 922,
-  "base_text": "Una persona ha muerto y otras 18 han resultado heridas en el incendio de una residencia en Pamplona. Una está grave. La Policía Nacional investiga el origen del fuego.",
-  "remate_a": "La seguridad debería llegar antes que las explicaciones.",
-  "remate_b": "Ahora toca investigar el fuego y todo lo que debía impedir que llegara tan lejos.",
-  "remate_c": "Las llamas están apagadas; las preguntas sobre cómo pudo ocurrir acaban de encenderse.",
-  "research": "Noticia sensible: los remates no se dirigen a la víctima ni a los heridos, sino a la investigación, la seguridad y las responsabilidades que puedan determinarse. Información contrastada con Cadena SER y Europa Press.",
-  "sources": [
-    "https://cadenaser.com/navarra/2026/09/20/muere-una-persona-y-otras-18-resultan-heridas-en-el-incendio-de-una-residencia-en-pamplona-radio-pamplona/"
-  ]
+  "base_text": "Una mujer de 56 años ha muerto y 18 personas han sido hospitalizadas por inhalación de humo tras un incendio en la residencia psiquiátrica Padre Menni de Pamplona. Un hombre de 62 años está en UCI; unos 50 pacientes fueron reubicados.",
+  "remate_a": "La Policía Nacional investiga.",
+  "remate_b": "El origen del fuego se investiga.",
+  "remate_c": "La investigación sigue abierta.",
+  "research": "Contrastado el 20-09-2026 con Europa Press, EFE/elDiario.es, Cadena SER y El País. Coinciden en una fallecida de 56 años, 18 hospitalizados, un hombre de 62 años en UCI y alrededor de 50 pacientes reubicados. La Policía Nacional investiga el origen. Por tratarse de víctimas, los tres remates son estrictamente neutros y no contienen humor.",
+  "sources": ["https://www.europapress.es/navarra/noticia-muere-persona-18-resultan-heridas-humo-incendio-centro-psiquiatrico-pamplona-20260920020813.html", "https://www.eldiario.es/navarra/muerto-18-heridos-incendio-residencia-pamplona_1_13523774.html", "https://cadenaser.com/navarra/2026/09/20/muere-una-persona-y-otras-18-resultan-heridas-en-el-incendio-de-una-residencia-en-pamplona-radio-pamplona/", "https://elpais.com/espana/2026-09-20/muere-una-persona-y-18-resultan-heridas-en-el-incendio-en-una-residencia-en-pamplona.html"]
 }
