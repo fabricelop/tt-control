@@ -410,11 +410,9 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
           let gr:any,gj:any,old:any,wr:any
           for(let attempt=0;attempt<4;attempt++){
             gr=await fetch(api,{headers:h});if(!gr.ok)throw new Error('GitHub read '+gr.status)
-            gj=await gr.json();old=JSON.parse(atob(String(gj.content||'').replace(/\
-/g,'')));old.requests=Array.isArray(old.requests)?old.requests:[]
+            gj=await gr.json();old=JSON.parse(atob(String(gj.content||'').replace(/\\n/g,'')));old.requests=Array.isArray(old.requests)?old.requests:[]
             if(!old.requests.some((x:any)=>x.action===action&&x.id===id&&x.message_id===msg.message_id))old.requests.push({action,id,at:new Date().toISOString(),chat,message_id:msg.message_id})
-            const body={message:'Registrar accion Telegram '+action,content:btoa(unescape(encodeURIComponent(JSON.stringify(old,null,2)+'\
-'))),sha:gj.sha,branch:'main'}
+            const body={message:'Registrar accion Telegram '+action,content:btoa(unescape(encodeURIComponent(JSON.stringify(old,null,2)+'\\n'))),sha:gj.sha,branch:'main'}
             wr=await fetch(api,{method:'PUT',headers:h,body:JSON.stringify(body)});if(wr.ok)break
             if(wr.status!==409)throw new Error('GitHub write '+wr.status)
           }
