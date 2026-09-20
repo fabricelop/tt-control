@@ -362,7 +362,15 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
       if(req.method!=='GET')return new Response('Method Not Allowed',{status:405})
       try{const q=await env.DB.prepare("SELECT * FROM news WHERE status='PROCESSING' LIMIT 50").all();return Response.json({news:q.results})}
-      catch(e){return Response.json({news:[],error:'pending_query_failed',detail:e instanceof Error?e.message:String(e)},{status:200})}
+      catch(e){return Response.json({error:'pending_query_failed',detail:e instanceof Error?e.message:String(e)},{status:500})}
+    }
+    if(u.pathname==='/api/agent/enqueue'&&req.method==='POST'){
+      if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
+      const b:any=await req.json(),url=String(b.url||'').trim(),title=String(b.title||'').trim(),source=String(b.source||'telegram').trim()||'telegram'
+      if(!url&&!title)return Response.json({error:'Falta enlace o titular'},{status:400})
+      const key='telegram:'+String(b.event_id||url||title).toLowerCase()
+      const row=await env.DB.prepare("INSERT INTO news(source,source_key,title,url,section,published_at,detected_at,status,radar_reason,updated_at,processing_started_at) VALUES(?,?,?,?, 'Telegram',datetime('now'),datetime('now'),'PROCESSING','Seleccionada en Telegram',datetime('now'),datetime('now')) ON CONFLICT(source_key) DO UPDATE SET title=excluded.title,url=excluded.url,status='PROCESSING',updated_at=datetime('now'),processing_started_at=datetime('now') RETURNING id").bind(source,key,title||url,url).first<{id:number}>()
+      return Response.json({ok:true,id:row?.id,status:'PROCESSING'})
     }
     if(req.method==='GET'&&(u.pathname==='/icon.svg'||u.pathname==='/favicon.ico'))return new Response(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#1769e0"/><text x="32" y="41" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" font-weight="800" fill="white">TT</text><circle cx="52" cy="12" r="6" fill="#ff3b30"/></svg>`,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=300'}})
     if(req.method==='GET'&&u.pathname==='/manifest.webmanifest')return Response.json({name:'TT Control',short_name:'TT Control',id:'/',start_url:'/',scope:'/',display:'standalone',background_color:'#f4f6f9',theme_color:'#1769e0'},{headers:{'content-type':'application/manifest+json','cache-control':'no-cache'}})
