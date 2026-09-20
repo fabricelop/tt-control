@@ -419,6 +419,28 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
       if(cq&&data.startsWith('emergency:')){
         const p=data.split(':'),action=p[1]||'',id=p.slice(2).join(':')
         if(!['prepare','dismiss','confirm'].includes(action)||!id)return Response.json({ok:true,stored:false,error:'accion invalida'})
+        if(action==='prepare'){
+          try{
+            await ensureEditorialSchema(env)
+            const api='https://api.github.com/repos/fabricelop/europapress-rss/contents/telegram/events.json'
+            const h={'Authorization':'Bearer '+String(env.GITHUB_TOKEN||''),'Accept':'application/vnd.github+json','User-Agent':'tt-control-prepare'}
+            const gr=await fetch(api,{headers:h});if(!gr.ok)throw new Error('No se pudo leer events.json: '+gr.status)
+            const gj:any=await gr.json(),doc=JSON.parse(atob(String(gj.content||'').replace(/\\n/g,'')))
+            const events=Array.isArray(doc)?doc:(Array.isArray(doc.events)?doc.events:(Array.isArray(doc.items)?doc.items:[]))
+            const ev=events.find((x:any)=>String(x.id||x.event_id||'')===id)
+            if(!ev)throw new Error('Evento '+id+' no encontrado')
+            const title=String(ev.title||'').trim(),url=String(ev.url||'').trim(),source=String((ev.sources||[])[0]||ev.source||'Radar')
+            if(!title&&!url)throw new Error('Evento sin titulo ni URL')
+            const key='telegram:'+id.toLowerCase()
+            await env.DB.prepare("INSERT INTO news(source,source_key,title,url,section,published_at,detected_at,status,radar_reason,updated_at,processing_started_at) VALUES(?,?,?,?, 'Telegram',datetime('now'),datetime('now'),'PROCESSING','Seleccionada en Telegram',datetime('now'),datetime('now')) ON CONFLICT(source_key) DO UPDATE SET title=excluded.title,url=excluded.url,status='PROCESSING',updated_at=datetime('now'),processing_started_at=datetime('now')").bind(source,key,title||url,url).run()
+            await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Enviada a Elaborando.'})
+            if(msg.message_id)await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id})
+            return Response.json({ok:true,stored:true,processing:true,event_id:id})
+          }catch(e){
+            await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'No se pudo enviar a Elaborando. Pulsa de nuevo.',show_alert:true})
+            return Response.json({ok:true,stored:false,error:String(e)})
+          }
+        }
         if(!env.GITHUB_TOKEN)return Response.json({ok:true,stored:false,error:'github token ausente'})
         try{
           const api='https://api.github.com/repos/fabricelop/europapress-rss/contents/telegram/emergency-requests.json'
