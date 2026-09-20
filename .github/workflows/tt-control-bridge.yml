@@ -32,6 +32,18 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npx --yes wrangler@latest deploy
 
+      - name: Register Telegram webhook on TT Control Worker
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_WEBHOOK_SECRET: ${{ secrets.TELEGRAM_WEBHOOK_SECRET }}
+        run: |
+          test -n "$TELEGRAM_BOT_TOKEN"
+          test -n "$TELEGRAM_WEBHOOK_SECRET"
+          curl --fail --silent --show-error \
+            -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/setWebhook" \
+            -H "Content-Type: application/json" \
+            --data "$(python -c 'import json,os; print(json.dumps({"url":"https://tt-control.fabricelop.workers.dev/api/telegram-webhook","secret_token":os.environ["TELEGRAM_WEBHOOK_SECRET"],"allowed_updates":["callback_query","message"],"drop_pending_updates":False}))')"
+
 
   sync-pending:
     if: github.event_name != 'push' || contains(github.event.head_commit.message, '[sync-pending]') || github.event.head_commit.modified[0] == 'bridge/sync-request.txt'
