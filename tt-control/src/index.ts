@@ -378,6 +378,25 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
         return Response.json({ok:true,ack,del})
       }
     }
+    if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
+      const update:any=await req.clone().json(),cq=update?.callback_query,data=String(cq?.data||''),msg=cq?.message||{},chat=String(msg?.chat?.id||'')
+      if(cq&&data.startsWith('emergency:')){
+        const p=data.split(':'),action=p[1]||'',id=p.slice(2).join(':')
+        if(!['prepare','dismiss','confirm'].includes(action)||!id)return Response.json({ok:true,stored:false,error:'accion invalida'})
+        if(!env.GITHUB_TOKEN)return Response.json({ok:true,stored:false,error:'github token ausente'})
+        try{
+          const api='https://api.github.com/repos/fabricelop/europapress-rss/contents/telegram/emergency-requests.json'
+          const h={'Authorization':'Bearer '+env.GITHUB_TOKEN,'Accept':'application/vnd.github+json','User-Agent':'tt-control-emergency','Content-Type':'application/json'}
+          const gr=await fetch(api,{headers:h});if(!gr.ok)throw new Error('GitHub read '+gr.status)
+          const gj:any=await gr.json(),old=JSON.parse(atob(String(gj.content||'').replace(/\\n/g,'')))
+          old.requests=Array.isArray(old.requests)?old.requests:[]
+          if(!old.requests.some((x:any)=>x.action===action&&x.id===id&&x.message_id===msg.message_id))old.requests.push({action,id,at:new Date().toISOString(),chat,message_id:msg.message_id})
+          const body={message:'Registrar accion Telegram '+action,content:btoa(unescape(encodeURIComponent(JSON.stringify(old,null,2)+'\\n'))),sha:gj.sha,branch:'main'}
+          const wr=await fetch(api,{method:'PUT',headers:h,body:JSON.stringify(body)});if(!wr.ok)throw new Error('GitHub write '+wr.status)
+          return Response.json({ok:true,stored:true})
+        }catch(e){return Response.json({ok:true,stored:false,error:String(e)})}
+      }
+    }
     await ensureEditorialSchema(env)
     if(req.method==='POST'&&u.pathname==='/api/telegram-credentials'&&req.headers.get('authorization')==='Bearer '+String(env.CHATGPT_BRIDGE_TOKEN||'')){const b:any=await req.json();const token=String(b.token||''),chat=String(b.chat_id||'');if(!token||!chat)return Response.json({error:'Datos incompletos'},{status:400});await env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('telegram_bot_token',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(token).run();await env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('telegram_chat_id',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(chat).run();return Response.json({ok:true})}
     if(req.method==='GET'&&u.pathname==='/api/radar-sensitivity'){const s=await env.DB.prepare("SELECT value FROM app_settings WHERE key='radar_sensitivity'").first<{value:string}>();return Response.json({value:Math.max(1,Math.min(5,Number(s?.value||3)))})}
