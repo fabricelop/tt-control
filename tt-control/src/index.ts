@@ -421,6 +421,7 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
         if(!['prepare','dismiss','confirm'].includes(action)||!id)return Response.json({ok:true,stored:false,error:'accion invalida'})
         if(action==='prepare'){
           try{
+            // PREPARAR se atiende directamente en el webhook: sin polling ni espera.
             await ensureEditorialSchema(env)
             const rawText=String(msg?.text||msg?.caption||'')
             const parts=rawText.split(/\\n+/).map((x:string)=>x.trim()).filter(Boolean)
@@ -437,6 +438,11 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
             await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'No se pudo enviar a Elaborando. Pulsa de nuevo.',show_alert:true})
             return Response.json({ok:true,stored:false,error:String(e)})
           }
+        }
+        if(action==='dismiss'){
+          await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Desestimada.'})
+          if(msg.message_id)await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id})
+          return Response.json({ok:true,stored:true,dismissed:true,event_id:id})
         }
         if(!env.GITHUB_TOKEN)return Response.json({ok:true,stored:false,error:'github token ausente'})
         try{
