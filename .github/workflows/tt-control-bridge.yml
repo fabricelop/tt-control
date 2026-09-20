@@ -105,7 +105,10 @@ jobs:
               FAILED=$((FAILED+1))
             fi
           done < /tmp/result_files
-          [ "$FAILED" -eq 0 ] || exit 1
+          if [ "$FAILED" -gt 0 ]; then
+            echo "::warning::$FAILED result(s) were rejected. Other results were still delivered; rejected items remain in Elaborando for correction."
+          fi
+          exit 0
 
       - name: Notify Telegram of new Listas
         env:
