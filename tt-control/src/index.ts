@@ -355,9 +355,19 @@ export default {async scheduled(_event:ScheduledEvent,env:Env,ctx:ExecutionConte
       if(env.TELEGRAM_WEBHOOK_SECRET&&secret!==env.TELEGRAM_WEBHOOK_SECRET)return new Response('Forbidden',{status:403})
       const update:any=await req.clone().json(),cq=update?.callback_query,data=String(cq?.data||''),msg=cq?.message||{}
       if(cq&&data==='delete:message'){
-        const ack=await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Borrada.'})
+        const diagnostic={at:new Date().toISOString(),callback_query_id:cq.id,chat_id:msg?.chat?.id,message_id:msg?.message_id}
+        const ack=await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Borrando…'})
         const del=msg.message_id?await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id}):{ok:false,error:'message_id ausente'}
-        return Response.json({ok:true,ack,del,chat_id:msg?.chat?.id,message_id:msg?.message_id})
+        if(env.GITHUB_TOKEN){
+          try{
+            const api='https://api.github.com/repos/fabricelop/europapress-rss/contents/telegram/delete-diagnostic.json'
+            const h={'Authorization':'Bearer '+env.GITHUB_TOKEN,'Accept':'application/vnd.github+json','User-Agent':'tt-control-delete-diagnostic','Content-Type':'application/json'}
+            const gr=await fetch(api,{headers:h});let sha:any=undefined;if(gr.ok){const gj:any=await gr.json();sha=gj.sha}
+            const body:any={message:'Registrar diagnóstico borrado Telegram',content:btoa(unescape(encodeURIComponent(JSON.stringify({...diagnostic,ack,del},null,2)+'\n'))),branch:'main'};if(sha)body.sha=sha
+            await fetch(api,{method:'PUT',headers:h,body:JSON.stringify(body)})
+          }catch(_){}
+        }
+        return Response.json({ok:true,ack,del,...diagnostic})
       }
     }
     await ensureEditorialSchema(env)
