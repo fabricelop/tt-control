@@ -1,3 +1,4 @@
+// webhook redeploy marker 2026-09-20T15:29+02:00
 interface Env { DB: D1Database; AI: Ai; TT_CONTROL_PASSWORD: string; CHATGPT_BRIDGE_TOKEN?: string; TELEGRAM_BOT_TOKEN?: string; TELEGRAM_CHAT_ID?: string; TELEGRAM_WEBHOOK_SECRET?: string
   GITHUB_TOKEN?: string }
 
