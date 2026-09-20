@@ -1,1 +1,1 @@
-manual sync after pending fix 2026-09-20T16:39:00Z
+manual pending isolation test 2026-09-20T16:41:00Z
