@@ -1,1 +1,11 @@
-{"rewrites":[{"source":"/:path*","destination":"https://tt-control.fabricelop.workers.dev/:path*"}]}
+{
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "destination": "https://tt-control.fabricelop.workers.dev/:path*"
+    }
+  ],
+  "git": {
+    "deploymentEnabled": false
+  }
+}
