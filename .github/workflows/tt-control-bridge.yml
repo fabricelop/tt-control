@@ -42,21 +42,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Enqueue recovered Telegram selections
-        if: contains(github.event.head_commit.message, '[recover-selections]')
-        env:
-          BRIDGE_TOKEN: ${{ secrets.TT_CONTROL_BRIDGE_TOKEN }}
-        run: |
-          for payload in \
-            '{"event_id":"c67e3b8fe75a","title":"Un muerto y tres heridos en un tiroteo entre dos familias en Alzira (Valencia)","url":"https://elpais.com/espana/comunidad-valenciana/2026-09-20/un-muerto-y-tres-heridos-en-un-tiroteo-entre-dos-familias-en-alzira-valencia.html","source":"Telegram/Radar"}' \
-            '{"event_id":"2b7ed1600e10","title":"Brad Pitt revoluciona la alfombra del Zinemaldia","url":"https://cadenaser.com/euskadi/2026/09/20/brad-pitt-revoluciona-la-alfombra-del-zinemaldia-ser-vitoria/","source":"Telegram/Radar"}'
-          do
-            curl --fail --silent --show-error -X POST \
-              -H "Authorization: Bearer $BRIDGE_TOKEN" -H "Content-Type: application/json" \
-              --data "$payload" "https://tt-control.fabricelop.workers.dev/api/agent/enqueue"
-            echo
-          done
-
       - name: Read PROCESSING queue from TT Control
         env:
           BRIDGE_TOKEN: ${{ secrets.TT_CONTROL_BRIDGE_TOKEN }}
