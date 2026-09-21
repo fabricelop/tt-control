@@ -2,6 +2,10 @@ name: TT Control bridge
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tt-control/deploy-trigger.txt'
 
 permissions:
   contents: write
