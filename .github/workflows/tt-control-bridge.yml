@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'tt-control/deploy-trigger.txt'
+      - 'tt-control/src/index.ts'
+      - '.github/workflows/tt-control-bridge.yml'
 
 permissions:
   contents: write
