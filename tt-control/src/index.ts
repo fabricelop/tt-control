@@ -429,19 +429,59 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
         if(!['prepare','dismiss','confirm'].includes(action)||!id)return Response.json({ok:true,stored:false,error:'accion invalida'})
         if(action==='prepare'){
           try{
-            // PREPARAR se atiende directamente en el webhook: sin polling ni espera.
-            await ensureEditorialSchema(env)
+            if(!env.GITHUB_TOKEN)throw new Error('github token ausente')
             const rawText=String(msg?.text||msg?.caption||'')
-            const parts=rawText.split(/\\n+/).map((x:string)=>x.trim()).filter(Boolean)
-            const title=String(parts.find((x:string)=>!x.startsWith('📰')&&!x.startsWith('Fuentes:'))||('Radar '+id)).trim()
+            const parts=rawText.split(/\n+/).map((x:string)=>x.trim()).filter(Boolean)
+            const title=String(parts.find((x:string)=>!x.startsWith('📰')&&!x.startsWith('Fuentes:')&&!x.startsWith('TTiTTulares'))||('Radar '+id)).trim()
             const rows=msg?.reply_markup?.inline_keyboard||[]
             let url=''
             for(const row of rows)for(const btn of row||[])if(btn?.url&&!url)url=String(btn.url)
-            const key='telegram:'+id.toLowerCase()
-            await env.DB.prepare("INSERT INTO news(source,source_key,title,url,section,published_at,detected_at,status,radar_reason,updated_at,processing_started_at) VALUES(?,?,?,?, 'Telegram',datetime('now'),datetime('now'),'PROCESSING','Seleccionada en Telegram',datetime('now'),datetime('now')) ON CONFLICT(source_key) DO UPDATE SET title=excluded.title,url=excluded.url,status='PROCESSING',updated_at=datetime('now'),processing_started_at=datetime('now')").bind('Telegram/Radar',key,title,url).run()
-            await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Enviada a Elaborando.'})
-            if(msg.message_id)await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id})
-            return Response.json({ok:true,stored:true,processing:true,event_id:id})
+
+            const h={'Authorization':'Bearer '+env.GITHUB_TOKEN,'Accept':'application/vnd.github+json','User-Agent':'ttittulares-telegram-worker','Content-Type':'application/json'}
+            const editorialApi='https://api.github.com/repos/fabricelop/europapress-rss/contents/telegram/editorial-processing.json'
+            let saved=false
+            for(let attempt=0;attempt<5&&!saved;attempt++){
+              const gr=await fetch(editorialApi,{headers:h})
+              if(!gr.ok)throw new Error('GitHub editorial read '+gr.status)
+              const gj:any=await gr.json()
+              const doc:any=JSON.parse(atob(String(gj.content||'').replace(/\n/g,''))||'{"items":[]}')
+              doc.items=Array.isArray(doc.items)?doc.items:[]
+              const now=new Date().toISOString()
+              const existing=doc.items.find((x:any)=>String(x.event_id||'')===String(id))
+              if(existing){
+                existing.status='PROCESSING'
+                existing.title=title||existing.title
+                if(url)existing.url=url
+                existing.selected_at=now
+                existing.selection_mode='TELEGRAM_PREPARE'
+              }else{
+                doc.items.push({event_id:String(id),title,url,sources:[],source_count:0,selected_at:now,status:'PROCESSING',selection_mode:'TELEGRAM_PREPARE'})
+              }
+              const body={message:'Seleccionar noticia desde Telegram',content:btoa(unescape(encodeURIComponent(JSON.stringify(doc,null,2)+'\n'))),sha:gj.sha,branch:'main'}
+              const wr=await fetch(editorialApi,{method:'PUT',headers:h,body:JSON.stringify(body)})
+              if(wr.ok){saved=true;break}
+              if(wr.status!==409&&wr.status!==422)throw new Error('GitHub editorial write '+wr.status)
+              await new Promise(r=>setTimeout(r,(attempt+1)*150))
+            }
+            if(!saved)throw new Error('No se pudo guardar editorial-processing')
+
+            const reqApi='https://api.github.com/repos/fabricelop/europapress-rss/contents/telegram/emergency-requests.json'
+            try{
+              for(let attempt=0;attempt<4;attempt++){
+                const gr=await fetch(reqApi,{headers:h});if(!gr.ok)break
+                const gj:any=await gr.json();const old:any=JSON.parse(atob(String(gj.content||'').replace(/\n/g,''))||'{"requests":[]}')
+                old.requests=Array.isArray(old.requests)?old.requests:[]
+                if(!old.requests.some((x:any)=>x.action==='prepare'&&x.id===id&&x.message_id===msg.message_id))old.requests.push({action:'prepare',id,at:new Date().toISOString(),chat,message_id:msg.message_id})
+                const body={message:'Registrar accion Telegram prepare',content:btoa(unescape(encodeURIComponent(JSON.stringify(old,null,2)+'\n'))),sha:gj.sha,branch:'main'}
+                const wr=await fetch(reqApi,{method:'PUT',headers:h,body:JSON.stringify(body)})
+                if(wr.ok)break
+                if(wr.status!==409&&wr.status!==422)break
+              }
+            }catch(_){}
+
+            const ack=await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Enviada a Elaborando.'})
+            const del=msg.message_id?await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id}):{ok:false,error:'message_id ausente'}
+            return Response.json({ok:true,stored:true,processing:true,event_id:id,telegram_ack:!!ack?.ok,telegram_deleted:!!del?.ok})
           }catch(e){
             await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'No se pudo enviar a Elaborando. Pulsa de nuevo.',show_alert:true})
             return Response.json({ok:true,stored:false,error:String(e)})
