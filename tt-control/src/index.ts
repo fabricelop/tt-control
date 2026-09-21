@@ -379,6 +379,7 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
     if(req.method==='GET'&&u.pathname==='/sw.js')return new Response("self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(clients.claim()));self.addEventListener('fetch',()=>{});",{headers:{'content-type':'application/javascript','cache-control':'no-cache'}})
     if(req.method==='GET'&&u.pathname==='/login')return login()
     // Telegram callbacks that must remain available even when D1 is unavailable.
+    if(req.method==='GET'&&u.pathname==='/api/ttittulares-webhook-version')return Response.json({version:'2026-09-21-prepare-github-queue-v2',prepare_target:'europapress-rss/telegram/editorial-processing.json',delete_after_store:true})
     if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
       const secret=req.headers.get('x-telegram-bot-api-secret-token')||''
       if(env.TELEGRAM_WEBHOOK_SECRET&&secret!==env.TELEGRAM_WEBHOOK_SECRET)return new Response('Forbidden',{status:403})
