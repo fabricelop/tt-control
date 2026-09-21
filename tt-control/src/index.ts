@@ -354,6 +354,7 @@ async function ingest(env:Env){
   }catch(e){await env.DB.prepare("UPDATE runs SET finished_at=datetime('now'),status='ERROR',error=? WHERE id=?").bind(String(e),run!.id).run();throw e}
 }
 
+// webhook-deploy-trigger-20260921
 export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionContext){/* Legacy TT Control cron intentionally disabled: no D1 access. */},async fetch(req:Request,env:Env):Promise<Response>{
   const u=new URL(req.url)
   try{
