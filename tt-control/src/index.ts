@@ -289,11 +289,10 @@ async function runNow(silent=false){
   }finally{if(!silent)b.disabled=false;autoRunBusy=false}
 }
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{})
-let nextAutoRun=Date.now()+300000
-function updateCountdown(){const left=Math.max(0,nextAutoRun-Date.now()),m=Math.floor(left/60000),s=Math.floor((left%60000)/1000);const el=document.getElementById('autoCountdown');if(el)el.textContent='Auto · '+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+let nextAutoRun=0
+function updateCountdown(){const el=document.getElementById('autoCountdown');if(el)el.textContent='Auto · desactivado'}
 load();updateCountdown()
-setInterval(updateCountdown,1000)
-setInterval(async function(){nextAutoRun=Date.now()+300000;updateCountdown();await runNow(true)},300000)
+// Legacy TT Control: automatic browser radar disabled to prevent accidental D1 consumption.
 </script></body></html>`;
 
 
@@ -355,7 +354,7 @@ async function ingest(env:Env){
   }catch(e){await env.DB.prepare("UPDATE runs SET finished_at=datetime('now'),status='ERROR',error=? WHERE id=?").bind(String(e),run!.id).run();throw e}
 }
 
-export default {async scheduled(event:ScheduledEvent,env:Env,ctx:ExecutionContext){ctx.waitUntil((async()=>{const minute=new Date(event.scheduledTime).getUTCMinutes();await env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES('radar_last_cron_minute',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=datetime('now')").bind(String(minute)).run();if([10,25,40,55].includes(minute))await ingest(env)})())},async fetch(req:Request,env:Env):Promise<Response>{
+export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionContext){/* Legacy TT Control cron intentionally disabled: no D1 access. */},async fetch(req:Request,env:Env):Promise<Response>{
   const u=new URL(req.url)
   try{
     if(u.pathname==='/api/agent/pending'){
