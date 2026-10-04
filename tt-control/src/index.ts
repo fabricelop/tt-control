@@ -97,6 +97,82 @@ function agentAuthorized(req:Request,env:Env):boolean{
   return (req.headers.get('authorization')||'')==='Bearer '+env.CHATGPT_BRIDGE_TOKEN
 }
 async function telegramApi(env:Env,method:string,body:any){let token=env.TELEGRAM_BOT_TOKEN||'';if(!token){const s:any=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_bot_token'").first();token=String(s?.value||'')}if(!token)return {ok:false,skipped:true,error:'telegram_bot_token ausente'};const r=await fetch('https://api.telegram.org/bot'+token+'/'+method,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});let data:any=null;try{data=await r.json()}catch(_){}if(!r.ok||!data?.ok){console.log('Telegram API error',method,r.status,JSON.stringify(data));return {ok:false,status:r.status,error:data?.description||'Telegram API error'}}return data}
+
+function ghUtf8Decode(s:string){
+  const bin=atob(String(s||'').replace(/\n/g,''));
+  const bytes=Uint8Array.from(bin,(c)=>c.charCodeAt(0));
+  return new TextDecoder().decode(bytes)
+}
+function ghUtf8Encode(s:string){
+  const bytes=new TextEncoder().encode(s);let bin='';
+  for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
+  return btoa(bin)
+}
+async function mutateTtGithubJson(env:Env,path:string,message:string,mutator:(doc:any)=>any){
+  if(!env.GITHUB_TOKEN)throw new Error('github token ausente');
+  const api='https://api.github.com/repos/fabricelop/europapress-rss/contents/'+path;
+  const headers={'Authorization':'Bearer '+env.GITHUB_TOKEN,'Accept':'application/vnd.github+json','User-Agent':'tt-control-telegram-final','Content-Type':'application/json'};
+  for(let attempt=0;attempt<6;attempt++){
+    const gr=await fetch(api+'?ref=main',{headers});
+    if(!gr.ok)throw new Error('GitHub read '+path+' '+gr.status);
+    const file:any=await gr.json();
+    const doc:any=JSON.parse(ghUtf8Decode(String(file.content||''))||'{}');
+    const out=mutator(doc)||doc;
+    const wr=await fetch(api,{method:'PUT',headers,body:JSON.stringify({message,content:ghUtf8Encode(JSON.stringify(out,null,2)+'\n'),sha:file.sha,branch:'main'})});
+    if(wr.ok)return out;
+    if(wr.status!==409&&wr.status!==422)throw new Error('GitHub write '+path+' '+wr.status+' '+await wr.text());
+    await new Promise(r=>setTimeout(r,(attempt+1)*180))
+  }
+  throw new Error('Conflicto persistente actualizando '+path)
+}
+async function closeTtiFromTelegram(env:Env,eventId:string,status:'published'|'dismissed',messageId:number){
+  const id=String(eventId||'').trim();if(!id)throw new Error('event_id ausente');
+  const now=new Date().toISOString(),terminal=status==='published'?'PUBLISHED':'DISMISSED';
+  await mutateTtGithubJson(env,'ttittulares/decisions.json',(status==='published'?'Publicar':'Desestimar')+' TTiTTulares desde Telegram',(doc:any)=>{
+    doc.project=doc.project||'TTiTTulares';doc.items=Array.isArray(doc.items)?doc.items:[];
+    let row=doc.items.find((x:any)=>String(x.event_id||'')===id);
+    if(!row){row={event_id:id};doc.items.push(row)}
+    Object.assign(row,{status,updated_at:now,decision_source:'telegram',telegram_message_id:messageId});
+    doc.updated_at=now;return doc
+  });
+  await Promise.all([
+    mutateTtGithubJson(env,'ttittulares/prepared.json','Retirar noticia cerrada desde Telegram',(doc:any)=>{
+      doc.items=(Array.isArray(doc.items)?doc.items:[]).filter((x:any)=>String(x.event_id||'')!==id);doc.updated_at=now;return doc
+    }),
+    mutateTtGithubJson(env,'telegram/editorial-processing.json','Cerrar noticia TTiTTulares desde Telegram',(doc:any)=>{
+      doc.items=Array.isArray(doc.items)?doc.items:[];
+      for(const row of doc.items)if(String(row.event_id||'')===id){row.status=terminal;row[status==='published'?'published_at':'dismissed_at']=now;row.decision_source='telegram';row.telegram_message_id=messageId}
+      doc.updated_at=now;return doc
+    }),
+    mutateTtGithubJson(env,'telegram/events.json','Cerrar evento TTiTTulares desde Telegram',(doc:any)=>{
+      doc.events=Array.isArray(doc.events)?doc.events:[];
+      for(const row of doc.events)if(String(row.id||row.event_id||'')===id){row.status=terminal;row[status==='published'?'published_at':'dismissed_at']=now;row.decision_source='telegram'}
+      doc.updated_at=now;return doc
+    })
+  ]);
+  try{
+    await mutateTtGithubJson(env,'ttittulares/manual-submissions.json','Actualizar archivo manual desde Telegram',(doc:any)=>{
+      doc.items=Array.isArray(doc.items)?doc.items:[];
+      for(const row of doc.items)if(String(row.event_id||'')===id){row.status=terminal;row.updated_at=now;row.decision_source='telegram'}
+      doc.updated_at=now;return doc
+    })
+  }catch(e){console.log('manual-submissions cierre opcional',String(e))}
+  return {ok:true,event_id:id,status}
+}
+function allowedCopyImageSource(raw:string){
+  try{
+    const x=new URL(raw);
+    return x.protocol==='https:'&&x.hostname==='raw.githubusercontent.com'&&x.pathname.startsWith('/fabricelop/europapress-rss/')
+  }catch(_){return false}
+}
+function imageCopyPage(src:string){
+  const proxy='/api/image-copy-source?src='+encodeURIComponent(src);
+  return new Response(`<!doctype html><html lang="es"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Copiar imagen</title><style>body{font-family:system-ui;background:#0b0e13;color:#fff;margin:0;padding:18px;text-align:center}main{max-width:760px;margin:auto}img{width:100%;height:auto;border-radius:14px;display:block}button{width:100%;margin-top:14px;padding:15px;border:0;border-radius:12px;font-size:17px;font-weight:750;background:#229ED9;color:white}.s{margin:12px 0;color:#cbd5e1;min-height:24px}</style><main><img src="${proxy}" alt="Imagen TTiTTulares"><button id="copy">🖼️ Copiar imagen</button><div class="s" id="s">Pulsa el botón para copiarla al portapapeles.</div><canvas id="c" hidden></canvas></main><script>const p=${JSON.stringify(proxy)},st=document.getElementById('s'),btn=document.getElementById('copy'),c=document.getElementById('c');btn.onclick=async()=>{try{btn.disabled=true;st.textContent='Copiando…';const r=await fetch(p,{cache:'no-store'});if(!r.ok)throw new Error('No se pudo cargar la imagen');const b=await r.blob();const img=new Image();img.src=URL.createObjectURL(b);await img.decode();c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);const png=await new Promise((ok,no)=>c.toBlob(x=>x?ok(x):no(new Error('PNG no disponible')),'image/png'));if(!navigator.clipboard||!window.ClipboardItem)throw new Error('Este navegador no permite copiar imágenes');await navigator.clipboard.write([new ClipboardItem({'image/png':png})]);st.textContent='✅ Imagen copiada. Vuelve a Telegram y pégala en X.'}catch(e){st.textContent='⚠️ '+e.message+' Mantén pulsada la imagen para copiarla o guardarla.'}finally{btn.disabled=false}};</script></html>`,{headers:{'content-type':'text/html;charset=UTF-8','cache-control':'no-store'}})
+}
+function xComposePage(text:string){
+  const native='twitter://post?message='+encodeURIComponent(text),fallback='https://x.com/intent/post?text='+encodeURIComponent(text);
+  return new Response(`<!doctype html><html lang="es"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Abrir en X</title><style>body{font-family:system-ui;background:#0b0e13;color:white;display:grid;place-items:center;min-height:100vh;margin:0;padding:20px;text-align:center}a{display:block;background:#fff;color:#000;padding:14px 18px;border-radius:12px;text-decoration:none;font-weight:750;margin-top:16px}</style><main><h2>Abriendo X…</h2><p>El texto ya va preparado en el post.</p><a href="${fallback}">Abrir X web</a></main><script>const n=${JSON.stringify(native)},f=${JSON.stringify(fallback)};let left=false;document.addEventListener('visibilitychange',()=>{if(document.hidden)left=true});setTimeout(()=>{try{location.href=n}catch(_){location.href=f}},80);setTimeout(()=>{if(!left&&document.visibilityState==='visible')location.href=f},1400);</script></html>`,{headers:{'content-type':'text/html;charset=UTF-8','cache-control':'no-store'}})
+}
 function authorized(req:Request,env:Env):boolean{
   if(!env.TT_CONTROL_PASSWORD)return false
   const auth=req.headers.get('authorization')||''
@@ -377,9 +453,23 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
     if(req.method==='GET'&&(u.pathname==='/icon.svg'||u.pathname==='/favicon.ico'))return new Response(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#1769e0"/><text x="32" y="41" text-anchor="middle" font-family="Arial,sans-serif" font-size="29" font-weight="800" fill="white">TT</text><circle cx="52" cy="12" r="6" fill="#ff3b30"/></svg>`,{headers:{'content-type':'image/svg+xml','cache-control':'public,max-age=300'}})
     if(req.method==='GET'&&u.pathname==='/manifest.webmanifest')return Response.json({name:'TT Control',short_name:'TT Control',id:'/',start_url:'/',scope:'/',display:'standalone',background_color:'#f4f6f9',theme_color:'#1769e0'},{headers:{'content-type':'application/manifest+json','cache-control':'no-cache'}})
     if(req.method==='GET'&&u.pathname==='/sw.js')return new Response("self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(clients.claim()));self.addEventListener('fetch',()=>{});",{headers:{'content-type':'application/javascript','cache-control':'no-cache'}})
+    if(req.method==='GET'&&u.pathname==='/api/image-copy-source'){
+      const src=String(u.searchParams.get('src')||'');if(!allowedCopyImageSource(src))return new Response('Origen no permitido',{status:403});
+      const rr=await fetch(src,{headers:{'user-agent':'tt-control-image-copy'}});
+      if(!rr.ok)return new Response('Imagen no disponible',{status:rr.status});
+      const ct=rr.headers.get('content-type')||'';if(!ct.startsWith('image/'))return new Response('No es una imagen',{status:415});
+      return new Response(rr.body,{headers:{'content-type':ct,'cache-control':'public,max-age=300','access-control-allow-origin':'*'}})
+    }
+    if(req.method==='GET'&&u.pathname==='/copy-image'){
+      const src=String(u.searchParams.get('src')||'');if(!allowedCopyImageSource(src))return new Response('Origen no permitido',{status:403});
+      return imageCopyPage(src)
+    }
+    if(req.method==='GET'&&u.pathname==='/x-compose'){
+      const text=String(u.searchParams.get('text')||'').slice(0,256);return xComposePage(text)
+    }
     if(req.method==='GET'&&u.pathname==='/login')return login()
     // Telegram callbacks that must remain available even when D1 is unavailable.
-    if(req.method==='GET'&&u.pathname==='/api/ttittulares-webhook-version')return Response.json({version:'2026-09-21-prepare-github-queue-v2',prepare_target:'europapress-rss/telegram/editorial-processing.json',delete_after_store:true})
+    if(req.method==='GET'&&u.pathname==='/api/ttittulares-webhook-version')return Response.json({version:'2026-10-04-telegram-final-actions-v1',prepare_target:'europapress-rss/telegram/editorial-processing.json',delete_after_store:true})
     if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
       const secret=req.headers.get('x-telegram-bot-api-secret-token')||''
       if(env.TELEGRAM_WEBHOOK_SECRET&&secret!==env.TELEGRAM_WEBHOOK_SECRET)return new Response('Forbidden',{status:403})
@@ -426,6 +516,20 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
     }
     if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
       const update:any=await req.clone().json(),cq=update?.callback_query,data=String(cq?.data||''),msg=cq?.message||{},chat=String(msg?.chat?.id||'')
+      if(cq&&data.startsWith('tt:')){
+        const p=data.split(':'),action=p[1]||'',id=p.slice(2).join(':');
+        if(!['p','d'].includes(action)||!id){await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Acción no válida.',show_alert:true});return Response.json({ok:true,stored:false})}
+        try{
+          const status=action==='p'?'published':'dismissed';
+          await closeTtiFromTelegram(env,id,status,Number(msg.message_id||0));
+          await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:status==='published'?'Marcada como publicada.':'Desestimada.'});
+          const del=msg.message_id?await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id}):{ok:false,error:'message_id ausente'};
+          return Response.json({ok:true,stored:true,event_id:id,status,telegram_deleted:!!del?.ok})
+        }catch(e){
+          await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'No se pudo guardar el estado. El mensaje se conserva.',show_alert:true});
+          return Response.json({ok:true,stored:false,event_id:id,error:String(e)})
+        }
+      }
       if(cq&&data.startsWith('emergency:')){
         const p=data.split(':'),action=p[1]||'',id=p.slice(2).join(':')
         if(!['prepare','dismiss','confirm'].includes(action)||!id)return Response.json({ok:true,stored:false,error:'accion invalida'})
