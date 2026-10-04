@@ -1,0 +1,21 @@
+name: Reparar webhook Telegram una vez
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/repair-telegram-webhook.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Invocar auto-reparación del Worker
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error             "https://tt-control.fabricelop.workers.dev/api/telegram-webhook-self-heal-20261004"             | tee /tmp/result.json
+          python3 -m json.tool /tmp/result.json
