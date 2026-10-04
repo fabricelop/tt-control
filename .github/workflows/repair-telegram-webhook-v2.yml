@@ -1,0 +1,23 @@
+name: Diagnóstico auto-reparación webhook v2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/repair-telegram-webhook-v2.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Leer estado del auto-repair
+        run: |
+          set -euo pipefail
+          HTTP=$(curl --silent --show-error -o /tmp/result.json -w "%{http_code}"             "https://tt-control.fabricelop.workers.dev/api/telegram-webhook-self-heal-20261004")
+          echo "HTTP=$HTTP"
+          cat /tmp/result.json
+          echo
