@@ -96,7 +96,8 @@ function agentAuthorized(req:Request,env:Env):boolean{
   if(!env.CHATGPT_BRIDGE_TOKEN)return false
   return (req.headers.get('authorization')||'')==='Bearer '+env.CHATGPT_BRIDGE_TOKEN
 }
-async function telegramApi(env:Env,method:string,body:any){let token=env.TELEGRAM_BOT_TOKEN||'';if(!token){const s:any=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_bot_token'").first();token=String(s?.value||'')}if(!token)return {ok:false,skipped:true,error:'telegram_bot_token ausente'};const r=await fetch('https://api.telegram.org/bot'+token+'/'+method,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});let data:any=null;try{data=await r.json()}catch(_){}if(!r.ok||!data?.ok){console.log('Telegram API error',method,r.status,JSON.stringify(data));return {ok:false,status:r.status,error:data?.description||'Telegram API error'}}return data}
+async function telegramToken(env:Env){let token=env.TELEGRAM_BOT_TOKEN||'';if(!token){const s:any=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_bot_token'").first();token=String(s?.value||'')}return token}
+async function telegramApi(env:Env,method:string,body:any){const token=await telegramToken(env);if(!token)return {ok:false,skipped:true,error:'telegram_bot_token ausente'};const r=await fetch('https://api.telegram.org/bot'+token+'/'+method,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});let data:any=null;try{data=await r.json()}catch(_){}if(!r.ok||!data?.ok){console.log('Telegram API error',method,r.status,JSON.stringify(data));return {ok:false,status:r.status,error:data?.description||'Telegram API error'}}return data}
 
 function ghUtf8Decode(s:string){
   const bin=atob(String(s||'').replace(/\n/g,''));
