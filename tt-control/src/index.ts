@@ -467,6 +467,17 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
     if(req.method==='GET'&&u.pathname==='/x-compose'){
       const text=String(u.searchParams.get('text')||'').slice(0,256);return xComposePage(text)
     }
+    if(req.method==='GET'&&u.pathname==='/api/telegram-webhook-self-heal-20261004'){
+      const token=String(env.TELEGRAM_BOT_TOKEN||''),secret=String(env.TELEGRAM_WEBHOOK_SECRET||'');
+      if(!token||!secret)return Response.json({ok:false,token_configured:!!token,secret_configured:!!secret},{status:503});
+      const body=new URLSearchParams();
+      body.set('url','https://tt-control.fabricelop.workers.dev/api/telegram-webhook');
+      body.set('secret_token',secret);
+      body.set('allowed_updates',JSON.stringify(['callback_query','message']));
+      const rr=await fetch('https://api.telegram.org/bot'+token+'/setWebhook',{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body});
+      let out:any=null;try{out=await rr.json()}catch(_){}
+      return Response.json({ok:!!(rr.ok&&out?.ok),telegram_ok:!!out?.ok,description:String(out?.description||''),target:'tt-control.fabricelop.workers.dev/api/telegram-webhook'},{status:rr.ok?200:502})
+    }
     if(req.method==='GET'&&u.pathname==='/login')return login()
     // Telegram callbacks that must remain available even when D1 is unavailable.
     if(req.method==='GET'&&u.pathname==='/api/ttittulares-webhook-version')return Response.json({version:'2026-10-04-telegram-final-actions-v1',prepare_target:'europapress-rss/telegram/editorial-processing.json',delete_after_store:true})
