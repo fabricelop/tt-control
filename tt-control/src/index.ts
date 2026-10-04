@@ -507,7 +507,7 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
     }
     if(req.method==='GET'&&u.pathname==='/api/telegram-webhook-self-heal-20261004'){
       const out:any=await telegramApi(env,'setWebhook',{url:'https://tt-control.fabricelop.workers.dev/api/telegram-webhook',allowed_updates:['callback_query','message']});
-      return Response.json({ok:!!out?.ok,telegram_ok:!!out?.ok,description:String(out?.description||''),target:'tt-control.fabricelop.workers.dev/api/telegram-webhook'},{status:out?.ok?200:502})
+      return Response.json({ok:!!out?.ok,telegram_ok:!!out?.ok,status:Number(out?.status||0),error:String(out?.error||out?.description||''),target:'tt-control.fabricelop.workers.dev/api/telegram-webhook'},{status:out?.ok?200:502})
     }
     if(req.method==='GET'&&u.pathname==='/login')return login()
     // Telegram callbacks that must remain available even when D1 is unavailable.
