@@ -158,7 +158,22 @@ async function closeTtiFromTelegram(env:Env,eventId:string,status:'published'|'d
       doc.updated_at=now;return doc
     })
   }catch(e){console.log('manual-submissions cierre opcional',String(e))}
-  return {ok:true,event_id:id,status}
+  let deliveryMessageIds:number[]=[];
+  try{
+    await mutateTtGithubJson(env,'telegram/ttittulares-deliveries.json','Cerrar entrega TTiTTulares desde Telegram',(doc:any)=>{
+      doc.items=Array.isArray(doc.items)?doc.items:[];
+      for(const row of doc.items){
+        if(String(row.event_id||'')!==id)continue;
+        if(row.status==='sent'||row.status===status){
+          row.status=status;row[status==='published'?'published_at':'dismissed_at']=now;row.decision_source='telegram';
+          for(const mid of [row.telegram_message_id,row.archive_telegram_message_id]){const n=Number(mid||0);if(n&&!deliveryMessageIds.includes(n))deliveryMessageIds.push(n)}
+        }
+      }
+      doc.updated_at=now;return doc
+    })
+  }catch(e){console.log('deliveries cierre opcional',String(e))}
+  if(messageId&&!deliveryMessageIds.includes(messageId))deliveryMessageIds.push(messageId);
+  return {ok:true,event_id:id,status,message_ids:deliveryMessageIds}
 }
 function allowedCopyImageSource(raw:string){
   try{
@@ -169,6 +184,21 @@ function allowedCopyImageSource(raw:string){
 function imageCopyPage(src:string){
   const proxy='/api/image-copy-source?src='+encodeURIComponent(src);
   return new Response(`<!doctype html><html lang="es"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Copiar imagen</title><style>body{font-family:system-ui;background:#0b0e13;color:#fff;margin:0;padding:18px;text-align:center}main{max-width:760px;margin:auto}img{width:100%;height:auto;border-radius:14px;display:block}button{width:100%;margin-top:14px;padding:15px;border:0;border-radius:12px;font-size:17px;font-weight:750;background:#229ED9;color:white}.s{margin:12px 0;color:#cbd5e1;min-height:24px}</style><main><img src="${proxy}" alt="Imagen TTiTTulares"><button id="copy">🖼️ Copiar imagen</button><div class="s" id="s">Pulsa el botón para copiarla al portapapeles.</div><canvas id="c" hidden></canvas></main><script>const p=${JSON.stringify(proxy)},st=document.getElementById('s'),btn=document.getElementById('copy'),c=document.getElementById('c');btn.onclick=async()=>{try{btn.disabled=true;st.textContent='Copiando…';const r=await fetch(p,{cache:'no-store'});if(!r.ok)throw new Error('No se pudo cargar la imagen');const b=await r.blob();const img=new Image();img.src=URL.createObjectURL(b);await img.decode();c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);const png=await new Promise((ok,no)=>c.toBlob(x=>x?ok(x):no(new Error('PNG no disponible')),'image/png'));if(!navigator.clipboard||!window.ClipboardItem)throw new Error('Este navegador no permite copiar imágenes');await navigator.clipboard.write([new ClipboardItem({'image/png':png})]);st.textContent='✅ Imagen copiada. Vuelve a Telegram y pégala en X.'}catch(e){st.textContent='⚠️ '+e.message+' Mantén pulsada la imagen para copiarla o guardarla.'}finally{btn.disabled=false}};</script></html>`,{headers:{'content-type':'text/html;charset=UTF-8','cache-control':'no-store'}})
+}
+async function telegramFileResponse(env:Env,fileId:string){
+  const fid=String(fileId||'').trim();if(!fid)return new Response('file_id ausente',{status:400});
+  const meta:any=await telegramApi(env,'getFile',{file_id:fid});
+  const filePath=String(meta?.result?.file_path||'');if(!meta?.ok||!filePath)return new Response('Archivo Telegram no disponible',{status:404});
+  const token=await telegramToken(env);if(!token)return new Response('Bot Telegram no configurado',{status:503});
+  const rr=await fetch('https://api.telegram.org/file/bot'+token+'/'+filePath);
+  if(!rr.ok)return new Response('No se pudo leer el archivo de Telegram',{status:rr.status});
+  const ct=rr.headers.get('content-type')||'application/octet-stream';
+  if(!ct.startsWith('image/'))return new Response('No es una imagen',{status:415});
+  return new Response(rr.body,{headers:{'content-type':ct,'cache-control':'private,max-age=300','access-control-allow-origin':'*'}})
+}
+function telegramImageCopyPage(fileId:string,label='Imagen de archivo'){
+  const proxy='/api/telegram-image-source?file_id='+encodeURIComponent(fileId);
+  return new Response(`<!doctype html><html lang="es"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Copiar imagen</title><style>body{font-family:system-ui;background:#0b0e13;color:#fff;margin:0;padding:18px;text-align:center}main{max-width:760px;margin:auto}img{width:100%;height:auto;border-radius:14px;display:block}button{width:100%;margin-top:14px;padding:15px;border:0;border-radius:12px;font-size:17px;font-weight:750;background:#229ED9;color:white}.s{margin:12px 0;color:#cbd5e1;min-height:24px}</style><main><h3>${label}</h3><img src="${proxy}" alt="${label}"><button id="copy">🗂️ Copiar imagen archivo</button><div class="s" id="s">Pulsa el botón para copiarla al portapapeles.</div><canvas id="c" hidden></canvas></main><script>const p=${JSON.stringify(proxy)},st=document.getElementById('s'),btn=document.getElementById('copy'),c=document.getElementById('c');btn.onclick=async()=>{try{btn.disabled=true;st.textContent='Copiando…';const r=await fetch(p,{cache:'no-store'});if(!r.ok)throw new Error('No se pudo cargar la imagen');const b=await r.blob();const img=new Image();img.src=URL.createObjectURL(b);await img.decode();c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);const png=await new Promise((ok,no)=>c.toBlob(x=>x?ok(x):no(new Error('PNG no disponible')),'image/png'));if(!navigator.clipboard||!window.ClipboardItem)throw new Error('Este navegador no permite copiar imágenes');await navigator.clipboard.write([new ClipboardItem({'image/png':png})]);st.textContent='✅ Imagen de archivo copiada.'}catch(e){st.textContent='⚠️ '+e.message+' Mantén pulsada la imagen para copiarla o guardarla.'}finally{btn.disabled=false}};</script></html>`,{headers:{'content-type':'text/html;charset=UTF-8','cache-control':'no-store'}})
 }
 function xComposePage(text:string){
   const native='twitter://post?message='+encodeURIComponent(text),fallback='https://x.com/intent/post?text='+encodeURIComponent(text);
@@ -465,19 +495,19 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
       const src=String(u.searchParams.get('src')||'');if(!allowedCopyImageSource(src))return new Response('Origen no permitido',{status:403});
       return imageCopyPage(src)
     }
+    if(req.method==='GET'&&u.pathname==='/api/telegram-image-source'){
+      return telegramFileResponse(env,String(u.searchParams.get('file_id')||''))
+    }
+    if(req.method==='GET'&&u.pathname==='/copy-telegram-image'){
+      const fid=String(u.searchParams.get('file_id')||'');if(!fid)return new Response('file_id ausente',{status:400});
+      return telegramImageCopyPage(fid,'Imagen de archivo')
+    }
     if(req.method==='GET'&&u.pathname==='/x-compose'){
       const text=String(u.searchParams.get('text')||'').slice(0,256);return xComposePage(text)
     }
     if(req.method==='GET'&&u.pathname==='/api/telegram-webhook-self-heal-20261004'){
-      const token=String(env.TELEGRAM_BOT_TOKEN||''),secret=String(env.TELEGRAM_WEBHOOK_SECRET||'');
-      if(!token||!secret)return Response.json({ok:false,token_configured:!!token,secret_configured:!!secret},{status:503});
-      const body=new URLSearchParams();
-      body.set('url','https://tt-control.fabricelop.workers.dev/api/telegram-webhook');
-      body.set('secret_token',secret);
-      body.set('allowed_updates',JSON.stringify(['callback_query','message']));
-      const rr=await fetch('https://api.telegram.org/bot'+token+'/setWebhook',{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body});
-      let out:any=null;try{out=await rr.json()}catch(_){}
-      return Response.json({ok:!!(rr.ok&&out?.ok),telegram_ok:!!out?.ok,description:String(out?.description||''),target:'tt-control.fabricelop.workers.dev/api/telegram-webhook'},{status:rr.ok?200:502})
+      const out:any=await telegramApi(env,'setWebhook',{url:'https://tt-control.fabricelop.workers.dev/api/telegram-webhook',allowed_updates:['callback_query','message']});
+      return Response.json({ok:!!out?.ok,telegram_ok:!!out?.ok,description:String(out?.description||''),target:'tt-control.fabricelop.workers.dev/api/telegram-webhook'},{status:out?.ok?200:502})
     }
     if(req.method==='GET'&&u.pathname==='/login')return login()
     // Telegram callbacks that must remain available even when D1 is unavailable.
@@ -533,10 +563,11 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
         if(!['p','d'].includes(action)||!id){await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Acción no válida.',show_alert:true});return Response.json({ok:true,stored:false})}
         try{
           const status=action==='p'?'published':'dismissed';
-          await closeTtiFromTelegram(env,id,status,Number(msg.message_id||0));
+          const closed:any=await closeTtiFromTelegram(env,id,status,Number(msg.message_id||0));
           await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:status==='published'?'Marcada como publicada.':'Desestimada.'});
-          const del=msg.message_id?await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:msg.message_id}):{ok:false,error:'message_id ausente'};
-          return Response.json({ok:true,stored:true,event_id:id,status,telegram_deleted:!!del?.ok})
+          const mids=[...new Set((Array.isArray(closed?.message_ids)?closed.message_ids:[]).map((x:any)=>Number(x||0)).filter((x:number)=>x>0))];
+          const deletes:any[]=[];for(const mid of mids)deletes.push(await telegramApi(env,'deleteMessage',{chat_id:msg.chat.id,message_id:mid}));
+          return Response.json({ok:true,stored:true,event_id:id,status,deleted_message_ids:mids,telegram_deleted:deletes.every((x:any)=>!!x?.ok)})
         }catch(e){
           await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'No se pudo guardar el estado. El mensaje se conserva.',show_alert:true});
           return Response.json({ok:true,stored:false,event_id:id,error:String(e)})
