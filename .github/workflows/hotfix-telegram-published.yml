@@ -1,0 +1,56 @@
+name: Hotfix Telegram Publicado robusto
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hotfix-telegram-published.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Evitar que cierres secundarios bloqueen Publicado
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('tt-control/src/index.ts')
+          s=p.read_text(encoding='utf-8')
+          marker="async function closeTtiFromTelegram"
+          i=s.find(marker)
+          if i < 0:
+              raise SystemExit('No se encontró closeTtiFromTelegram')
+          j=s.find("async function", i+len(marker))
+          if j < 0:
+              j=len(s)
+          block=s[i:j]
+          old="await Promise.all(["
+          if old in block:
+              block=block.replace(old,"await Promise.allSettled([",1)
+              s=s[:i]+block+s[j:]
+              p.write_text(s,encoding='utf-8')
+              print('Hotfix aplicado: prepared/editorial/events pasan a best-effort.')
+          elif "await Promise.allSettled([" in block:
+              print('Hotfix ya estaba aplicado.')
+          else:
+              raise SystemExit('No se encontró el Promise.all esperado en closeTtiFromTelegram')
+          PY
+      - name: Commit y push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tt-control/src/index.ts
+          if git diff --cached --quiet; then
+            echo 'Sin cambios.'
+            exit 0
+          fi
+          git commit -m "Fix Telegram Publicado: no fallar por sincronizaciones secundarias"
+          git pull --rebase origin main
+          git push origin HEAD:main
