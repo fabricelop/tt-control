@@ -136,7 +136,7 @@ async function closeTtiFromTelegram(env:Env,eventId:string,status:'published'|'d
     Object.assign(row,{status,updated_at:now,decision_source:'telegram',telegram_message_id:messageId});
     doc.updated_at=now;return doc
   });
-  await Promise.all([
+  await Promise.allSettled([
     mutateTtGithubJson(env,'ttittulares/prepared.json','Retirar noticia cerrada desde Telegram',(doc:any)=>{
       doc.items=(Array.isArray(doc.items)?doc.items:[]).filter((x:any)=>String(x.event_id||'')!==id);doc.updated_at=now;return doc
     }),
