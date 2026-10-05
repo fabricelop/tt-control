@@ -129,13 +129,19 @@ async function mutateTtGithubJson(env:Env,path:string,message:string,mutator:(do
 async function closeTtiFromTelegram(env:Env,eventId:string,status:'published'|'dismissed',messageId:number){
   const id=String(eventId||'').trim();if(!id)throw new Error('event_id ausente');
   const now=new Date().toISOString(),terminal=status==='published'?'PUBLISHED':'DISMISSED';
-  await mutateTtGithubJson(env,'ttittulares/decisions.json',(status==='published'?'Publicar':'Desestimar')+' TTiTTulares desde Telegram',(doc:any)=>{
-    doc.project=doc.project||'TTiTTulares';doc.items=Array.isArray(doc.items)?doc.items:[];
-    let row=doc.items.find((x:any)=>String(x.event_id||'')===id);
-    if(!row){row={event_id:id};doc.items.push(row)}
-    Object.assign(row,{status,updated_at:now,decision_source:'telegram',telegram_message_id:messageId});
-    doc.updated_at=now;return doc
-  });
+  // Persist first in D1 so Telegram acknowledgement never depends on GitHub availability/rate limits.
+  await ensureEditorialSchema(env);
+  await env.DB.prepare("INSERT INTO app_settings(key,value,updated_at) VALUES(?,?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at")
+    .bind('ttittulares_decision:'+id,JSON.stringify({event_id:id,status,updated_at:now,decision_source:'telegram',telegram_message_id:messageId})).run();
+  try{
+    await mutateTtGithubJson(env,'ttittulares/decisions.json',(status==='published'?'Publicar':'Desestimar')+' TTiTTulares desde Telegram',(doc:any)=>{
+      doc.project=doc.project||'TTiTTulares';doc.items=Array.isArray(doc.items)?doc.items:[];
+      let row=doc.items.find((x:any)=>String(x.event_id||'')===id);
+      if(!row){row={event_id:id};doc.items.push(row)}
+      Object.assign(row,{status,updated_at:now,decision_source:'telegram',telegram_message_id:messageId});
+      doc.updated_at=now;return doc
+    });
+  }catch(e){console.log('decisions GitHub diferido; decisión ya persistida en D1',String(e))}
   await Promise.allSettled([
     mutateTtGithubJson(env,'ttittulares/prepared.json','Retirar noticia cerrada desde Telegram',(doc:any)=>{
       doc.items=(Array.isArray(doc.items)?doc.items:[]).filter((x:any)=>String(x.event_id||'')!==id);doc.updated_at=now;return doc
