@@ -1,0 +1,34 @@
+name: TTiTTulares immediate Telegram ACK credential live check (no decisions)
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/ttittulares-telegram-ack-crypto-livecheck.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Verify RSA-decrypted Telegram bot credential through getMe (no callback)
+        run: |
+          set -euo pipefail
+          url='https://ttittulares-no-vercel-test.fabricelop.workers.dev/api/ttittulares-telegram-credential-ready'
+          for n in 1 2 3 4 5 6 7 8; do
+            code=$(curl -sS --max-time 25 -o /tmp/ttit-ack.json -w '%{http_code}' "$url") || code=0
+            echo "ACK_CRYPTO_LIVE_ATTEMPT=$n HTTP=$code"
+            cat /tmp/ttit-ack.json || true
+            echo
+            if [[ "$code" == 200 ]]; then
+              python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/ttit-ack.json'))
+          assert d.get('ok') and d.get('telegram_callback_credential_ready')
+          print('TTITTULARES_IMMEDIATE_TELEGRAM_ACK_CREDENTIAL_VERIFIED')
+          PY
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 3
