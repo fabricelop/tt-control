@@ -1,0 +1,29 @@
+name: TTit Telegram live invalid callback rejection (no decision)
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/ttittulares-telegram-real-ack-rejection-safety.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Real bot API must reject unknown callback IDs, no GH write
+        run: |
+          set -euo pipefail
+          data='{"update_id":999999779,"callback_query":{"id":"777777777712345678","data":"tt:d:fake99testabc","message":{"message_id":999977,"chat":{"id":-1001234567890}}}}'
+          status=$(curl -sS --max-time 35 -X POST \
+            -H 'content-type: application/json' -d "$data" \
+            -o /tmp/ttit-negative.json -w '%{http_code}' \
+            https://tt-control.fabricelop.workers.dev/api/telegram-webhook)
+          echo "INVALID_CALLBACK_HTTP=$status"
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/ttit-negative.json'))
+          assert d.get('ok') is False
+          assert d.get('error')=='Telegram callback expired or invalid'
+          print('TTITTULARES_REALTIME_TELEGRAM_CALLBACK_REJECTION_VERIFIED_NO_MUTATION')
+          PY
+          [[ "$status" == 422 ]] || exit 3
