@@ -1,0 +1,46 @@
+name: Install TTit callback RSA key in Cloudflare (private key never committed)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/ttit-install-callback-encryption-key.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: ttit-callback-rsa-bootstrap
+  cancel-in-progress: false
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create RSA key and install private key as Cloudflare encrypted secret
+        working-directory: tt-control
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out /tmp/ttit-callback-private.pem >/dev/null 2>&1
+          openssl pkey -in /tmp/ttit-callback-private.pem -pubout -out /tmp/ttit-callback-public.pem
+          openssl pkcs8 -topk8 -nocrypt -in /tmp/ttit-callback-private.pem -outform DER |
+            base64 -w0 |
+            npx --yes wrangler@4.148.0 secret put TTITTULARES_CALLBACK_DECRYPT_KEY --name ttittulares-no-vercel-test
+          mkdir -p telegram-keys
+          cp /tmp/ttit-callback-public.pem telegram-keys/ttittulares-callback-public.pem
+          openssl pkey -pubin -in telegram-keys/ttittulares-callback-public.pem -text -noout >/dev/null
+          echo "TTIT_RSA_PRIVATE_SECRET_INSTALLED_PUBLIC_KEY_VALID"
+      - name: Publish ONLY the public key
+        working-directory: tt-control
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add telegram-keys/ttittulares-callback-public.pem
+          git commit -m 'Publish TTit Telegram callback RSA public key'
+          git pull --rebase origin main
+          git push origin HEAD:main
