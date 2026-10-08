@@ -87,3 +87,5 @@ jobs:
           assert d.get('ok') and isinstance(d.get('prepared'),dict) and isinstance(d.get('status'),dict)
           print('TTITTULARES_CLOUDFLARE_RELEASE_VERIFIED prepared='+str(len(d['prepared'].get('items',[])))+' processing='+str(d['status'].get('processing_count')))
           PY
+
+# redeploy ttittulares callback handler, source europapress-rss 5aa25524
