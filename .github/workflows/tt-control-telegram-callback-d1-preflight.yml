@@ -1,0 +1,17 @@
+name: TT Control Telegram realtime ACK readiness
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/tt-control-telegram-callback-d1-preflight.yml'
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - run: |
+          set -euo pipefail
+          curl -fsS --max-time 30 'https://tt-control.fabricelop.workers.dev/api/ttittulares-webhook-version' |
+          python3 -m json.tool
