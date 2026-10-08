@@ -69,11 +69,16 @@ jobs:
             sleep 4
           done
           [[ "$http" == 200 ]] || exit 4
-          diag=$(curl -sS --max-time 25 -X POST \
-            -H 'Content-Type: application/json' -d '{}' \
-            -o /tmp/removed.json -w '%{http_code}' \
-            "$base/api/ttittulares-staging-write-test")
-          echo "STAGING_PROBE_REMOVED_HTTP=$diag"
+          diag=0
+          for attempt in {1..15}; do
+            diag=$(curl -sS --max-time 25 -X POST \
+              -H 'Content-Type: application/json' -d '{}' \
+              -o /tmp/removed.json -w '%{http_code}' \
+              "$base/api/ttittulares-staging-write-test") || diag=0
+            echo "STAGING_PROBE_REMOVED_ATTEMPT=$attempt HTTP=$diag"
+            if [[ "$diag" == 404 ]]; then break; fi
+            sleep 4
+          done
           [[ "$diag" == 404 ]] || exit 5
           curl -fsS --max-time 60 "$base/api/ttittulares-control" -o /tmp/control.json
           python3 - <<'PY'
