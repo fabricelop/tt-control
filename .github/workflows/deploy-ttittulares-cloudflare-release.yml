@@ -91,3 +91,5 @@ jobs:
 # redeploy ttittulares callback handler, source europapress-rss 5aa25524
 
 # deploy immediate Telegram callback ACK: europapress-rss main 9455e08d, RSA encrypted bot token
+
+# Cloudflare-only release: inline Telegram decisions and message deletion; verify npm tests before deploy.
