@@ -1,0 +1,39 @@
+name: TT Control - verify callback service binding without deployment
+on:
+  pull_request:
+    paths:
+      - 'tt-control/src/index.ts'
+      - 'tt-control/wrangler.jsonc'
+      - '.github/workflows/ttittulares-callback-binding-ci.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tt-control/src/index.ts
+            tt-control/wrangler.jsonc
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check exact service binding target
+        run: |
+          python3 - <<'PY'
+          import json
+          d=json.load(open('tt-control/wrangler.jsonc'))
+          services=d.get('services',[])
+          assert len(services)==1
+          assert services[0]=={'binding':'TTITTULARES_WORKER','service':'ttittulares-no-vercel-test'}
+          txt=open('tt-control/src/index.ts',encoding='utf8').read()
+          assert 'env.TTITTULARES_WORKER.fetch(forwarded)' in txt
+          assert txt.index('env.TTITTULARES_WORKER.fetch(forwarded)')<txt.index("if(cq&&data.startsWith('tt:'))",txt.index('env.TTITTULARES_WORKER.fetch(forwarded)'))
+          print("TTCONTROL_CALLBACK_SERVICE_BINDING_VERIFIED")
+          PY
+      - name: Compile Cloudflare Worker but DO NOT deploy
+        working-directory: tt-control
+        run: npx --yes wrangler@4.148.0 deploy --dry-run --outdir /tmp/tt-control-bundle
