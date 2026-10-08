@@ -523,7 +523,18 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
     }
     if(req.method==='GET'&&u.pathname==='/login')return login()
     // Telegram callbacks that must remain available even when D1 is unavailable.
-    if(req.method==='GET'&&u.pathname==='/api/ttittulares-webhook-version')return Response.json({version:'2026-10-04-telegram-final-actions-v1',prepare_target:'europapress-rss/telegram/editorial-processing.json',delete_after_store:true})
+    if(req.method==='GET'&&u.pathname==='/api/ttittulares-webhook-version'){
+      let tokenAvailable=false,d1Available=false,chatAvailable=false;
+      try{
+        const t=await telegramToken(env);
+        tokenAvailable=!!t;
+        d1Available=true;
+        let chat=String(env.TELEGRAM_CHAT_ID||'');
+        if(!chat){const c:any=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_chat_id'").first();chat=String(c?.value||'')}
+        chatAvailable=!!chat;
+      }catch(e){console.log('Telegram readiness: D1 credential lookup unavailable',String(e))}
+      return Response.json({version:'2026-10-08-telegram-callback-preflight-v1',telegram_bot_available:tokenAvailable,d1_available:d1Available,telegram_chat_available:chatAvailable,github_token_available:!!env.GITHUB_TOKEN,service_binding_available:!!env.TTITTULARES_WORKER})
+    }
     if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
       const secret=req.headers.get('x-telegram-bot-api-secret-token')||''
       if(env.TELEGRAM_WEBHOOK_SECRET&&secret!==env.TELEGRAM_WEBHOOK_SECRET)return new Response('Forbidden',{status:403})
