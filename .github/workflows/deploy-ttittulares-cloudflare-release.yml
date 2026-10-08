@@ -1,0 +1,84 @@
+name: Deploy TTiTTulares standalone Cloudflare release (no PC)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-ttittulares-cloudflare-release.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: deploy-ttittulares-standalone-cloudflare
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: fabricelop/europapress-rss
+          ref: main
+          path: source
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /no-vercel/ttittulares-worker/
+            /vercel-webhook/ttittulares/
+            /vercel-webhook/lib/ttittulares-control-handler.js
+            /vercel-webhook/lib/ttittulares-run-handler.js
+            /vercel-webhook/lib/ttittulares-run-status-handler.js
+            /vercel-webhook/lib/ttittulares-remate-ratings.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirmar Worker independiente, preparar y probar
+        working-directory: source/no-vercel/ttittulares-worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq '"name": "ttittulares-no-vercel-test"' wrangler.jsonc
+          npm install --no-audit --no-fund
+          npm test
+          grep -Fq 'TTiTTulares' generated/assets/ttittulares/index.html
+          if grep -q 'stagingWriteProbe' src/index.js; then
+            echo 'Refusing to deploy temporary write-probe endpoint' >&2
+            exit 3
+          fi
+      - name: Deploy Worker with Cloudflare credentials; preserve existing secrets
+        working-directory: source/no-vercel/ttittulares-worker
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          [[ -n "${CLOUDFLARE_API_TOKEN:-}" && -n "${CLOUDFLARE_ACCOUNT_ID:-}" ]] || {
+            echo "Cloudflare credentials absent; no deployment performed" >&2
+            exit 2
+          }
+          npx --yes wrangler@4.148.0 deploy --config ./wrangler.jsonc
+      - name: Verify live TTiTTulares public endpoints and diagnostic removal
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://ttittulares-no-vercel-test.fabricelop.workers.dev'
+          for n in {1..15}; do
+            http=$(curl -sS --max-time 25 -o /tmp/health.json -w '%{http_code}' "$base/health") || http=0
+            if [[ "$http" == 200 ]] && python3 -c 'import json; d=json.load(open("/tmp/health.json")); assert d.get("ok") and d.get("service")=="ttittulares-cloudflare"'; then break; fi
+            echo "Cloudflare propagation pending: HTTP=$http"
+            sleep 4
+          done
+          [[ "$http" == 200 ]] || exit 4
+          diag=$(curl -sS --max-time 25 -X POST \
+            -H 'Content-Type: application/json' -d '{}' \
+            -o /tmp/removed.json -w '%{http_code}' \
+            "$base/api/ttittulares-staging-write-test")
+          echo "STAGING_PROBE_REMOVED_HTTP=$diag"
+          [[ "$diag" == 404 ]] || exit 5
+          curl -fsS --max-time 60 "$base/api/ttittulares-control" -o /tmp/control.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/control.json'))
+          assert d.get('ok') and isinstance(d.get('prepared'),dict) and isinstance(d.get('status'),dict)
+          print('TTITTULARES_CLOUDFLARE_RELEASE_VERIFIED prepared='+str(len(d['prepared'].get('items',[])))+' processing='+str(d['status'].get('processing_count')))
+          PY
