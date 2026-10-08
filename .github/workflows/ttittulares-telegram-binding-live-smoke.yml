@@ -1,0 +1,40 @@
+name: TTiTTulares Telegram callback live binding smoke (NO user decisions)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/ttittulares-telegram-binding-live-smoke.yml'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify tt-control service binding with deliberately INVALID callback
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://tt-control.fabricelop.workers.dev/api/telegram-webhook'
+          # No Telegram update ID and no real callback ID, so the TTiTTulares
+          # Worker MUST ignore it without GitHub writes or message deletions.
+          payload='{"callback_query":{"id":"invalid-probe","data":"tt:p:TEST-NO-DECISION","message":{"message_id":0,"chat":{"id":0}}}}'
+          for n in 1 2 3 4 5 6; do
+            code=$(curl -sS --max-time 25 -o /tmp/probe.json -w '%{http_code}' \
+              -X POST -H 'Content-Type: application/json' -d "$payload" "$url") || code=0
+            echo "ATTEMPT=$n HTTP=$code"
+            head -c 250 /tmp/probe.json || true
+            echo
+            if [[ "$code" == 200 ]]; then
+              python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/probe.json'))
+          if d.get('ok') is not True or d.get('ignored') is not True:
+              raise SystemExit('Callback not safely ignored or TTit service binding not active')
+          print('TTITTULARES_TELEGRAM_SERVICE_BINDING_LIVE_OK_NO_MUTATION')
+          PY
+              exit 0
+            fi
+            sleep 6
+          done
+          exit 2
