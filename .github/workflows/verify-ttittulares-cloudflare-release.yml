@@ -1,0 +1,37 @@
+name: Verify deployed TTiTTulares release after propagation (no deploy)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-ttittulares-cloudflare-release.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe release, probe removed, and GitHub-backed control
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://ttittulares-no-vercel-test.fabricelop.workers.dev'
+          success=false
+          for n in {1..15}; do
+            health=$(curl -sS --max-time 20 -o /tmp/health.json -w '%{http_code}' "$base/health") || health=0
+            post=$(curl -sS --max-time 20 -o /tmp/removed.json -w '%{http_code}' -X POST \
+              -H 'Content-Type: application/json' -d '{}' "$base/api/ttittulares-staging-write-test") || post=0
+            echo "ATTEMPT=$n HEALTH=$health OLD_STAGING_PROBE=$post"
+            if [[ "$health" == 200 && "$post" == 404 ]]; then success=true; break; fi
+            sleep 5
+          done
+          [[ "$success" == true ]] || { echo "Release not propagated"; exit 3; }
+          public=$(curl -sS --max-time 55 -o /tmp/control.json -w '%{http_code}' "$base/api/ttittulares-control")
+          echo "CONTROL_HTTP=$public"
+          [[ "$public" == 200 ]] || { head -c 250 /tmp/control.json; exit 4; }
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/control.json'))
+          assert d.get('ok') and isinstance(d.get('prepared'),dict) and isinstance(d.get('status'),dict)
+          print('TTITTULARES_CLOUDFLARE_FINAL_VERIFIED ready='+str(len(d['prepared'].get('items',[])))+' processing='+str(d['status'].get('processing_count')))
+          PY
