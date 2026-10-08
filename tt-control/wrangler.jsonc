@@ -11,6 +11,11 @@
   ],
   "ai": {
     "binding": "AI"
-  }
+  },
+  "services": [
+    {
+      "binding": "TTITTULARES_WORKER",
+      "service": "ttittulares-no-vercel-test"
+    }
+  ]
 }
-
