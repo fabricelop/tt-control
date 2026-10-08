@@ -1,6 +1,6 @@
 // webhook redeploy marker 2026-09-20T15:29+02:00
 interface Env { DB: D1Database; AI: Ai; TT_CONTROL_PASSWORD: string; CHATGPT_BRIDGE_TOKEN?: string; TELEGRAM_BOT_TOKEN?: string; TELEGRAM_CHAT_ID?: string; TELEGRAM_WEBHOOK_SECRET?: string
-  GITHUB_TOKEN?: string }
+  GITHUB_TOKEN?: string; TTITTULARES_WORKER?: {fetch(request:Request):Promise<Response>} }
 
 async function ensureEditorialSchema(env:Env){
   const statements=[
@@ -570,6 +570,24 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
     }
     if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
       const update:any=await req.clone().json(),cq=update?.callback_query,data=String(cq?.data||''),msg=cq?.message||{},chat=String(msg?.chat?.id||'')
+      // Route only TTiTTulares publication/dismissal callbacks through a
+      // same-account Cloudflare service binding. This Worker intentionally
+      // has NO GitHub or Telegram bot token; the TTiTTulares Worker queues an
+      // authenticated callback to the existing GitHub Actions processor.
+      if(cq&&data.startsWith('tt:')){
+        if(!env.TTITTULARES_WORKER)return Response.json({ok:false,error:'TTiTTulares callback bridge unavailable'},{status:503});
+        try{
+          const body=JSON.stringify(update);
+          const forwarded=new Request('https://ttittulares-no-vercel-test.fabricelop.workers.dev/api/ttittulares-telegram-callback',{
+            method:'POST',headers:{'content-type':'application/json'},body
+          });
+          const result=await env.TTITTULARES_WORKER.fetch(forwarded);
+          return new Response(result.body,{status:result.status,headers:{'content-type':'application/json','cache-control':'no-store'}});
+        }catch(e){
+          console.log('TTiTTulares callback queue unavailable',String(e));
+          return Response.json({ok:false,error:'Temporary callback queue failure'},{status:503});
+        }
+      }
       if(cq&&data.startsWith('tt:')){
         const p=data.split(':'),action=p[1]||'',id=p.slice(2).join(':');
         if(!['p','d'].includes(action)||!id){await telegramApi(env,'answerCallbackQuery',{callback_query_id:cq.id,text:'Acción no válida.',show_alert:true});return Response.json({ok:true,stored:false})}
