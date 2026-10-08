@@ -35,3 +35,22 @@ jobs:
           assert d.get('ok') and isinstance(d.get('prepared'),dict) and isinstance(d.get('status'),dict)
           print('TTITTULARES_CLOUDFLARE_FINAL_VERIFIED ready='+str(len(d['prepared'].get('items',[])))+' processing='+str(d['status'].get('processing_count')))
           PY
+      - name: Verify exact live immediate Telegram closure version and RSA preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://ttittulares-no-vercel-test.fabricelop.workers.dev'
+          curl -fsS --max-time 30 "$base/api/ttittulares-telegram-pipeline-version" -o /tmp/ttit-pipeline-version.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/ttit-pipeline-version.json'))
+          assert d.get('ok') and d.get('version')=='immediate-decision-delete-v2'
+          print('TTITTULARES_LIVE_IMMEDIATE_DECISION_PIPELINE_V2_OK')
+          PY
+          curl -fsS --max-time 35 "$base/api/ttittulares-telegram-credential-ready" -o /tmp/ttit-crypto-ready.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/ttit-crypto-ready.json'))
+          assert d.get('ok') and d.get('telegram_callback_credential_ready')
+          print('TTITTULARES_LIVE_RSA_TELEGRAM_CREDENTIAL_OK')
+          PY
