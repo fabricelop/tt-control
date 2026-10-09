@@ -114,3 +114,5 @@ jobs:
 # Deploy 2026-10-09 Instagram Telegram success reply (PR 149); no publishing, no X changes.
 
 # 2026-10-09: publish paired Telegram delete button for Instagram confirmations.
+
+# 2026-10-09: relay autorizado de propuestas de noticias desde Telegram, sin PAT en TT Control.
