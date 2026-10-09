@@ -1,4 +1,5 @@
 // webhook redeploy marker 2026-09-20T15:29+02:00
+import {handleTtiTelegramConversation} from './telegram-conversation.js';
 interface Env { DB: D1Database; AI: Ai; TT_CONTROL_PASSWORD: string; CHATGPT_BRIDGE_TOKEN?: string; TELEGRAM_BOT_TOKEN?: string; TELEGRAM_CHAT_ID?: string; TELEGRAM_WEBHOOK_SECRET?: string
   GITHUB_TOKEN?: string; TTITTULARES_WORKER?: {fetch(request:Request):Promise<Response>} }
 
@@ -471,7 +472,7 @@ async function ingest(env:Env){
 }
 
 // webhook-deploy-trigger-20260921
-export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionContext){/* Legacy TT Control cron intentionally disabled: no D1 access. */},async fetch(req:Request,env:Env):Promise<Response>{
+export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionContext){/* Legacy TT Control cron intentionally disabled: no D1 access. */},async fetch(req:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
   const u=new URL(req.url)
   try{
     if(u.pathname==='/api/agent/pending'){
@@ -522,6 +523,11 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
       return Response.json({ok:!!out?.ok,telegram_ok:!!out?.ok,status:Number(out?.status||0),error:String(out?.error||out?.description||''),target:'tt-control.fabricelop.workers.dev/api/telegram-webhook'},{status:out?.ok?200:502})
     }
     if(req.method==='GET'&&u.pathname==='/login')return login()
+    // Respuestas a noticias y sugerencias del editor: antes de callbacks heredados.
+    if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
+      const handled=await handleTtiTelegramConversation(req,env,ctx);
+      if(handled)return handled;
+    }
     // Telegram callbacks that must remain available even when D1 is unavailable.
     if(req.method==='GET'&&u.pathname==='/api/ttittulares-webhook-version'){
       let tokenAvailable=false,d1Available=false,chatAvailable=false;

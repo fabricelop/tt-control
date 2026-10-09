@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'tt-control/src/index.ts'
+      - 'tt-control/src/telegram-conversation.js'
       - 'tt-control/wrangler.jsonc'
       - '.github/workflows/ttittulares-callback-binding-ci.yml'
 permissions:
@@ -16,6 +17,7 @@ jobs:
         with:
           sparse-checkout: |
             tt-control/src/index.ts
+            tt-control/src/telegram-conversation.js
             tt-control/wrangler.jsonc
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
