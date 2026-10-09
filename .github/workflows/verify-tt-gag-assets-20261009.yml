@@ -19,7 +19,7 @@ jobs:
             base="https://${app}-no-vercel-test.fabricelop.workers.dev"
             for asset in /tt-shared/gag-copy.html /tt-shared/gag-actions.js; do
               echo "ASSET_URL=$base$asset"
-              code=$(curl --silent --show-error --max-time 25 -D /tmp/headers -o /tmp/body -w '%{http_code}' "$base$asset")
+              code=$(curl --location --silent --show-error --max-time 25 -D /tmp/headers -o /tmp/body -w '%{http_code}' "$base$asset")
               echo "HTTP=$code BYTES=$(wc -c </tmp/body)"
               grep -i -E '^(HTTP/|content-type:|location:|server:|cf-ray:)' /tmp/headers || true
               head -c 240 /tmp/body
