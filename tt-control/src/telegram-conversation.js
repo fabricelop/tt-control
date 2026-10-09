@@ -3,7 +3,7 @@
 // El botón de borrado limpia el chat, nunca deshace una propuesta ya registrada.
 const REPO="fabricelop/europapress-rss";
 const IDEAS="telegram/ttittulares-user-proposals.json";
-const RUN_WORDS=new Set(["ejecuta","ejecutar","ejecuta boletín","ejecuta boletin","ejecuta ttittulares","ejecuta tendencias"]);
+const RUN_WORDS=new Set(["ejecuta","ejecutar","ejecuta boletín","ejecuta boletin","ejecuta ttittulares","ejecuta tendencias","ejecuta ttendencias"]);
 const MAX_TEXT=3000;
 
 export function telegramConversationKind(update){
@@ -138,8 +138,11 @@ async function deletePair(env,update){
 }
 export async function handleTtiTelegramConversation(req,env,ctx){
   if(req.method!=="POST"||new URL(req.url).pathname!=="/api/telegram-webhook")return null;
+  // Funciones nuevas solo con el secreto real del webhook configurado.
+  // Si falta, dejamos intacto el comportamiento heredado y no aceptamos mensajes falsificables.
   const secret=String(env.TELEGRAM_WEBHOOK_SECRET||"");
-  if(secret&&req.headers.get("x-telegram-bot-api-secret-token")!==secret)return new Response("Forbidden",{status:403});
+  if(!secret)return null;
+  if(req.headers.get("x-telegram-bot-api-secret-token")!==secret)return new Response("Forbidden",{status:403});
   const update=await req.clone().json().catch(()=>null);
   if(!update)return Response.json({ok:false,error:"Invalid Telegram JSON"},{status:400});
   const chat=String(update.callback_query?.message?.chat?.id||update.message?.chat?.id||"");
