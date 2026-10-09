@@ -1,4 +1,5 @@
 name: Publicar PWA TTiTTulares y TTendencias · paneles y TOP 30
+# Archivo TTendencias: clasificar fotos reales sin IA en paneles 2026-10-09.
 on:
   push:
     branches: [main]
