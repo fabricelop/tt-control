@@ -44,6 +44,11 @@ jobs:
             echo 'Refusing to deploy temporary write-probe endpoint' >&2
             exit 3
           fi
+      - name: Ensure Telegram paired Instagram cleanup is in release
+        working-directory: source/no-vercel/ttittulares-worker
+        run: |
+          grep -Fq 'instagram_cleanup:"paired-delete-v1"' src/index.js
+          grep -Fq 'callback_data:"tt:igdel:"' src/index.js
       - name: Deploy Worker with Cloudflare credentials; preserve existing secrets
         working-directory: source/no-vercel/ttittulares-worker
         shell: bash
@@ -69,6 +74,14 @@ jobs:
             sleep 4
           done
           [[ "$http" == 200 ]] || exit 4
+          contract=$(curl -sS --max-time 25 -o /tmp/callback.json -w '%{http_code}' "$base/api/ttittulares-telegram-pipeline-version")
+          [[ "$contract" == 200 ]] || exit 6
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/callback.json'))
+          assert d.get('instagram_cleanup')=='paired-delete-v1',d
+          print('TTITTULARES_INSTAGRAM_TELEGRAM_CLEANUP_RELEASE_VERIFIED')
+          PY
           diag=0
           for attempt in {1..15}; do
             diag=$(curl -sS --max-time 25 -X POST \
@@ -99,3 +112,5 @@ jobs:
 # deploy Cloudflare Instagram publisher same-account service binding (2026-10-09); no posts.
 
 # Deploy 2026-10-09 Instagram Telegram success reply (PR 149); no publishing, no X changes.
+
+# 2026-10-09: publish paired Telegram delete button for Instagram confirmations.
