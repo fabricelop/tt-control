@@ -519,8 +519,16 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
       const text=String(u.searchParams.get('text')||'').slice(0,500);return xComposePage(text)
     }
     if(req.method==='GET'&&u.pathname==='/api/telegram-webhook-self-heal-20261004'){
-      const out:any=await telegramApi(env,'setWebhook',{url:'https://tt-control.fabricelop.workers.dev/api/telegram-webhook',allowed_updates:['callback_query','message']});
-      return Response.json({ok:!!out?.ok,telegram_ok:!!out?.ok,status:Number(out?.status||0),error:String(out?.error||out?.description||''),target:'tt-control.fabricelop.workers.dev/api/telegram-webhook'},{status:out?.ok?200:502})
+      // Sólo el Worker tiene la clave: reparar URL y autenticación a la vez.
+      // Nunca restablecer un webhook sin secret_token.
+      const secret=String(env.TELEGRAM_WEBHOOK_SECRET||'');
+      if(!secret)return Response.json({ok:false,error:'webhook_secret_not_configured'},{status:503});
+      const target='https://tt-control.fabricelop.workers.dev/api/telegram-webhook';
+      const info:any=await telegramApi(env,'getWebhookInfo',{});
+      if(!info?.ok)return Response.json({ok:false,error:'webhook_info_unavailable'},{status:503});
+      if(String(info.result?.url||'')===target)return Response.json({ok:true,already_correct:true,target});
+      const out:any=await telegramApi(env,'setWebhook',{url:target,secret_token:secret,allowed_updates:['callback_query','message'],drop_pending_updates:false});
+      return Response.json({ok:!!out?.ok,telegram_ok:!!out?.ok,status:Number(out?.status||0),error:String(out?.error||out?.description||''),target},{status:out?.ok?200:502})
     }
     if(req.method==='GET'&&u.pathname==='/login')return login()
     // Respuestas a noticias y sugerencias del editor: antes de callbacks heredados.
@@ -539,7 +547,7 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
         if(!chat){const c:any=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_chat_id'").first();chat=String(c?.value||'')}
         chatAvailable=!!chat;
       }catch(e){console.log('Telegram readiness: D1 credential lookup unavailable',String(e))}
-      return Response.json({version:'2026-10-08-telegram-callback-preflight-v1',telegram_bot_available:tokenAvailable,d1_available:d1Available,telegram_chat_available:chatAvailable,github_token_available:!!env.GITHUB_TOKEN,service_binding_available:!!env.TTITTULARES_WORKER})
+      return Response.json({version:'2026-10-08-telegram-callback-preflight-v1',telegram_bot_available:tokenAvailable,d1_available:d1Available,telegram_chat_available:chatAvailable,webhook_secret_available:!!env.TELEGRAM_WEBHOOK_SECRET,github_token_available:!!env.GITHUB_TOKEN,service_binding_available:!!env.TTITTULARES_WORKER})
     }
     if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
       const secret=req.headers.get('x-telegram-bot-api-secret-token')||''
