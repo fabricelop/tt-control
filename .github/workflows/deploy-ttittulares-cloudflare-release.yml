@@ -95,3 +95,5 @@ jobs:
 # Cloudflare-only release: inline Telegram decisions and message deletion; verify npm tests before deploy.
 
 # deploy Instagram preflight only 20261009; no Instagram publish operation.
+
+# deploy Cloudflare Instagram publisher same-account service binding (2026-10-09); no posts.
