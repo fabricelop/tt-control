@@ -97,3 +97,5 @@ jobs:
 # deploy Instagram preflight only 20261009; no Instagram publish operation.
 
 # deploy Cloudflare Instagram publisher same-account service binding (2026-10-09); no posts.
+
+# Deploy 2026-10-09 Instagram Telegram success reply (PR 149); no publishing, no X changes.
