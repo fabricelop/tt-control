@@ -1,0 +1,29 @@
+name: TTiTTulares Telegram conversation - tests
+on:
+  push:
+    paths:
+      - tt-control/src/index.ts
+      - tt-control/src/telegram-conversation.js
+      - tt-control/test/telegram-conversation.test.mjs
+      - .github/workflows/ttittulares-telegram-conversation-ci.yml
+  pull_request:
+    paths:
+      - tt-control/src/index.ts
+      - tt-control/src/telegram-conversation.js
+      - tt-control/test/telegram-conversation.test.mjs
+      - .github/workflows/ttittulares-telegram-conversation-ci.yml
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test de mensajes Telegram
+        run: node --test tt-control/test/telegram-conversation.test.mjs
+      - name: Compilación Cloudflare sin desplegar
+        working-directory: tt-control
+        run: npx --yes wrangler@4 deploy --dry-run --outdir /tmp/tt-chat-dryrun
