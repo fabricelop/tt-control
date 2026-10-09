@@ -1,3 +1,4 @@
+import {readTelegramCredential} from './telegram-credentials.js';
 // Conversación privada de TTiTTulares en su chat de Telegram.
 // Propuesta sin reply = cola editorial; reply deslizando noticia = pregunta directa.
 // El botón de borrado limpia el chat, nunca deshace una propuesta ya registrada.
@@ -30,8 +31,8 @@ function textEncode64(data){
 }
 async function token(env){
   if(env.TELEGRAM_BOT_TOKEN)return String(env.TELEGRAM_BOT_TOKEN);
-  const row=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_bot_token'").first();
-  return String(row?.value||"");
+  try{const row=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_bot_token'").first();if(row?.value)return String(row.value)}catch(_){}
+  return readTelegramCredential(env,"bot_token");
 }
 async function bot(env,method,payload){
   const botToken=await token(env);
@@ -46,8 +47,8 @@ async function bot(env,method,payload){
 }
 async function allowedChat(env){
   if(env.TELEGRAM_CHAT_ID)return String(env.TELEGRAM_CHAT_ID);
-  const row=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_chat_id'").first();
-  return String(row?.value||"");
+  try{const row=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_chat_id'").first();if(row?.value)return String(row.value)}catch(_){}
+  return readTelegramCredential(env,"chat_id");
 }
 async function schema(env){
   await env.DB.prepare("CREATE TABLE IF NOT EXISTS tti_telegram_conversations (update_id INTEGER PRIMARY KEY, message_id INTEGER NOT NULL, sender_id TEXT NOT NULL, chat_id TEXT NOT NULL, kind TEXT NOT NULL, body TEXT NOT NULL, context TEXT NOT NULL DEFAULT '', notice_mid INTEGER, status TEXT NOT NULL DEFAULT 'received', updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)").run();
@@ -140,7 +141,7 @@ export async function handleTtiTelegramConversation(req,env,ctx){
   if(req.method!=="POST"||new URL(req.url).pathname!=="/api/telegram-webhook")return null;
   // Funciones nuevas solo con el secreto real del webhook configurado.
   // Si falta, dejamos intacto el comportamiento heredado y no aceptamos mensajes falsificables.
-  const secret=String(env.TELEGRAM_WEBHOOK_SECRET||"");
+  const secret=String(env.TELEGRAM_WEBHOOK_SECRET||await readTelegramCredential(env,"webhook_secret")||"");
   if(!secret)return null;
   if(req.headers.get("x-telegram-bot-api-secret-token")!==secret)return new Response("Forbidden",{status:403});
   const update=await req.clone().json().catch(()=>null);
