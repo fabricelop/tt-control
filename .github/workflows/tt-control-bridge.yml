@@ -7,6 +7,8 @@ on:
     paths:
       - 'tt-control/deploy-trigger.txt'
       - 'tt-control/src/index.ts'
+      - 'tt-control/src/telegram-conversation.js'
+      - 'tt-control/src/telegram-credentials.js'
       - '.github/workflows/tt-control-bridge.yml'
 
 permissions:
