@@ -1,0 +1,67 @@
+name: Instagram read-only Trump status endpoint deployment (one time)
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/instagram-trump-status-deploy-once-20261009.yml"
+permissions:
+  contents: read
+concurrency:
+  group: instagram-status-safe-deployment
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: fabricelop/europapress-rss
+          ref: main
+          path: source
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /instagram-publisher/
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test read-only status and preserve existing publisher
+        working-directory: source/instagram-publisher
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund
+          npm test
+          grep -Fq 'pathname==="/publication-status"' src/index.js
+          grep -Fq 'if(!authorize(req,env))' src/index.js
+          grep -Fq 'tt-actualidad-instagram-pilot' wrangler.jsonc
+      - name: Deploy only the Instagram publisher Worker
+        working-directory: source/instagram-publisher
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          [[ -n "${CLOUDFLARE_API_TOKEN:-}" && -n "${CLOUDFLARE_ACCOUNT_ID:-}" ]] || exit 2
+          npx --yes wrangler@4.148.0 deploy --config ./wrangler.jsonc
+      - name: Verify publisher active and private status route protected
+        run: |
+          set -euo pipefail
+          base="https://tt-actualidad-instagram-pilot.fabricelop.workers.dev"
+          for attempt in 1 2 3 4 5 6; do
+            health=$(curl -sS --max-time 18 -o /tmp/ig-health.json -w '%{http_code}' "$base/health") || health=0
+            status=$(curl -sS --max-time 18 -o /tmp/ig-status.json -w '%{http_code}' "$base/publication-status?source=ttittulares&event_id=2dd09208e418") || status=0
+            if [[ "$health" == "200" && "$status" == "401" ]]; then
+              python3 - <<'PY'
+          import json
+          health=json.load(open('/tmp/ig-health.json'))
+          denied=json.load(open('/tmp/ig-status.json'))
+          assert health.get('active') is True and health.get('service')=='tt-actualidad-instagram'
+          assert denied.get('error')=='UNAUTHORIZED'
+          print('INSTAGRAM_PUBLISHER_ACTIVE_STATUS_ENDPOINT_PRIVATE_READ_ONLY')
+          PY
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Publisher status route not ready: health=$health status=$status" >&2
+          exit 1
