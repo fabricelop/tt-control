@@ -43,6 +43,7 @@ jobs:
               if [ "$project" = "ttendencias" ]; then
                 grep -q 'Señales al alza que todavía no están en el TOP 30' "generated/assets/ttendencias/index.html"
                 grep -q 'TOP 30' "generated/assets/ttendencias/explicadas/index.html"
+                grep -q '20261009-top30-operational-v1' "generated/assets/ttendencias/index.html"
                 ! grep -q 'Señales todavía fuera del Top 10' "generated/assets/ttendencias/index.html"
               fi
               npx wrangler deploy --dry-run --outdir "/tmp/$project-bundle"
