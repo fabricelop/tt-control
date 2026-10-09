@@ -1,4 +1,4 @@
-name: Desplegar PWA Telegram informativo TTendencias y TTiTTulares (una vez)
+name: Publicar PWA TTiTTulares y TTendencias · paneles y TOP 30
 on:
   push:
     branches: [main]
@@ -39,6 +39,12 @@ jobs:
               npm install --no-audit --no-fund
               npm run stage
               node --check src/index.js
+              node --check "generated/lib/$project-control-handler.js"
+              if [ "$project" = "ttendencias" ]; then
+                grep -q 'Señales al alza que todavía no están en el TOP 30' "generated/assets/ttendencias/index.html"
+                grep -q 'TOP 30' "generated/assets/ttendencias/explicadas/index.html"
+                ! grep -q 'Señales todavía fuera del Top 10' "generated/assets/ttendencias/index.html"
+              fi
               npx wrangler deploy --dry-run --outdir "/tmp/$project-bundle"
             )
           done
