@@ -1,0 +1,32 @@
+name: Verificar puente GAG en Cloudflare (solo lectura)
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/verify-tt-gag-assets-20261009.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Inspeccionar GAG real sin modificar Workers
+        shell: bash
+        run: |
+          set -euo pipefail
+          for app in ttittulares ttendencias; do
+            base="https://${app}-no-vercel-test.fabricelop.workers.dev"
+            for asset in /tt-shared/gag-copy.html /tt-shared/gag-actions.js; do
+              echo "ASSET_URL=$base$asset"
+              code=$(curl --silent --show-error --max-time 25 -D /tmp/headers -o /tmp/body -w '%{http_code}' "$base$asset")
+              echo "HTTP=$code BYTES=$(wc -c </tmp/body)"
+              grep -i -E '^(HTTP/|content-type:|location:|server:|cf-ray:)' /tmp/headers || true
+              head -c 240 /tmp/body
+              echo
+              if [[ "$code" != 200 ]]; then exit 2; fi
+              if [[ "$asset" == *.html ]]; then grep -q 'Copiar prompt GAG' /tmp/body || exit 3
+              else grep -q 'buildPrompt' /tmp/body || exit 4; fi
+            done
+          done
+          echo 'TT_BOTH_GAG_ASSETS_CONFIRMED'
