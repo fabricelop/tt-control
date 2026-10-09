@@ -116,3 +116,5 @@ jobs:
 # 2026-10-09: publish paired Telegram delete button for Instagram confirmations.
 
 # 2026-10-09: relay autorizado de propuestas de noticias desde Telegram, sin PAT en TT Control.
+
+# 2026-10-09: reintento con prueba del callback retirado corregida, relay Telegram.
