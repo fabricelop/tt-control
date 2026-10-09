@@ -55,7 +55,21 @@ async function schema(env){
   await env.DB.prepare("CREATE INDEX IF NOT EXISTS idx_tti_telegram_conversations_notice ON tti_telegram_conversations(notice_mid)").run();
 }
 async function enqueueProposal(env,update,msg){
-  if(!env.GITHUB_TOKEN)throw Error("Falta la conexión a GitHub para guardar la propuesta");
+  // TT Control no necesita ningún PAT. El Worker TTiTTulares hace la escritura
+  // con su credencial existente y exige autenticación con el token real del bot.
+  if(!env.GITHUB_TOKEN){
+    if(!env.TTITTULARES_WORKER)throw Error("Conexión al Worker editorial no disponible");
+    const botToken=await token(env);
+    const request=new Request("https://ttittulares-no-vercel-test.fabricelop.workers.dev/api/ttittulares-telegram-user-proposal",{
+      method:"POST",
+      headers:{"content-type":"application/json","authorization":"Bearer "+botToken},
+      body:JSON.stringify({update_id:Number(update.update_id),text:String(msg.text||"").trim()})
+    });
+    const res=await env.TTITTULARES_WORKER.fetch(request);
+    const body=await res.json().catch(()=>({}));
+    if(!res.ok||body.ok!==true)throw Error("No se pudo registrar propuesta en la cola editorial");
+    return {eventId:"telegram-"+String(update.update_id),duplicate:!!body.duplicate};
+  }
   const api="https://api.github.com/repos/"+REPO+"/contents/"+IDEAS;
   const headers={"accept":"application/vnd.github+json","authorization":"Bearer "+env.GITHUB_TOKEN,"content-type":"application/json","user-agent":"ttittulares-telegram-user-proposals"};
   const eventId="telegram-"+String(update.update_id);
