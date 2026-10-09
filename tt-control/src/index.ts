@@ -1,6 +1,7 @@
 // webhook redeploy marker 2026-09-20T15:29+02:00
+import {readTelegramCredential} from './telegram-credentials.js';
 import {handleTtiTelegramConversation} from './telegram-conversation.js';
-interface Env { DB: D1Database; AI: Ai; TT_CONTROL_PASSWORD: string; CHATGPT_BRIDGE_TOKEN?: string; TELEGRAM_BOT_TOKEN?: string; TELEGRAM_CHAT_ID?: string; TELEGRAM_WEBHOOK_SECRET?: string
+interface Env { DB: D1Database; AI: Ai; TT_CONTROL_PASSWORD: string; CHATGPT_BRIDGE_TOKEN?: string; TELEGRAM_BOT_TOKEN?: string; TELEGRAM_CHAT_ID?: string; TELEGRAM_WEBHOOK_SECRET?: string; TT_CONTROL_TELEGRAM_PRIVATE_KEY?: string
   GITHUB_TOKEN?: string; TTITTULARES_WORKER?: {fetch(request:Request):Promise<Response>} }
 
 async function ensureEditorialSchema(env:Env){
@@ -97,7 +98,12 @@ function agentAuthorized(req:Request,env:Env):boolean{
   if(!env.CHATGPT_BRIDGE_TOKEN)return false
   return (req.headers.get('authorization')||'')==='Bearer '+env.CHATGPT_BRIDGE_TOKEN
 }
-async function telegramToken(env:Env){let token=env.TELEGRAM_BOT_TOKEN||'';if(!token){const s:any=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_bot_token'").first();token=String(s?.value||'')}return token}
+async function telegramToken(env:Env){
+  if(env.TELEGRAM_BOT_TOKEN)return env.TELEGRAM_BOT_TOKEN;
+  try{const row:any=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_bot_token'").first();if(row?.value)return String(row.value)}
+  catch(_){}
+  return readTelegramCredential(env,"bot_token");
+}
 async function telegramApi(env:Env,method:string,body:any){const token=await telegramToken(env);if(!token)return {ok:false,skipped:true,error:'telegram_bot_token ausente'};const r=await fetch('https://api.telegram.org/bot'+token+'/'+method,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});let data:any=null;try{data=await r.json()}catch(_){}if(!r.ok||!data?.ok){console.log('Telegram API error',method,r.status,JSON.stringify(data));return {ok:false,status:r.status,error:data?.description||'Telegram API error'}}return data}
 
 function ghUtf8Decode(s:string){
@@ -475,6 +481,12 @@ async function ingest(env:Env){
 export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionContext){/* Legacy TT Control cron intentionally disabled: no D1 access. */},async fetch(req:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
   const u=new URL(req.url)
   try{
+    // Autenticar TODO el webhook, incluidos botones heredados.
+    if(u.pathname==='/api/telegram-webhook'&&req.method==='POST'){
+      const secret=String(env.TELEGRAM_WEBHOOK_SECRET||await readTelegramCredential(env,'webhook_secret')||'');
+      if(secret&&req.headers.get('x-telegram-bot-api-secret-token')!==secret)
+        return new Response('Forbidden',{status:403});
+    }
     if(u.pathname==='/api/agent/pending'){
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
       if(req.method!=='GET')return new Response('Method Not Allowed',{status:405})
@@ -521,7 +533,7 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
     if(req.method==='GET'&&u.pathname==='/api/telegram-webhook-self-heal-20261004'){
       // Sólo el Worker tiene la clave: reparar URL y autenticación a la vez.
       // Nunca restablecer un webhook sin secret_token.
-      const secret=String(env.TELEGRAM_WEBHOOK_SECRET||'');
+      const secret=String(env.TELEGRAM_WEBHOOK_SECRET||await readTelegramCredential(env,'webhook_secret')||'');
       if(!secret)return Response.json({ok:false,error:'webhook_secret_not_configured'},{status:503});
       const target='https://tt-control.fabricelop.workers.dev/api/telegram-webhook';
       const info:any=await telegramApi(env,'getWebhookInfo',{});
@@ -545,9 +557,10 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
         d1Available=true;
         let chat=String(env.TELEGRAM_CHAT_ID||'');
         if(!chat){const c:any=await env.DB.prepare("SELECT value FROM app_settings WHERE key='telegram_chat_id'").first();chat=String(c?.value||'')}
+        if(!chat)chat=await readTelegramCredential(env,'chat_id');
         chatAvailable=!!chat;
       }catch(e){console.log('Telegram readiness: D1 credential lookup unavailable',String(e))}
-      return Response.json({version:'2026-10-08-telegram-callback-preflight-v1',telegram_bot_available:tokenAvailable,d1_available:d1Available,telegram_chat_available:chatAvailable,webhook_secret_available:!!env.TELEGRAM_WEBHOOK_SECRET,github_token_available:!!env.GITHUB_TOKEN,service_binding_available:!!env.TTITTULARES_WORKER})
+      return Response.json({version:'2026-10-08-telegram-callback-preflight-v1',telegram_bot_available:tokenAvailable,d1_available:d1Available,telegram_chat_available:chatAvailable,webhook_secret_available:!!env.TELEGRAM_WEBHOOK_SECRET||!!(await readTelegramCredential(env,'webhook_secret').catch(()=>'')),github_token_available:!!env.GITHUB_TOKEN,service_binding_available:!!env.TTITTULARES_WORKER})
     }
     if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
       const secret=req.headers.get('x-telegram-bot-api-secret-token')||''
