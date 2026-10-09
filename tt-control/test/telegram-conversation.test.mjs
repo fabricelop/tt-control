@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {telegramConversationKind,questionText} from "../src/telegram-conversation.js";
-import {parseRssResults,needsResearch,fallbackQuery,researchLinks,researchPrompt} from "../src/telegram-research.js";
+import {parseRssResults,needsResearch,fallbackQuery,researchLinks,researchPrompt,planAndResearch} from "../src/telegram-research.js";
 
 const make=(text,reply=null)=>({
   update_id:2026100917,
@@ -53,4 +53,28 @@ test("búsqueda abierta por tema y seguimiento",()=>{
   assert.equal(needsResearch("¿Cuál es el precio de la vivienda?"),true);
   assert.equal(needsResearch("Hola, buenos días"),false);
   assert.match(fallbackQuery("¿Y en Francia?","Noticias sobre los precios de la vivienda").toLowerCase(),/vivienda/);
+});
+
+test("investigación libre usa tema nuevo y no vuelve al titular original",async()=>{
+  const original=globalThis.fetch;
+  const queried=[];
+  globalThis.fetch=async (url)=>{
+    const u=String(url);queried.push(u);
+    if(u.startsWith("https://news.google.com/rss/search")){
+      return new Response('<rss><channel><item><title>Informes sobre vivienda</title><link>https://example.com/informe</link><description>Dato de fuentes</description></item></channel></rss>',
+        {headers:{"content-type":"application/rss+xml"}});
+    }
+    if(u.startsWith("https://www.bing.com/search")){
+      return new Response("<rss><channel></channel></rss>",{headers:{"content-type":"text/xml"}});
+    }
+    throw Error("Unexpected external URL "+u);
+  };
+  try{
+    const result=await planAndResearch({AI:{run:async()=>({response:'{"query":"precios de vivienda España 2026","kind":"news"}'})}},
+      "¿Y los precios de la vivienda?","Atasco en la autovía");
+    assert.equal(result.queried,true);
+    assert.match(result.query,/vivienda/);
+    assert.equal(result.results[0].url,"https://example.com/informe");
+    assert(queried.every(url=>url.includes("vivienda")), "no debe investigar de nuevo el atasco");
+  }finally{globalThis.fetch=original;}
 });
