@@ -1,0 +1,54 @@
+name: 'TTiTTulares - provisionar intercambio RSA cifrado'
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/provision-ttittulares-chat-crypto.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  keypair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Guardar nueva clave privada sólo en Cloudflare
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${CLOUDFLARE_API_TOKEN:-}" && test -n "${CLOUDFLARE_ACCOUNT_ID:-}"
+          umask 077
+          openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out /tmp/tt-control-private.pem 2>/dev/null
+          openssl pkey -in /tmp/tt-control-private.pem -pubout -out tt-control/telegram-public.pem
+          openssl pkcs8 -topk8 -nocrypt -inform PEM -outform DER -in /tmp/tt-control-private.pem | base64 -w0 > /tmp/tt-control-private-key.b64
+          (
+            cd tt-control
+            npx --yes wrangler@4.149.0 secret put TT_CONTROL_TELEGRAM_PRIVATE_KEY < /tmp/tt-control-private-key.b64
+          )
+          rm -f /tmp/tt-control-private.pem /tmp/tt-control-private-key.b64
+          echo 'TT_CONTROL_PRIVATE_KEY_INSTALLED_NO_OUTPUT'
+      - name: Publicar únicamente clave RSA pública para cifrar credenciales
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp tt-control/telegram-public.pem /tmp/tt-control-public.pem
+          for n in 1 2 3 4; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/tt-control-public.pem tt-control/telegram-public.pem
+            git add tt-control/telegram-public.pem
+            git diff --cached --quiet && exit 0
+            git commit -m "Publicar clave RSA pública para canal Telegram cifrado"
+            git push origin HEAD:main && exit 0
+            sleep $((n * 2))
+          done
+          exit 1
