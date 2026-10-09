@@ -28,6 +28,7 @@ jobs:
             /vercel-webhook/lib/
             /vercel-webhook/ttittulares/
             /vercel-webhook/ttendencias/
+            /vercel-webhook/tt-shared/
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -72,4 +73,13 @@ jobs:
             https://ttendencias-no-vercel-test.fabricelop.workers.dev/health; do
             curl --fail --silent --show-error --max-time 20 "$url" | head -c 500
             echo
+          done
+          # Los botones de Telegram abren este puente para copiar prompts >256.
+          for project in ttittulares ttendencias; do
+            base="https://${project}-no-vercel-test.fabricelop.workers.dev"
+            curl --fail --silent --show-error --max-time 30 "$base/tt-shared/gag-copy.html" -o "/tmp/${project}-copy.html"
+            grep -q 'Copiar prompt GAG' "/tmp/${project}-copy.html"
+            curl --fail --silent --show-error --max-time 30 "$base/tt-shared/gag-actions.js" -o "/tmp/${project}-gag.js"
+            grep -q 'buildPrompt' "/tmp/${project}-gag.js"
+            echo "CLOUDFLARE_GAG_PROMPT_READY ${project}"
           done
