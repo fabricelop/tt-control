@@ -22,6 +22,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /instagram-publisher/
+            /shared/instagram_pilot.py
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -34,6 +35,13 @@ jobs:
           grep -Fq 'pathname==="/publication-status"' src/index.js
           grep -Fq 'if(!authorize(req,env))' src/index.js
           grep -Fq 'tt-actualidad-instagram-pilot' wrangler.jsonc
+      - name: Validate editorial hashtags for Instagram without publishing
+        working-directory: source
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 -m unittest discover -s instagram-publisher/test -p 'test_instagram_caption.py' -v
+          python3 -m py_compile shared/instagram_pilot.py
+          grep -Fq 'caption_hashtags:"specific-topics-v2"' instagram-publisher/src/index.js
       - name: Deploy only the Instagram publisher Worker
         working-directory: source/instagram-publisher
         env:
@@ -57,7 +65,8 @@ jobs:
           denied=json.load(open('/tmp/ig-status.json'))
           assert health.get('active') is True and health.get('service')=='tt-actualidad-instagram'
           assert denied.get('error')=='UNAUTHORIZED'
-          print('INSTAGRAM_PUBLISHER_ACTIVE_STATUS_ENDPOINT_PRIVATE_READ_ONLY')
+          assert health.get('caption_hashtags')=='specific-topics-v2'
+          print('INSTAGRAM_PUBLISHER_ACTIVE_STATUS_ENDPOINT_PRIVATE_READ_ONLY_AND_TAGGED')
           PY
               exit 0
             fi
@@ -65,3 +74,5 @@ jobs:
           done
           echo "Publisher status route not ready: health=$health status=$status" >&2
           exit 1
+
+# 2026-10-09: deploy topic-specific Instagram hashtags for TTiTTulares and TTendencias.
