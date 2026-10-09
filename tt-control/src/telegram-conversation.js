@@ -16,7 +16,7 @@ export function telegramConversationKind(update){
   // Un chat libre nuevo requiere /chat; los mensajes ordinarios sin reply
   // siguen siendo propuestas editoriales como antes.
   if(/^\/(?:chat|pregunta)(?:@[A-Za-z0-9_]+)?(?:\s|$)/i.test(text))
-    return /^\/(?:chat|pregunta)(?:@[A-Za-z0-9_]+)?\s+\S/.test(text)?"question":null;
+    return /^\/(?:chat|pregunta)(?:@[A-Za-z0-9_]+)?\s+\S/i.test(text)?"question":null;
   if(text.startsWith("/"))return null;
   const reply=msg.reply_to_message;
   if(reply){
