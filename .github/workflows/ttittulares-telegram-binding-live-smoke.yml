@@ -38,3 +38,42 @@ jobs:
             sleep 6
           done
           exit 2
+      - name: Auditar Worker Instagram y estado D1 de Trump (sin publicar)
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request,urllib.error
+          token=os.environ.get("CF_API_TOKEN","")
+          account=os.environ.get("CF_ACCOUNT_ID","")
+          if not token or not account:
+              print("TRUMP_CF_AUDIT_MISSING_SECRETS")
+              raise SystemExit(0)
+          base="https://api.cloudflare.com/client/v4/accounts/"+account
+          def call(path,payload=None):
+              url=base+path
+              req=urllib.request.Request(url,method="POST" if payload else "GET",headers={
+                  "Authorization":"Bearer "+token,"Content-Type":"application/json","User-Agent":"TT-IG-Trump-ReadOnly/1.0"},
+                  data=json.dumps(payload).encode() if payload else None)
+              try:
+                  with urllib.request.urlopen(req,timeout=25) as r:return r.status,json.loads(r.read(65536))
+              except urllib.error.HTTPError as e:
+                  try:return e.code,json.loads(e.read(65536))
+                  except Exception:return e.code,{}
+              except Exception as e:return 0,{"error_type":type(e).__name__}
+          rc,result=call("/workers/scripts/ttittulares-no-vercel-test/settings")
+          names=set()
+          response=result.get("result") if isinstance(result,dict) else None
+          if isinstance(response,dict):
+              names={str(b.get("name","")) for b in (response.get("bindings") or []) if isinstance(b,dict)}
+          expected=("INSTAGRAM_PUBLISHER_URL","INSTAGRAM_INTERNAL_SECRET","INSTAGRAM_ALLOWED_CHAT_ID",
+                    "GITHUB_TOKEN","TTITTULARES_CALLBACK_DECRYPT_KEY")
+          print("TRUMP_TTI_WORKER_SETTINGS",json.dumps({"http":rc,"success":result.get("success"),"required_bindings":{name:name in names for name in expected}},ensure_ascii=False),flush=True)
+          db="4eacd44c-212c-4a49-a907-fbbf561b969f"
+          sql="SELECT state,media_id,permalink,container_id,updated_at FROM instagram_posts WHERE id = ? LIMIT 1"
+          rc,result=call("/d1/database/"+db+"/query",{"sql":sql,"params":["ttittulares:2dd09208e418"]})
+          rows=(((result.get("result") or [{}])[0].get("results") or []) if isinstance(result.get("result"),list) and result.get("result") else [])
+          print("TRUMP_INSTAGRAM_D1",json.dumps({"http":rc,"success":result.get("success"),"row":rows[0] if rows else None,"error_codes":[e.get("code") for e in (result.get("errors") or []) if isinstance(e,dict)]},ensure_ascii=False),flush=True)
+          print("TRUMP_CLOUDFLARE_AUDIT_READ_ONLY_COMPLETE")
+          PY
