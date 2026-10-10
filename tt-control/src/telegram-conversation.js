@@ -216,7 +216,7 @@ async function handleMobileReworkInstruction(update,env){
   const chat=String(msg.chat?.id||""),sender=String(msg.from?.id||"");
   if(String(msg.chat?.type||"")!=="private"||chat!==sender)return null;
   await ensureMobileReworkSchema(env);
-  const pending=await env.DB.prepare("SELECT project,element_id,prompt_mid FROM tti_mobile_reworks WHERE chat_id=? AND sender_id=? AND prompt_mid=? AND status='awaiting' AND expires_at>datetime('now')").bind(chat,sender,quoted).first();
+  const pending=await env.DB.prepare("SELECT project,element_id,prompt_mid FROM tti_mobile_reworks WHERE chat_id=? AND sender_id=? AND prompt_mid=? AND status='awaiting' AND datetime(expires_at)>datetime('now')").bind(chat,sender,quoted).first();
   if(!pending)return null;
   const instruction=String(msg.text||"").trim();
   if(instruction.length<3||instruction.length>1000||instruction.startsWith("/")){
