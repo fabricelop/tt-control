@@ -190,7 +190,7 @@ async function ensureMobileReworkSchema(env){
   await env.DB.prepare("CREATE TABLE IF NOT EXISTS tti_mobile_reworks (chat_id TEXT NOT NULL,sender_id TEXT NOT NULL,project TEXT NOT NULL,element_id TEXT NOT NULL,prompt_mid INTEGER NOT NULL,status TEXT NOT NULL DEFAULT 'awaiting',expires_at TEXT NOT NULL,PRIMARY KEY(chat_id,sender_id))").run();
 }
 
-async function registerMobileEditorialAction(env,updateId,project,action,elementId,instruction=""){
+async function registerMobileEditorialAction(env,updateId,project,action,elementId,instruction="",cleanup={}){
   if(!env.TTITTULARES_WORKER)return false;
   const botToken=await token(env);
   const endpoint="https://ttittulares-no-vercel-test.fabricelop.workers.dev/api/tt-mobile-telegram-dispatch";
@@ -198,7 +198,7 @@ async function registerMobileEditorialAction(env,updateId,project,action,element
     const result=await env.TTITTULARES_WORKER.fetch(new Request(endpoint,{
       method:"POST",
       headers:{"content-type":"application/json","authorization":"Bearer "+botToken},
-      body:JSON.stringify({project,action,id:elementId,instruction,update_id:Number(updateId)})
+      body:JSON.stringify({project,action,id:elementId,instruction,update_id:Number(updateId),cleanup_command_mid:Number(cleanup.command_mid||0),cleanup_notice_mid:Number(cleanup.notice_mid||0)})
     }));
     const payload=await result.json().catch(()=>({}));
     if(result.status===202&&payload.ok===true)return true;
@@ -285,13 +285,17 @@ async function handleTTMobileDeepLink(update,env) {
     await saveAnswer(env,Number(update.update_id),Number(ask.message_id),"MOBILE_REWORK_AWAITING_INSTRUCTIONS");
     return Response.json({ok:true,awaiting_instructions:true,project,element_id:elementId});
   }
-  const registered=await registerMobileEditorialAction(env,update.update_id,project,action,elementId);
   const names={published:"Publicar",deleted:"Borrar",rework:"Reelaborar",prepare:"Enviar a elaborar"};
+  const notice=await sendReply(env,msg,"⏳ Tramitando "+names[action]+" · "+elementId+"…",false);
+  const registered=await registerMobileEditorialAction(env,update.update_id,project,action,elementId,"",{
+    command_mid:Number(msg.message_id),notice_mid:Number(notice.message_id)
+  });
   const response=registered?
     "Orden recibida: "+names[action]+" · "+elementId+
-    "\nGitHub Actions la procesará y te confirmaré aquí el resultado. Todavía no está completada.":
+    "\nPendiente de confirmación. Estos avisos se borrarán automáticamente al terminar.":
     "No se pudo registrar la orden para "+elementId+". No se ha modificado el contenido; vuelve a intentarlo.";
-  const notice=await sendReply(env,msg,response,false);
+  try{await bot(env,"editMessageText",{chat_id:msg.chat.id,message_id:notice.message_id,text:response})}
+  catch(error){console.log("TT_MOBILE_NOTICE_EDIT_FAILED",String(error?.message||error))}
   await saveAnswer(env,Number(update.update_id),Number(notice.message_id),
                    registered?"MOBILE_COMMAND_DISPATCHED":"MOBILE_COMMAND_FAILED");
   return Response.json({ok:true,registered,project,action});
