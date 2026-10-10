@@ -16,6 +16,10 @@
     {
       "binding": "TTITTULARES_WORKER",
       "service": "ttittulares-no-vercel-test"
+    },
+    {
+      "binding": "TTENDENCIAS_WORKER",
+      "service": "ttendencias-no-vercel-test"
     }
   ]
 }
