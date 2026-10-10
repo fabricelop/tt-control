@@ -569,6 +569,18 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
       if(handled)return handled;
     }
     // Telegram callbacks that must remain available even when D1 is unavailable.
+    if(req.method==='GET'&&u.pathname==='/api/tt-mobile-command-health'){
+      // Verificación interna SOLO LECTURA del receptor Telegram; sin claves ni mutaciones.
+      if(!env.TTITTULARES_WORKER)return Response.json({ok:false,error:'service_binding_absent'},{status:503});
+      try{
+        const target=new Request('https://ttittulares-no-vercel-test.fabricelop.workers.dev/api/tt-mobile-telegram-dispatch',{
+          method:'POST',headers:{'content-type':'application/json'},body:'{}'
+        });
+        const answer=await env.TTITTULARES_WORKER.fetch(target);
+        return Response.json({ok:answer.status===401,route_reachable:true,unauthorized_http:answer.status},
+          {status:answer.status===401?200:503,headers:{'cache-control':'no-store'}});
+      }catch(e){return Response.json({ok:false,error:'service_binding_failed'},{status:503})}
+    }
     if(req.method==='GET'&&u.pathname==='/api/ttittulares-webhook-version'){
       let tokenAvailable=false,d1Available=false,chatAvailable=false;
       try{
