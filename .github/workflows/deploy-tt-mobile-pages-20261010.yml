@@ -1,0 +1,102 @@
+name: TT mobile Pages backup access (existing project only)
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/deploy-tt-mobile-pages-20261010.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate static Pages Worker and routing scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd tt-mobile-pages
+          node --check dist/_worker.js
+          node - <<'JS'
+          const fs=require('node:fs');
+          const c=JSON.parse(fs.readFileSync('wrangler.jsonc'));
+          if(c.name!=='tt-control-access'||c.services.length!==1||
+              c.services[0].service!=='tt-control')process.exit(1);
+          const src=fs.readFileSync('dist/_worker.js','utf8');
+          for(const word of ['TT_CONTROL_GATEWAY','/ttittulares','/ttendencias','/tt-shared/'])
+            if(!src.includes(word))process.exit(2);
+          if(src.includes('TELEGRAM_BOT_TOKEN')||src.includes('GITHUB_TOKEN'))process.exit(3);
+          console.log('SAFE_MOBILE_PAGES_WORKER_VALIDATED');
+          JS
+      - name: Deploy over existing Pages fallback only
+        working-directory: tt-mobile-pages
+        id: publish
+        shell: bash
+        run: |
+          set +e
+          npx --yes wrangler@4.149.0 pages deploy dist --project-name tt-control-access --branch main --commit-dirty=true > /tmp/tt-pages-deploy.log 2>&1
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          grep -E 'Deployment|Success|Uploaded|pages.dev|Error|error|Failed|failed|project' /tmp/tt-pages-deploy.log | tail -35 || true
+          exit 0
+      - name: Verify actual Pages gateway, not merely fallback HTML
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,urllib.request,urllib.error,time,datetime,os
+          deployed=int("${{ steps.publish.outputs.exit_code }}")
+          base='https://tt-control-access.pages.dev'
+          tests=[
+            ('health','/health','"tt-mobile-pages"'),
+            ('TTiTTulares','/ttittulares/','TTiTTulares'),
+            ('TTendencias','/ttendencias/','TTendencias'),
+            ('TTiTTulares API','/api/ttittulares-control','"ok":true'),
+            ('TTendencias API','/api/ttendencias-control?view=state','"ok":true'),
+            ('TTiTTulares GAG','/tt-shared/gag-copy.html?app=ttittulares','Copiar prompt GAG'),
+            ('TTendencias GAG','/tt-shared/gag-copy.html?app=ttendencias','Copiar prompt GAG')
+          ]
+          checks=[]
+          if deployed==0:
+            for attempt in range(9):
+              checks=[]
+              for name,path,marker in tests:
+                try:
+                  req=urllib.request.Request(base+path,headers={'User-Agent':'TT-Mobile-Pages-Smoke/1.0'})
+                  with urllib.request.urlopen(req,timeout=15) as r:
+                    body=r.read(700000).decode('utf8','replace')
+                    checks.append({'name':name,'status':r.status,'ok':r.status==200 and marker in body})
+                except urllib.error.HTTPError as e:checks.append({'name':name,'status':e.code,'ok':False})
+                except Exception as e:checks.append({'name':name,'status':0,'ok':False,'error':type(e).__name__})
+              print('MOBILE_PAGES_ATTEMPT',attempt+1,json.dumps(checks,ensure_ascii=False),flush=True)
+              if all(x['ok'] for x in checks):break
+              if attempt<8:time.sleep(10)
+          outcome={'at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'deploy_exit':deployed,'ok':len(checks)==len(tests) and all(x['ok'] for x in checks),'checks':checks}
+          with open('/tmp/tt-mobile-pages-livecheck.json','w') as f:json.dump(outcome,f,ensure_ascii=False,indent=2)
+          print('TT_MOBILE_PAGES_DEPLOYED',outcome['ok'],flush=True)
+          PY
+      - name: Record verification for operators
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git checkout -B main origin/main
+            cp /tmp/tt-mobile-pages-livecheck.json tt-control/tt-mobile-pages-livecheck-20261010.json
+            git add tt-control/tt-mobile-pages-livecheck-20261010.json
+            git commit -m "Record TT mobile Pages proxy verification" || exit 0
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Require fully functional mobile proxy
+        shell: bash
+        run: python3 -c 'import json;d=json.load(open("/tmp/tt-mobile-pages-livecheck.json"));assert d["ok"],d'
