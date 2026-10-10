@@ -186,6 +186,58 @@ async function deletePair(env,update){
   await env.DB.prepare("UPDATE tti_telegram_conversations SET status='DELETED_FROM_CHAT',body='',context='',updated_at=CURRENT_TIMESTAMP WHERE update_id=?").bind(row.update_id).run();
   return true;
 }
+async function ensureMobileReworkSchema(env){
+  await env.DB.prepare("CREATE TABLE IF NOT EXISTS tti_mobile_reworks (chat_id TEXT NOT NULL,sender_id TEXT NOT NULL,project TEXT NOT NULL,element_id TEXT NOT NULL,prompt_mid INTEGER NOT NULL,status TEXT NOT NULL DEFAULT 'awaiting',expires_at TEXT NOT NULL,PRIMARY KEY(chat_id,sender_id))").run();
+}
+
+async function registerMobileEditorialAction(env,updateId,project,action,elementId,instruction=""){
+  if(!env.TTITTULARES_WORKER)return false;
+  const botToken=await token(env);
+  const endpoint="https://ttittulares-no-vercel-test.fabricelop.workers.dev/api/tt-mobile-telegram-dispatch";
+  try{
+    const result=await env.TTITTULARES_WORKER.fetch(new Request(endpoint,{
+      method:"POST",
+      headers:{"content-type":"application/json","authorization":"Bearer "+botToken},
+      body:JSON.stringify({project,action,id:elementId,instruction,update_id:Number(updateId)})
+    }));
+    const payload=await result.json().catch(()=>({}));
+    if(result.status===202&&payload.ok===true)return true;
+    console.log("TT_MOBILE_TELEGRAM_DISPATCH_FAILED",result.status,payload.error||"unknown");
+    return false;
+  }catch(error){
+    console.log("TT_MOBILE_TELEGRAM_DISPATCH_FAILED",String(error?.message||error));
+    return false;
+  }
+}
+
+async function handleMobileReworkInstruction(update,env){
+  const msg=update?.message,quoted=Number(msg?.reply_to_message?.message_id||0);
+  if(!msg||quoted<=0)return null;
+  const chat=String(msg.chat?.id||""),sender=String(msg.from?.id||"");
+  if(String(msg.chat?.type||"")!=="private"||chat!==sender)return null;
+  await ensureMobileReworkSchema(env);
+  const pending=await env.DB.prepare("SELECT project,element_id,prompt_mid FROM tti_mobile_reworks WHERE chat_id=? AND sender_id=? AND prompt_mid=? AND status='awaiting' AND expires_at>datetime('now')").bind(chat,sender,quoted).first();
+  if(!pending)return null;
+  const instruction=String(msg.text||"").trim();
+  if(instruction.length<3||instruction.length>1000||instruction.startsWith("/")){
+    await sendReply(env,msg,"Escribe entre 3 y 1000 caracteres explicando qué deseas modificar. Responde a mi pregunta anterior.",false);
+    return Response.json({ok:true,invalid_instruction:true});
+  }
+  await schema(env);
+  const receipt=await saveReceipt(env,update,msg,"mobile-rework-instruction","");
+  if(receipt.notice_mid)return Response.json({ok:true,duplicate:true});
+  const accepted=await registerMobileEditorialAction(env,update.update_id,
+    String(pending.project), "rework",String(pending.element_id),instruction);
+  if(accepted)await env.DB.prepare("UPDATE tti_mobile_reworks SET status='dispatched' WHERE chat_id=? AND sender_id=? AND prompt_mid=?").bind(chat,sender,quoted).run();
+  const notice=await sendReply(env,msg,accepted?
+    "Instrucciones recibidas y guardadas para reelaborar "+String(pending.element_id)+
+    ". GitHub Actions procesará la petición y te confirmará el resultado.":
+    "No se pudo registrar la reelaboración. Responde de nuevo a la pregunta anterior.",false);
+  await saveAnswer(env,Number(update.update_id),Number(notice.message_id),
+                   accepted?"MOBILE_REWORK_INSTRUCTIONS_QUEUED":"MOBILE_REWORK_FAILED");
+  return Response.json({ok:true,registered:accepted,instructions:accepted});
+}
+
 async function handleTTMobileDeepLink(update,env) {
   const msg=update?.message, raw=String(msg?.text||"").trim();
   // Android/iOS Telegram deep links send /start followed by a bounded payload.
@@ -222,19 +274,18 @@ async function handleTTMobileDeepLink(update,env) {
   await schema(env);
   const receipt=await saveReceipt(env,update,msg,"mobile-command","");
   if(receipt.notice_mid)return Response.json({ok:true,duplicate:true});
-  const botToken=await token(env);
-  const endpoint="https://ttittulares-no-vercel-test.fabricelop.workers.dev/api/tt-mobile-telegram-dispatch";
-  let registered=false;
-  try {
-    const result=await env.TTITTULARES_WORKER.fetch(new Request(endpoint,{
-      method:"POST",
-      headers:{"content-type":"application/json","authorization":"Bearer "+botToken},
-      body:JSON.stringify({project,action,id:elementId,update_id:Number(update.update_id)})
-    }));
-    const reply=await result.json().catch(()=>({}));
-    registered=result.status===202&&reply.ok===true;
-    if(!registered)console.log("TT_MOBILE_TELEGRAM_DISPATCH_FAILED",result.status,reply.error||"unknown");
-  }catch(error){console.log("TT_MOBILE_TELEGRAM_DISPATCH_FAILED",String(error?.message||error))}
+  if(action==="rework"){
+    await ensureMobileReworkSchema(env);
+    const ask=await sendReply(env,msg,"¿Qué quieres cambiar de esta "+
+      (project==="ttittulares"?"noticia":"tendencia")+"?\n"+
+      "Responde A ESTE MENSAJE con tus instrucciones. No se modificará nada hasta recibirlas.",false);
+    const until=new Date(Date.now()+30*60*1000).toISOString();
+    await env.DB.prepare("INSERT INTO tti_mobile_reworks(chat_id,sender_id,project,element_id,prompt_mid,status,expires_at) VALUES(?,?,?,?,?,'awaiting',?) ON CONFLICT(chat_id,sender_id) DO UPDATE SET project=excluded.project,element_id=excluded.element_id,prompt_mid=excluded.prompt_mid,status='awaiting',expires_at=excluded.expires_at")
+      .bind(String(msg.chat.id),String(msg.from.id),project,elementId,Number(ask.message_id),until).run();
+    await saveAnswer(env,Number(update.update_id),Number(ask.message_id),"MOBILE_REWORK_AWAITING_INSTRUCTIONS");
+    return Response.json({ok:true,awaiting_instructions:true,project,element_id:elementId});
+  }
+  const registered=await registerMobileEditorialAction(env,update.update_id,project,action,elementId);
   const names={published:"Publicar",deleted:"Borrar",rework:"Reelaborar",prepare:"Enviar a elaborar"};
   const response=registered?
     "Orden recibida: "+names[action]+" · "+elementId+
@@ -261,6 +312,8 @@ export async function handleTtiTelegramConversation(req,env,ctx){
   // Fail closed if the private chat has not been configured.
   if(!allowed||chat!==allowed)return Response.json({ok:true,ignored:true});
   if(update.message){
+    const instruction=await handleMobileReworkInstruction(update,env);
+    if(instruction)return instruction;
     const handled=await handleTTMobileDeepLink(update,env);
     if(handled)return handled;
   }
