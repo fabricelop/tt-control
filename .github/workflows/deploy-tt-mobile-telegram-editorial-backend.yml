@@ -1,0 +1,66 @@
+name: TT mobile Telegram editorial backend deploy
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-tt-mobile-telegram-editorial-backend.yml'
+permissions:
+  contents: read
+jobs:
+  deploy-ttittulares:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Check required Cloudflare credentials without showing values
+        shell: bash
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+      - name: Checkout public TT app source
+        uses: actions/checkout@v4
+        with:
+          repository: fabricelop/europapress-rss
+          ref: main
+          path: editorial
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install & test prior to any deployment
+        working-directory: editorial/no-vercel/ttittulares-worker
+        run: |
+          npm install --no-audit --no-fund
+          npm test
+          npx wrangler deploy --dry-run --outdir .wrangler-mobile-telegram-check
+      - name: Deploy TT worker retaining existing runtime secrets
+        working-directory: editorial/no-vercel/ttittulares-worker
+        run: npx wrangler deploy --keep-vars
+      - name: Check mobile command endpoint rejects unauthenticated requests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,urllib.request,urllib.error,time
+          base='https://ttittulares-no-vercel-test.fabricelop.workers.dev'
+          for i in range(7):
+            try:
+              with urllib.request.urlopen(base+'/health',timeout=15) as r:
+                ok=r.status==200 and json.load(r).get('ok') is True
+              req=urllib.request.Request(base+'/api/tt-mobile-telegram-dispatch',
+                data=json.dumps({'project':'ttittulares','action':'deleted','id':'TEST-DO-NOT-EXIST','update_id':1}).encode(),
+                headers={'Content-Type':'application/json'})
+              try:
+                with urllib.request.urlopen(req,timeout=15) as r: status=r.status
+              except urllib.error.HTTPError as e: status=e.code
+              print('TT_MOBILE_BACKEND_READINESS',{'health':ok,'unauthorized_http':status},flush=True)
+              if ok and status==401: break
+              if i==6:raise SystemExit('Protected endpoint is not verified')
+            except Exception as exc:
+              print('TT_MOBILE_BACKEND_WAIT',type(exc).__name__,flush=True)
+              if i==6:raise
+            time.sleep(8)
+          PY
