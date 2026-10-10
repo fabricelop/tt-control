@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-10T15:44:11.366114+00:00",
+  "zones": {
+    "http": 200,
+    "success": true,
+    "names": [],
+    "error_codes": []
+  },
+  "pages": {
+    "http": 400,
+    "success": false,
+    "names": [],
+    "error_codes": [
+      400
+    ]
+  },
+  "custom_worker_domains": {
+    "http": 200,
+    "success": true,
+    "names": [],
+    "error_codes": []
+  }
+}
