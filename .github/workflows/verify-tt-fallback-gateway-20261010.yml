@@ -24,6 +24,8 @@ jobs:
             ("ttittulares_panel","/ttittulares/","TTiTTulares"),
             ("ttendencias_gag","/tt-shared/gag-copy.html?app=ttendencias","Copiar prompt GAG"),
             ("ttittulares_gag","/tt-shared/gag-copy.html?app=ttittulares","Copiar prompt GAG"),
+            ("ttendencias_api","/api/ttendencias-control?view=state",'"ok":true'),
+            ("ttittulares_api","/api/ttittulares-control",'"ok":true'),
             ("telegram_webhook","/api/ttittulares-webhook-version","version")
           ]
           checked=[]
