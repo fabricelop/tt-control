@@ -43,7 +43,7 @@ jobs:
           out={
               'at':datetime.datetime.now(datetime.timezone.utc).isoformat(),
               'zones':result('/zones?account.id='+account+'&per_page=50',['name','status','type']),
-              'pages':result('/accounts/'+account+'/pages/projects?per_page=50',['name','subdomain','production_branch']),
+              'pages':result('/accounts/'+account+'/pages/projects',['name','subdomain','production_branch']),
               'custom_worker_domains':result('/accounts/'+account+'/workers/domains',['hostname','service','environment']),
           }
           with open('/tmp/tt-mobile-domains.json','w',encoding='utf-8') as f:
