@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-10T15:44:11.366114+00:00",
+  "at": "2026-10-10T15:45:41.008175+00:00",
   "zones": {
     "http": 200,
     "success": true,
@@ -7,12 +7,16 @@
     "error_codes": []
   },
   "pages": {
-    "http": 400,
-    "success": false,
-    "names": [],
-    "error_codes": [
-      400
-    ]
+    "http": 200,
+    "success": true,
+    "names": [
+      {
+        "name": "tt-control-access",
+        "subdomain": "tt-control-access.pages.dev",
+        "production_branch": "main"
+      }
+    ],
+    "error_codes": []
   },
   "custom_worker_domains": {
     "http": 200,
