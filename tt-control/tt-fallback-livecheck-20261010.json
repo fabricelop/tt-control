@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-10T15:33:49.625835+00:00",
+  "ok": true,
+  "checks": [
+    {
+      "name": "ttendencias_panel",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "ttittulares_panel",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "ttendencias_gag",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "ttittulares_gag",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "telegram_webhook",
+      "status": 200,
+      "ok": true
+    }
+  ]
+}
