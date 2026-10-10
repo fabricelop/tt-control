@@ -1,0 +1,70 @@
+name: TT mobile access - read-only Cloudflare domain inventory
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/check-tt-mobile-domain-options-20261010.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check owned zones and existing Pages hostnames without changing anything
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request,urllib.error,datetime
+          token=os.getenv('CF_API_TOKEN','')
+          account=os.getenv('CF_ACCOUNT_ID','')
+          if not token or not account: raise SystemExit('Cloudflare secrets missing')
+          def get(path):
+              request=urllib.request.Request('https://api.cloudflare.com/client/v4'+path,headers={
+                  'Authorization':'Bearer '+token,'Accept':'application/json','User-Agent':'TT-mobile-zone-inspect/1.0'})
+              try:
+                  with urllib.request.urlopen(request,timeout=20) as response:
+                      return response.status,json.load(response)
+              except urllib.error.HTTPError as e:
+                  return e.code,{'success':False,'errors':[{'code':e.code}]}
+              except Exception as e:return 0,{'success':False,'errors':[{'code':type(e).__name__}]}
+          def result(path,fields):
+              http,doc=get(path)
+              rows=doc.get('result') if isinstance(doc,dict) else None
+              if isinstance(rows,list):
+                  safe=[{k:row.get(k) for k in fields if row.get(k) is not None} for row in rows if isinstance(row,dict)]
+              else:safe=[]
+              return {'http':http,'success':doc.get('success') if isinstance(doc,dict) else False,
+                      'names':safe,'error_codes':[x.get('code') for x in (doc.get('errors') or []) if isinstance(x,dict)]}
+          out={
+              'at':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'zones':result('/zones?account.id='+account+'&per_page=50',['name','status','type']),
+              'pages':result('/accounts/'+account+'/pages/projects?per_page=50',['name','subdomain','production_branch']),
+              'custom_worker_domains':result('/accounts/'+account+'/workers/domains',['hostname','service','environment']),
+          }
+          with open('/tmp/tt-mobile-domains.json','w',encoding='utf-8') as f:
+              json.dump(out,f,ensure_ascii=False,indent=2)
+          print('CLOUDFLARE_READONLY_SUMMARY',json.dumps({
+              k:{'http':v['http'],'count':len(v['names']),'error_codes':v['error_codes']} for k,v in out.items() if k!='at'
+          }))
+          PY
+      - name: Record domain options safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git checkout -B main origin/main
+            cp /tmp/tt-mobile-domains.json tt-control/tt-mobile-domain-options-20261010.json
+            git add tt-control/tt-mobile-domain-options-20261010.json
+            git commit -m "Record TT mobile Cloudflare domain access options" || exit 0
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 2
+          done
+          exit 1
