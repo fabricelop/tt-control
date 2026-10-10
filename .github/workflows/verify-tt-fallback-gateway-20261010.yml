@@ -1,0 +1,67 @@
+name: Verify TT Cloudflare gateway (read-only probes)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-tt-fallback-gateway-20261010.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check gateway apps, GAG and Telegram without mutations
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,time,urllib.request,urllib.error,datetime
+          base="https://tt-control.fabricelop.workers.dev"
+          tests=[
+            ("ttendencias_panel","/ttendencias/","TTendencias"),
+            ("ttittulares_panel","/ttittulares/","TTiTTulares"),
+            ("ttendencias_gag","/tt-shared/gag-copy.html?app=ttendencias","Copiar prompt GAG"),
+            ("ttittulares_gag","/tt-shared/gag-copy.html?app=ttittulares","Copiar prompt GAG"),
+            ("telegram_webhook","/api/ttittulares-webhook-version","version")
+          ]
+          checked=[]
+          for i in range(16):
+            checked=[]
+            for name,path,needle in tests:
+              try:
+                req=urllib.request.Request(base+path,headers={"User-Agent":"TT-Fallback-Gateway-Health/1.0"})
+                with urllib.request.urlopen(req,timeout=15) as r:
+                  raw=r.read(500000).decode("utf-8","replace")
+                  checked.append({"name":name,"status":r.status,"ok":r.status==200 and needle in raw})
+              except urllib.error.HTTPError as e:
+                checked.append({"name":name,"status":e.code,"ok":False})
+              except Exception as e:
+                checked.append({"name":name,"status":0,"ok":False,"error":type(e).__name__})
+            print("GATEWAY_CHECK attempt",i+1,json.dumps(checked),flush=True)
+            if all(x["ok"] for x in checked):break
+            if i<15:time.sleep(12)
+          result={"at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"ok":all(x["ok"] for x in checked),"checks":checked}
+          with open("/tmp/tt-gateway-check.json","w") as f:json.dump(result,f,ensure_ascii=False,indent=2)
+          PY
+      - name: Record results without touching Telegram or workers
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git checkout -B main origin/main
+            cp /tmp/tt-gateway-check.json tt-control/tt-fallback-livecheck-20261010.json
+            git add tt-control/tt-fallback-livecheck-20261010.json
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "Record TT Cloudflare gateway live check"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep 3
+          done
+          exit 1
+      - name: Require all public gateway probes
+        shell: bash
+        run: python3 -c 'import json;d=json.load(open("/tmp/tt-gateway-check.json"));assert d["ok"],d'
