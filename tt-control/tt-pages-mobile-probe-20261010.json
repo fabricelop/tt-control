@@ -1,0 +1,74 @@
+{
+  "at": "2026-10-10T15:46:46.419983+00:00",
+  "dns": {
+    "tt-control-access.pages.dev": [
+      "172.66.44.237",
+      "172.66.47.19",
+      "2606:4700:310c::ac42:2ced",
+      "2606:4700:310c::ac42:2f13"
+    ],
+    "tt-control.fabricelop.workers.dev": [
+      "104.21.22.59",
+      "172.67.202.251",
+      "2606:4700:3030::ac43:cafb",
+      "2606:4700:3037::6815:163b"
+    ],
+    "ttendencias-no-vercel-test.fabricelop.workers.dev": [
+      "104.21.22.59",
+      "172.67.202.251",
+      "2606:4700:3030::ac43:cafb",
+      "2606:4700:3037::6815:163b"
+    ],
+    "ttittulares-no-vercel-test.fabricelop.workers.dev": [
+      "104.21.22.59",
+      "172.67.202.251",
+      "2606:4700:3030::ac43:cafb",
+      "2606:4700:3037::6815:163b"
+    ]
+  },
+  "pages": {
+    "/": {
+      "http": 200,
+      "content_type": "text/html; charset=utf-8",
+      "prefix": "<!doctype html><meta charset=\"utf-8\"><title>TT Control fallback</title><h1>TT Control fallback OK</h"
+    },
+    "/health": {
+      "http": 200,
+      "content_type": "text/html; charset=utf-8",
+      "prefix": "<!doctype html><meta charset=\"utf-8\"><title>TT Control fallback</title><h1>TT Control fallback OK</h"
+    },
+    "/ttittulares/": {
+      "http": 200,
+      "content_type": "text/html; charset=utf-8",
+      "prefix": "<!doctype html><meta charset=\"utf-8\"><title>TT Control fallback</title><h1>TT Control fallback OK</h"
+    },
+    "/ttendencias/": {
+      "http": 200,
+      "content_type": "text/html; charset=utf-8",
+      "prefix": "<!doctype html><meta charset=\"utf-8\"><title>TT Control fallback</title><h1>TT Control fallback OK</h"
+    },
+    "/api/ttittulares-control": {
+      "http": 200,
+      "content_type": "text/html; charset=utf-8",
+      "prefix": "<!doctype html><meta charset=\"utf-8\"><title>TT Control fallback</title><h1>TT Control fallback OK</h"
+    },
+    "/api/ttendencias-control?view=state": {
+      "http": 200,
+      "content_type": "text/html; charset=utf-8",
+      "prefix": "<!doctype html><meta charset=\"utf-8\"><title>TT Control fallback</title><h1>TT Control fallback OK</h"
+    },
+    "/tt-shared/gag-copy.html?app=ttendencias": {
+      "http": 200,
+      "content_type": "text/html; charset=utf-8",
+      "prefix": "<!doctype html><meta charset=\"utf-8\"><title>TT Control fallback</title><h1>TT Control fallback OK</h"
+    }
+  },
+  "project": {
+    "http": 200,
+    "name": "tt-control-access",
+    "subdomain": "tt-control-access.pages.dev",
+    "production_branch": "main",
+    "latest_deployment_url": "https://68d5c2ab.tt-control-access.pages.dev",
+    "deployment_count": 0
+  }
+}
