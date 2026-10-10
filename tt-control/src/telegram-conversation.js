@@ -186,6 +186,66 @@ async function deletePair(env,update){
   await env.DB.prepare("UPDATE tti_telegram_conversations SET status='DELETED_FROM_CHAT',body='',context='',updated_at=CURRENT_TIMESTAMP WHERE update_id=?").bind(row.update_id).run();
   return true;
 }
+async function handleTTMobileDeepLink(update,env) {
+  const msg=update?.message, raw=String(msg?.text||"").trim();
+  // Android/iOS Telegram deep links send /start followed by a bounded payload.
+  const match=/^\/start(?:@[A-Za-z0-9_]+)?\s+ttm_([nt])_([pdre])_([A-Za-z0-9_-]{1,56})$/.exec(raw);
+  if(!match) {
+    if(/^\/start(?:@[A-Za-z0-9_]+)?\s+ttm_/i.test(raw)) {
+      await sendReply(env,msg,"El enlace de edición ya no es válido. Abre de nuevo la tarjeta en TT Actualidad.",false);
+      return Response.json({ok:true,invalid_mobile_command:true});
+    }
+    return null;
+  }
+  // Allowed chat is private, configured to the owner; never accept group-originated commands.
+  if(String(msg.chat?.type||"")!=="private"||
+     String(msg.from?.id||"")!==String(msg.chat?.id||"")){
+    return Response.json({ok:true,ignored:true});
+  }
+  const project=match[1]==="n"?"ttittulares":"ttendencias";
+  const action=({p:"published",d:"deleted",r:"rework",e:"prepare"})[match[2]];
+  let elementId="";
+  try {
+    let data=match[3].replace(/-/g,"+").replace(/_/g,"/");
+    data+="=".repeat((4-data.length%4)%4);
+    const bytes=Uint8Array.from(atob(data),(c)=>c.charCodeAt(0));
+    elementId=new TextDecoder("utf-8",{fatal:true}).decode(bytes).trim();
+  }catch(_){}
+  if(!elementId||elementId.length>120||!/^[\p{L}\p{N}_#.\- ]+$/u.test(elementId)){
+    await sendReply(env,msg,"No se puede identificar esta tarjeta. Ábrela otra vez desde TT Actualidad.",false);
+    return Response.json({ok:true,invalid_id:true});
+  }
+  if(!env.TTITTULARES_WORKER){
+    await sendReply(env,msg,"El servicio editorial está temporalmente sin conexión. La orden NO se ha registrado.",false);
+    return Response.json({ok:true,accepted:false});
+  }
+  await schema(env);
+  const receipt=await saveReceipt(env,update,msg,"mobile-command","");
+  if(receipt.notice_mid)return Response.json({ok:true,duplicate:true});
+  const botToken=await token(env);
+  const endpoint="https://ttittulares-no-vercel-test.fabricelop.workers.dev/api/tt-mobile-telegram-dispatch";
+  let registered=false;
+  try {
+    const result=await env.TTITTULARES_WORKER.fetch(new Request(endpoint,{
+      method:"POST",
+      headers:{"content-type":"application/json","authorization":"Bearer "+botToken},
+      body:JSON.stringify({project,action,id:elementId,update_id:Number(update.update_id)})
+    }));
+    const reply=await result.json().catch(()=>({}));
+    registered=result.status===202&&reply.ok===true;
+    if(!registered)console.log("TT_MOBILE_TELEGRAM_DISPATCH_FAILED",result.status,reply.error||"unknown");
+  }catch(error){console.log("TT_MOBILE_TELEGRAM_DISPATCH_FAILED",String(error?.message||error))}
+  const names={published:"Publicar",deleted:"Borrar",rework:"Reelaborar",prepare:"Enviar a elaborar"};
+  const response=registered?
+    "Orden recibida: "+names[action]+" · "+elementId+
+    "\nGitHub Actions la procesará y te confirmaré aquí el resultado. Todavía no está completada.":
+    "No se pudo registrar la orden para "+elementId+". No se ha modificado el contenido; vuelve a intentarlo.";
+  const notice=await sendReply(env,msg,response,false);
+  await saveAnswer(env,Number(update.update_id),Number(notice.message_id),
+                   registered?"MOBILE_COMMAND_DISPATCHED":"MOBILE_COMMAND_FAILED");
+  return Response.json({ok:true,registered,project,action});
+}
+
 export async function handleTtiTelegramConversation(req,env,ctx){
   if(req.method!=="POST"||new URL(req.url).pathname!=="/api/telegram-webhook")return null;
   // Funciones nuevas solo con el secreto real del webhook configurado.
@@ -200,6 +260,10 @@ export async function handleTtiTelegramConversation(req,env,ctx){
   const allowed=await allowedChat(env);
   // Fail closed if the private chat has not been configured.
   if(!allowed||chat!==allowed)return Response.json({ok:true,ignored:true});
+  if(update.message){
+    const handled=await handleTTMobileDeepLink(update,env);
+    if(handled)return handled;
+  }
   if(update.callback_query?.data?.startsWith("tts:del:")){
     await deletePair(env,update);
     return Response.json({ok:true,action:"delete"});
