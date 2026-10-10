@@ -1,0 +1,42 @@
+{
+  "at": "2026-10-10T15:49:37.573329+00:00",
+  "deploy_exit": 0,
+  "ok": true,
+  "checks": [
+    {
+      "name": "health",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "TTiTTulares",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "TTendencias",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "TTiTTulares API",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "TTendencias API",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "TTiTTulares GAG",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "TTendencias GAG",
+      "status": 200,
+      "ok": true
+    }
+  ]
+}
