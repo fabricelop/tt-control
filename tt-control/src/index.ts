@@ -2,7 +2,7 @@
 import {readTelegramCredential} from './telegram-credentials.js';
 import {handleTtiTelegramConversation} from './telegram-conversation.js';
 interface Env { DB: D1Database; AI: Ai; TT_CONTROL_PASSWORD: string; CHATGPT_BRIDGE_TOKEN?: string; TELEGRAM_BOT_TOKEN?: string; TELEGRAM_CHAT_ID?: string; TELEGRAM_WEBHOOK_SECRET?: string; TT_CONTROL_TELEGRAM_PRIVATE_KEY?: string
-  GITHUB_TOKEN?: string; TTITTULARES_WORKER?: {fetch(request:Request):Promise<Response>} }
+  GITHUB_TOKEN?: string; TTITTULARES_WORKER?: {fetch(request:Request):Promise<Response>}; TTENDENCIAS_WORKER?: {fetch(request:Request):Promise<Response>} }
 
 async function ensureEditorialSchema(env:Env){
   const statements=[
@@ -481,6 +481,26 @@ async function ingest(env:Env){
 export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionContext){/* Legacy TT Control cron intentionally disabled: no D1 access. */},async fetch(req:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
   const u=new URL(req.url)
   try{
+    // Fallback de acceso publico: servir las PWA y API TT por bindings internos.
+    // Exclusivamente rutas editoriales. No interceptar los callbacks/webhook Telegram.
+    const ttTrendPath = u.pathname==='/ttendencias' || u.pathname.startsWith('/ttendencias/') ||
+      ['/api/ttendencias-control','/api/ttendencias-run','/api/ttendencias-run-status'].includes(u.pathname);
+    const ttTitulPath = u.pathname==='/ttittulares' || u.pathname.startsWith('/ttittulares/') ||
+      ['/api/ttittulares-control','/api/ttittulares-run','/api/ttittulares-run-status'].includes(u.pathname);
+    if (ttTrendPath) {
+      if(!env.TTENDENCIAS_WORKER)return Response.json({ok:false,error:'TTendencias binding unavailable'},{status:503});
+      return env.TTENDENCIAS_WORKER.fetch(req);
+    }
+    if (ttTitulPath) {
+      if(!env.TTITTULARES_WORKER)return Response.json({ok:false,error:'TTiTTulares binding unavailable'},{status:503});
+      return env.TTITTULARES_WORKER.fetch(req);
+    }
+    if (u.pathname.startsWith('/tt-shared/')) {
+      const isTrend = u.searchParams.get('app')==='ttendencias';
+      const backend = isTrend ? env.TTENDENCIAS_WORKER : env.TTITTULARES_WORKER;
+      if(!backend)return Response.json({ok:false,error:'TT assets binding unavailable'},{status:503});
+      return backend.fetch(req);
+    }
     // Autenticar TODO el webhook, incluidos botones heredados.
     if(u.pathname==='/api/telegram-webhook'&&req.method==='POST'){
       const secret=String(env.TELEGRAM_WEBHOOK_SECRET||await readTelegramCredential(env,'webhook_secret')||'');
