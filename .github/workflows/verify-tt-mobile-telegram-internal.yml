@@ -1,0 +1,39 @@
+name: TT mobile Telegram binding readiness (read only)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-tt-mobile-telegram-internal.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Test internal binding and authentication without real orders
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import urllib.request,urllib.error,json,time
+          url='https://tt-control.fabricelop.workers.dev/api/tt-mobile-command-health'
+          success=False
+          for i in range(7):
+            try:
+              with urllib.request.urlopen(url,timeout=15) as r:
+                d=json.load(r);status=r.status
+            except urllib.error.HTTPError as e:
+              status=e.code
+              try:d=json.load(e)
+              except:d={}
+            except Exception as e:
+              status=0;d={'error':type(e).__name__}
+            print('TT_MOBILE_INTERNAL_CHECK',i+1,'HTTP',status,
+                  'ok',d.get('ok'),'protected_status',d.get('unauthorized_http'),'error',d.get('error'),flush=True)
+            if status==200 and d.get('ok') is True and d.get('unauthorized_http')==401:
+              success=True
+              break
+            if i<6:time.sleep(8)
+          if not success:raise SystemExit('TT mobile backend is not ready via Cloudflare service binding')
+          PY
