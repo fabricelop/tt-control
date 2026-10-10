@@ -1,0 +1,11 @@
+{
+  "name": "tt-control-access",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-10-10",
+  "services": [
+    {
+      "binding": "TT_CONTROL_GATEWAY",
+      "service": "tt-control"
+    }
+  ]
+}
