@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-10T15:33:49.625835+00:00",
+  "at": "2026-10-10T15:35:50.198437+00:00",
   "ok": true,
   "checks": [
     {
@@ -19,6 +19,16 @@
     },
     {
       "name": "ttittulares_gag",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "ttendencias_api",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "ttittulares_api",
       "status": 200,
       "ok": true
     },
