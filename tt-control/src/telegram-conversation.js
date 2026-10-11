@@ -302,12 +302,24 @@ async function handleTTMobileDeepLink(update,env) {
 }
 
 export async function handleTtiTelegramConversation(req,env,ctx){
-  if(req.method!=="POST"||new URL(req.url).pathname!=="/api/telegram-webhook")return null;
-  // Funciones nuevas solo con el secreto real del webhook configurado.
-  // Si falta, dejamos intacto el comportamiento heredado y no aceptamos mensajes falsificables.
-  const secret=String(env.TELEGRAM_WEBHOOK_SECRET||await readTelegramCredential(env,"webhook_secret")||"");
-  if(!secret)return null;
-  if(req.headers.get("x-telegram-bot-api-secret-token")!==secret)return new Response("Forbidden",{status:403});
+  const pathname=new URL(req.url).pathname;
+  const native=pathname==="/api/telegram-native-question";
+  if(req.method!=="POST"||(!native&&pathname!=="/api/telegram-webhook"))return null;
+  if(native){
+    // Actions replaces the inbound Telegram webhook. This route is only for
+    // authenticated contextual Q&A and removal of the associated message pair.
+    const botToken=String(await token(env)||"");
+    const received=String(req.headers.get("authorization")||"");
+    const expected="Bearer "+botToken;
+    let permitted=!!botToken&&received.length===expected.length;
+    for(let i=0;i<Math.max(received.length,expected.length);i++)
+      permitted=(received.charCodeAt(i)===expected.charCodeAt(i))&&permitted;
+    if(!permitted)return new Response("Forbidden",{status:403});
+  }else{
+    const secret=String(env.TELEGRAM_WEBHOOK_SECRET||await readTelegramCredential(env,"webhook_secret")||"");
+    if(!secret)return null;
+    if(req.headers.get("x-telegram-bot-api-secret-token")!==secret)return new Response("Forbidden",{status:403});
+  }
   const update=await req.clone().json().catch(()=>null);
   if(!update)return Response.json({ok:false,error:"Invalid Telegram JSON"},{status:400});
   const chat=String(update.callback_query?.message?.chat?.id||update.message?.chat?.id||"");
@@ -315,7 +327,12 @@ export async function handleTtiTelegramConversation(req,env,ctx){
   const allowed=await allowedChat(env);
   // Fail closed if the private chat has not been configured.
   if(!allowed||chat!==allowed)return Response.json({ok:true,ignored:true});
-  if(update.message){
+  if(native){
+    const q=telegramConversationKind(update);
+    const deleteRequest=String(update.callback_query?.data||"").startsWith("tts:del:");
+    if(q!=="question"&&!deleteRequest)return Response.json({ok:false,error:"not a contextual question"},{status:422});
+  }
+  if(update.message&&!native){
     const instruction=await handleMobileReworkInstruction(update,env);
     if(instruction)return instruction;
     const handled=await handleTTMobileDeepLink(update,env);
