@@ -640,6 +640,18 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
       const text=String(u.searchParams.get('text')||'').slice(0,500);return xComposePage(text)
     }
     if(req.method==='GET'&&u.pathname==='/api/telegram-webhook-self-heal-20261004'){
+      // Native getUpdates must NEVER be overwritten by a stale webhook healer.
+      const guardUrl='https://raw.githubusercontent.com/fabricelop/europapress-rss/main/telegram/ttittulares-transport.json?t='+Date.now();
+      let transport:any=null;
+      try{
+        const guard=await fetch(guardUrl,{cache:'no-store'});
+        if(!guard.ok)throw Error('transport config not readable');
+        transport=await guard.json();
+      }catch(error){
+        return Response.json({ok:false,error:'transport_mode_unverifiable'},{status:503});
+      }
+      if(transport?.mode==='native'&&transport?.native_ready===true)
+        return Response.json({ok:false,error:'native_transport_active_webhook_restore_blocked'},{status:410});
       // Sólo el Worker tiene la clave: reparar URL y autenticación a la vez.
       // Nunca restablecer un webhook sin secret_token.
       const secret=String(env.TELEGRAM_WEBHOOK_SECRET||await readTelegramCredential(env,'webhook_secret')||'');
