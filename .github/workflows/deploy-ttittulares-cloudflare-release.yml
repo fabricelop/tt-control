@@ -24,6 +24,7 @@ jobs:
           sparse-checkout: |
             /no-vercel/ttittulares-worker/
             /vercel-webhook/ttittulares/
+            /vercel-webhook/tt-shared/
             /vercel-webhook/lib/ttittulares-control-handler.js
             /vercel-webhook/lib/ttittulares-run-handler.js
             /vercel-webhook/lib/ttittulares-run-status-handler.js
