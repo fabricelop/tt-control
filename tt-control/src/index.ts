@@ -589,6 +589,13 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
         return Response.json({ok:true,command:"run",confirmed:!note.includes("no se pudo registrar")});
       }
     }
+    // GitHub Actions owns the Telegram update stream after webhook cutover.
+    // Keep only contextual Q&A in D1/Workers AI until its free alternative is
+    // verified; this endpoint accepts the bot credential, never anonymous posts.
+    if(req.method==='POST'&&u.pathname==='/api/telegram-native-question'){
+      const answered=await handleTtiTelegramConversation(req,env,ctx);
+      return answered||Response.json({ok:false,error:'question_not_handled'},{status:422});
+    }
     if(u.pathname==='/api/agent/pending'){
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
       if(req.method!=='GET')return new Response('Method Not Allowed',{status:405})
