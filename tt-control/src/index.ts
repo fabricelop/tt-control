@@ -477,6 +477,37 @@ async function ingest(env:Env){
   }catch(e){await env.DB.prepare("UPDATE runs SET finished_at=datetime('now'),status='ERROR',error=? WHERE id=?").bind(String(e),run!.id).run();throw e}
 }
 
+// Compatibility bridge while the Telegram receiver is moved off Cloudflare.
+// It only writes the existing PC control branch; GitHub/Windows do the execution.
+async function requestTtiEditorialFromTelegram(env:Env){
+  if(!env.GITHUB_TOKEN)throw new Error("GitHub token no configurado");
+  const endpoint="https://api.github.com/repos/fabricelop/europapress-rss/contents/ttittulares/run-now-trigger.json";
+  const branch="control/ttittulares-run-trigger-v2";
+  const headers={"authorization":"Bearer "+env.GITHUB_TOKEN,
+    "accept":"application/vnd.github+json","content-type":"application/json",
+    "user-agent":"ttittulares-telegram-run-compat"};
+  for(let attempt=0;attempt<5;attempt++){
+    const read=await fetch(endpoint+"?ref="+encodeURIComponent(branch),{headers,cache:"no-store"});
+    if(!read.ok)throw Error("GitHub read trigger HTTP "+read.status);
+    const file:any=await read.json();
+    const previous=JSON.parse(ghUtf8Decode(file.content)||"{}");
+    const age=Date.now()-Date.parse(String(previous.requested_at||""));
+    if(previous.command_id&&Number.isFinite(age)&&age>=0&&age<90000)
+      return {command_id:String(previous.command_id),duplicate:true};
+    const id="tt-"+Date.now()+"-tg-"+crypto.randomUUID().slice(0,7);
+    const doc={version:2,command_id:id,requested_at:new Date().toISOString(),
+      mode:"manual_pc_chat",executor:"pc_chat_ttittulares_dedicated",
+      project:"ttittulares",launcher_arg:"titulares",task:"editorial",auto_image_followup:false};
+    const update=await fetch(endpoint,{method:"PUT",headers,body:JSON.stringify({
+      branch,sha:file.sha,message:"TTiTTulares /run recibido por Telegram "+id,
+      content:ghUtf8Encode(JSON.stringify(doc,null,2)+"\\n")})});
+    if(update.ok)return {command_id:id,duplicate:false};
+    if(![409,422].includes(update.status))throw Error("GitHub write trigger HTTP "+update.status);
+    await new Promise(resolve=>setTimeout(resolve,(attempt+1)*180));
+  }
+  throw Error("GitHub /run: conflicto concurrente");
+}
+
 // webhook-deploy-trigger-20260921
 export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionContext){/* Legacy TT Control cron intentionally disabled: no D1 access. */},async fetch(req:Request,env:Env,ctx:ExecutionContext):Promise<Response>{
   const u=new URL(req.url)
@@ -506,6 +537,40 @@ export default {async scheduled(_event:ScheduledEvent,_env:Env,_ctx:ExecutionCon
       const secret=String(env.TELEGRAM_WEBHOOK_SECRET||await readTelegramCredential(env,'webhook_secret')||'');
       if(secret&&req.headers.get('x-telegram-bot-api-secret-token')!==secret)
         return new Response('Forbidden',{status:403});
+    }
+    // /run is NOT a bulletin/radar refresh: request the official editorial
+    // pass on the Windows listener, and acknowledge only a durable GH write.
+    if(req.method==='POST'&&u.pathname==='/api/telegram-webhook'){
+      const update:any=await req.clone().json();
+      const msg=update?.message||{},command=String(msg.text||"").trim().toLowerCase();
+      if(command==="/run"||command==="/run@ttittulares_bot"){
+        const secret=String(env.TELEGRAM_WEBHOOK_SECRET||
+          await readTelegramCredential(env,"webhook_secret")||"");
+        if(!secret||req.headers.get("x-telegram-bot-api-secret-token")!==secret)
+          return Response.json({ok:false,error:"webhook_auth_unavailable"},{status:403});
+        const chat=String(msg?.chat?.id||"");
+        let allowed=String(env.TELEGRAM_CHAT_ID||"");
+        if(!allowed){try{const row:any=await env.DB.prepare(
+          "SELECT value FROM app_settings WHERE key='telegram_chat_id'").first();
+          allowed=String(row?.value||"")}catch(_){}}
+        if(!allowed)allowed=String(await readTelegramCredential(env,"chat_id")||"");
+        if(!allowed||chat!==allowed||String(msg?.chat?.type||"")!=="private"||
+           String(msg?.from?.id||"")!==allowed)
+          return Response.json({ok:true,ignored:true});
+        let note="";
+        try{
+          const saved=await requestTtiEditorialFromTelegram(env);
+          note=saved.duplicate?"TTiTTulares: /run ya estaba solicitado; no lo duplico. ID: "+
+            saved.command_id:"TTiTTulares: /run registrado en GitHub. Windows recogerá la orden. ID: "+
+            saved.command_id;
+        }catch(e){
+          console.log("TTITTULARES_RUN_BRIDGE_ERROR",String(e));
+          note="TTiTTulares: no se pudo registrar /run en GitHub. No se ha iniciado ninguna ejecución.";
+        }
+        const sent:any=await telegramApi(env,"sendMessage",{chat_id:chat,text:note});
+        if(!sent?.ok)return Response.json({ok:false,error:"ack_not_delivered"},{status:503});
+        return Response.json({ok:true,command:"run",confirmed:!note.includes("no se pudo registrar")});
+      }
     }
     if(u.pathname==='/api/agent/pending'){
       if(!agentAuthorized(req,env))return Response.json({error:'No autorizado'},{status:401})
