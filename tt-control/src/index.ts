@@ -500,7 +500,7 @@ async function requestTtiEditorialFromTelegram(env:Env){
       project:"ttittulares",launcher_arg:"titulares",task:"editorial",auto_image_followup:false};
     const update=await fetch(endpoint,{method:"PUT",headers,body:JSON.stringify({
       branch,sha:file.sha,message:"TTiTTulares /run recibido por Telegram "+id,
-      content:ghUtf8Encode(JSON.stringify(doc,null,2)+"\\n")})});
+      content:ghUtf8Encode(JSON.stringify(doc,null,2)+"\n")})});
     if(update.ok)return {command_id:id,duplicate:false};
     if(![409,422].includes(update.status))throw Error("GitHub write trigger HTTP "+update.status);
     await new Promise(resolve=>setTimeout(resolve,(attempt+1)*180));
