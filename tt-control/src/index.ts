@@ -480,7 +480,24 @@ async function ingest(env:Env){
 // Compatibility bridge while the Telegram receiver is moved off Cloudflare.
 // It only writes the existing PC control branch; GitHub/Windows do the execution.
 async function requestTtiEditorialFromTelegram(env:Env){
-  if(!env.GITHUB_TOKEN)throw new Error("GitHub token no configurado");
+  // TT Control intentionally has no GitHub credential: use the trusted
+  // service binding to the already authenticated editorial Worker.
+  if(!env.GITHUB_TOKEN){
+    if(!env.TTITTULARES_WORKER)throw Error("Servicio editorial interno no disponible");
+    const botToken=String(await telegramToken(env)||"");
+    if(!botToken)throw Error("Credencial del bot no disponible");
+    const target="https://ttittulares-no-vercel-test.fabricelop.workers.dev/api/ttittulares-telegram-editorial-run";
+    const response=await env.TTITTULARES_WORKER.fetch(new Request(target,{
+      method:"POST",
+      headers:{"content-type":"application/json","authorization":"Bearer "+botToken},
+      body:JSON.stringify({project:"ttittulares",task:"editorial"})
+    }));
+    const payload:any=await response.json().catch(()=>({}));
+    if(!response.ok||payload.ok!==true||!payload.command_id)
+      throw Error("No se pudo registrar /run a través del servicio editorial (HTTP "+
+        response.status+")");
+    return {command_id:String(payload.command_id),duplicate:!!payload.duplicate};
+  }
   const endpoint="https://api.github.com/repos/fabricelop/europapress-rss/contents/ttittulares/run-now-trigger.json";
   const branch="control/ttittulares-run-trigger-v2";
   const headers={"authorization":"Bearer "+env.GITHUB_TOKEN,
